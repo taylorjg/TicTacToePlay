@@ -32,7 +32,7 @@ $(document).ready(() => {
     cellElements = cellIds.map(id => $(id));
     cellElements.forEach(ce => ce.click(onCellClick));
     reset();
-    setMessage(START_MESSAGE);
+    setMessages(START_MESSAGE);
 });
 
 function reset() {
@@ -43,7 +43,7 @@ function reset() {
 function start() {
     reset();
     state = STATE_HUMAN_MOVE;
-    setMessage(PLAYER1_TURN_MESSAGE);
+    setMessages(PLAYER1_TURN_MESSAGE);
     hideStartButton();
 }
 
@@ -67,7 +67,7 @@ function onCellClick(e) {
 function makeComputerMove() {
 
     state = STATE_COMPUTER_MOVE;
-    setMessageWithSpinner(PLAYER2_TURN_MESSAGE);
+    setMessagesWithSpinner(PLAYER2_TURN_MESSAGE);
 
     setTimeout(() => {
 
@@ -84,7 +84,7 @@ function makeComputerMove() {
         })
         .always(() => {
             state = STATE_HUMAN_MOVE;
-            setMessage(PLAYER1_TURN_MESSAGE);
+            setMessages(PLAYER1_TURN_MESSAGE);
         })
         .then(handleComputerMoveResponse)
         .catch(handleComputerMoveError);
@@ -98,16 +98,13 @@ function handleComputerMoveResponse(state) {
         switch (state.outcome) {
             case 1:
                 highlightWinningLine(state.winningLine);
-                //setMessage(PLAYER1_WON_MESSAGE);
                 message1 = PLAYER1_WON_MESSAGE;
                 break;
             case 2:
                 highlightWinningLine(state.winningLine);
-                //setMessage(PLAYER2_WON_MESSAGE);
                 message1 = PLAYER2_WON_MESSAGE;
                 break;
             case 3:
-                //setMessage(DRAW_MESSAGE);
                 message1 = DRAW_MESSAGE;
                 break;
         }
@@ -153,19 +150,14 @@ function updateBoardFromString(board) {
     });
 }
 
-function setMessageWithSpinner(message) {
-    $('#messageArea').html(message)
-    showSpinner();
-}
-
-function setMessage(message) {
-    $('#messageArea').html(message)
-    hideSpinner();
-}
-
 function setMessages(...messages) {
     $('#messageArea').html(messages.join('<br />'))
     hideSpinner();
+}
+
+function setMessagesWithSpinner(...messages) {
+    $('#messageArea').html(messages.join('<br />'))
+    showSpinner();
 }
 
 function showStartButton() {
