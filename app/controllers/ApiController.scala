@@ -1,11 +1,10 @@
 package controllers
 
 import javax.inject._
-
 import play.api.mvc._
 import play.api.libs.json._
-import models._
 import play.api.Logger
+import models._
 
 @Singleton
 class ApiController @Inject() extends Controller {

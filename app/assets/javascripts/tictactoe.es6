@@ -11,6 +11,7 @@ const CROSS = 'X';
 const NOUGHT = 'O';
 const EMPTY = '-';
 
+let cellElements;
 let player1Piece = CROSS;
 let player2Piece = NOUGHT;
 let started = false;
@@ -18,14 +19,20 @@ let gameOver = false;
 let computerMoveInProgress = false;
 
 $(document).ready(() => {
-    $('#board td').click(onCellClick);
     $('#startBtn').click(onStart);
+    const cellIds = [
+        '#cell00', '#cell01', '#cell02',
+        '#cell10', '#cell11', '#cell12',
+        '#cell20', '#cell21', '#cell22'
+    ];
+    cellElements = cellIds.map(id => $(id));
+    cellElements.forEach(ce => ce.click(onCellClick));
     reset();
 });
 
 function reset() {
     updateBoardFromString(EMPTY.repeat(9));
-    $('#board td').removeClass('highlight');
+    cellElements.forEach(ce => ce.removeClass('highlight'));
     started = false;
     gameOver = false;
     computerMoveInProgress = false;
@@ -41,12 +48,11 @@ function onCellClick(e) {
     if (!started || gameOver || computerMoveInProgress) {
         return;
     }
-    const id = e.target.id;
-    const ch = getCell(id);
-    if (ch !== EMPTY) {
+    const cellElement = $(this);
+    if (getCell(cellElement) !== EMPTY) {
         return;
     }
-    setCell(id, player1Piece);
+    setCell(cellElement, player1Piece);
     makeComputerMove();
 }
 
@@ -68,67 +74,45 @@ function makeComputerMove() {
             contentType: 'application/json'
         })
         .then(handleComputerMoveResponse)
-        .catch((xhr, statusText, error) => { console.log(xhr, statusText, error); })
+        .catch(handleComputerMoveError)
         .always(() => { computerMoveInProgress = false; });
     }, ARTIFICIAL_THINKING_TIME);
 }
 
 function handleComputerMoveResponse(state) {
-    console.log(`state: ${state}`);
-    console.dir(state);
     updateBoardFromString(state.board);
 }
 
-function setCell(id, piece) {
-    $('#' + id).html(piece === CROSS || piece === NOUGHT ? piece : '');
+function handleComputerMoveError(xhr, statusText, error) {
+    console.log(xhr, statusText, error);
 }
 
-function getCell(id) {
-    var piece = $('#' + id).html();
+function getCell(cellElement) {
+    var piece = cellElement.html();
     return piece === CROSS || piece === NOUGHT ? piece : EMPTY;
 }
 
+function setCell(cellElement, piece) {
+    cellElement.html(piece === CROSS || piece === NOUGHT ? piece : '');
+}
+
 function highlightWinningLine(cellIndices) {
-    var cellIndicesToIds = {
-        0: 'cell00',
-        1: 'cell01',
-        2: 'cell02',
-        3: 'cell10',
-        4: 'cell11',
-        5: 'cell12',
-        6: 'cell20',
-        7: 'cell21',
-        8: 'cell22'
-    };
-    cellIndices.forEach(i => {
-        const id = cellIndicesToIds[i];
-        $('#' + id).addClass('highlight');
+    cellIndices.forEach(cellIndex => {
+        cellElements[cellIndex].addClass('highlight');
     });
 }
 
 function saveBoardToString() {
-    return '' +
-        getCell('cell00') +
-        getCell('cell01') +
-        getCell('cell02') +
-        getCell('cell10') +
-        getCell('cell11') +
-        getCell('cell12') +
-        getCell('cell20') +
-        getCell('cell21') +
-        getCell('cell22');
+    return cellElements.reduce((acc, ce) => {
+        acc += getCell(ce);
+        return acc;
+    }, "");
 }
 
-function updateBoardFromString(s) {
-    setCell('cell00', s[0]);
-    setCell('cell01', s[1]);
-    setCell('cell02', s[2]);
-    setCell('cell10', s[3]);
-    setCell('cell11', s[4]);
-    setCell('cell12', s[5]);
-    setCell('cell20', s[6]);
-    setCell('cell21', s[7]);
-    setCell('cell22', s[8]);
+function updateBoardFromString(board) {
+    cellElements.forEach((ce, index) => {
+        setCell(ce, board.charAt(index));
+    });
 }
 
 function showSpinner() {
