@@ -15,11 +15,10 @@ let cellElements;
 let player1Piece = CROSS;
 let player2Piece = NOUGHT;
 let started = false;
-let gameOver = false;
 let computerMoveInProgress = false;
 
 $(document).ready(() => {
-    $('#startBtn').click(onStart);
+    $('#startBtn').click(start);
     const cellIds = [
         '#cell00', '#cell01', '#cell02',
         '#cell10', '#cell11', '#cell12',
@@ -34,18 +33,23 @@ function reset() {
     updateBoardFromString(EMPTY.repeat(9));
     cellElements.forEach(ce => ce.removeClass('highlight'));
     started = false;
-    gameOver = false;
     computerMoveInProgress = false;
     hideSpinner();
 }
 
-function onStart() {
+function start() {
     reset();
     started = true;
+    hideStartButton();
+}
+
+function gameOver() {
+    started = false;
+    showStartButton();
 }
 
 function onCellClick(e) {
-    if (!started || gameOver || computerMoveInProgress) {
+    if (!started || computerMoveInProgress) {
         return;
     }
     const cellElement = $(this);
@@ -81,6 +85,19 @@ function makeComputerMove() {
 
 function handleComputerMoveResponse(state) {
     updateBoardFromString(state.board);
+    if (state.outcome) {
+        switch (state.outcome) {
+            case 1:
+                highlightWinningLine(state.winningLine);
+                break;
+            case 2:
+                highlightWinningLine(state.winningLine);
+                break;
+            case 3:
+                break;
+        }
+        gameOver();
+    }
 }
 
 function handleComputerMoveError(xhr, statusText, error) {
@@ -113,6 +130,14 @@ function updateBoardFromString(board) {
     cellElements.forEach((ce, index) => {
         setCell(ce, board.charAt(index));
     });
+}
+
+function showStartButton() {
+    $('#startBtn').show();
+}
+
+function hideStartButton() {
+    $('#startBtn').hide();
 }
 
 function showSpinner() {
