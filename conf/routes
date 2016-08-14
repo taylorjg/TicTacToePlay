@@ -13,3 +13,5 @@ GET     /message                    controllers.AsyncController.message
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 GET     /tictactoe                  controllers.TicTacToeController.index
+
+POST    /api/computerMove           controllers.ApiController.computerMove

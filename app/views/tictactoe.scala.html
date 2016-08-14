@@ -4,6 +4,7 @@
 <html>
 <head>
     <title>Tic-Tac-Toe</title>
+    <script src='@routes.Assets.versioned("jquery/jquery.js")'></script>
     <script src='@routes.Assets.versioned("javascripts/tictactoe.js")'></script>
     <link href='@routes.Assets.versioned("bootstrap/bootstrap.css")' rel="stylesheet">
     <link href='@routes.Assets.versioned("stylesheets/main.css")' rel="stylesheet">
@@ -34,17 +35,17 @@
             </table>
         </div>
     </div>
+    <!--<div class="row">-->
+        <!--<div class="col-md-offset-3 col-md-6">-->
+            <!--<div class="alert alert-info">-->
+                <!--<span id="messageArea"></span>-->
+                <!--<img id="spinner" src='@routes.Assets.versioned("images/spinner.gif")' alt="spinner" />-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
     <div class="row">
         <div class="col-md-offset-3 col-md-6">
-            <div class="alert alert-info">
-                <span id="messageArea"></span>
-                <img id="spinner" src='@routes.Assets.versioned("images/spinner.gif")' alt="spinner" />
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-md-6">
-            <button type="button" class="btn btn-sm btn-primary">Start</button>
+            <button id="startBtn" type="button" class="btn btn-sm btn-primary">Start</button>
         </div>
     </div>
 </div>
