@@ -93,8 +93,8 @@ function makeComputerMove() {
 
 function handleComputerMoveResponse(state) {
     updateBoardFromString(state.board);
-    let message1;
     if (state.outcome) {
+        let message1;
         switch (state.outcome) {
             case 1:
                 highlightWinningLine(state.winningLine);
