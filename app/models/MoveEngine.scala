@@ -47,7 +47,7 @@ object MoveEngine {
       state,
       state.player1Piece,
       (newBoard, _) => state.copy(board = newBoard))
-    (newState flatMap checkForWinOrDraw) orElse (newState)
+    newState flatMap checkForWinOrDraw orElse (newState)
   }
 
   private def checkForLineWithTwoPiecesAndOneEmpty(state: GameState,

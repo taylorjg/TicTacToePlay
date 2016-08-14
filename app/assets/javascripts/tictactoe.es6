@@ -1,12 +1,11 @@
-const CHOOSE_PIECE_MESSAGE = 'Choose noughts or crosses then click the Start button.';
+//const CHOOSE_PIECE_MESSAGE = 'Choose noughts or crosses then click the Start button.';
 const START_MESSAGE = 'Click the Start button to start a new game.';
 const PLAYER1_TURN_MESSAGE = 'Your turn. Click an empty square to make your move.';
 const PLAYER2_TURN_MESSAGE = 'The computer is thinking...';
 const PLAYER1_WON_MESSAGE = 'You won!';
 const PLAYER2_WON_MESSAGE = 'The computer won!';
 const DRAW_MESSAGE = 'It\'s a draw!';
-const UNKNOWN_WINNER_MESSAGE = 'I am confused about who won!?';
-const ARTIFICIAL_THINKING_TIME = 0;
+const ARTIFICIAL_THINKING_TIME = 500;
 const CROSS = 'X';
 const NOUGHT = 'O';
 const EMPTY = '-';
@@ -33,6 +32,7 @@ $(document).ready(() => {
     cellElements = cellIds.map(id => $(id));
     cellElements.forEach(ce => ce.click(onCellClick));
     reset();
+    setMessage(START_MESSAGE);
 });
 
 function reset() {
@@ -43,6 +43,7 @@ function reset() {
 function start() {
     reset();
     state = STATE_HUMAN_MOVE;
+    setMessage(PLAYER1_TURN_MESSAGE);
     hideStartButton();
 }
 
@@ -66,6 +67,7 @@ function onCellClick(e) {
 function makeComputerMove() {
 
     state = STATE_COMPUTER_MOVE;
+    setMessageWithSpinner(PLAYER2_TURN_MESSAGE);
 
     setTimeout(() => {
 
@@ -80,7 +82,10 @@ function makeComputerMove() {
             data: JSON.stringify(requestData),
             contentType: 'application/json'
         })
-        .always(() => state = STATE_HUMAN_MOVE)
+        .always(() => {
+            state = STATE_HUMAN_MOVE;
+            setMessage(PLAYER1_TURN_MESSAGE);
+        })
         .then(handleComputerMoveResponse)
         .catch(handleComputerMoveError);
     }, ARTIFICIAL_THINKING_TIME);
@@ -88,18 +93,26 @@ function makeComputerMove() {
 
 function handleComputerMoveResponse(state) {
     updateBoardFromString(state.board);
+    let message1;
     if (state.outcome) {
         switch (state.outcome) {
             case 1:
                 highlightWinningLine(state.winningLine);
+                //setMessage(PLAYER1_WON_MESSAGE);
+                message1 = PLAYER1_WON_MESSAGE;
                 break;
             case 2:
                 highlightWinningLine(state.winningLine);
+                //setMessage(PLAYER2_WON_MESSAGE);
+                message1 = PLAYER2_WON_MESSAGE;
                 break;
             case 3:
+                //setMessage(DRAW_MESSAGE);
+                message1 = DRAW_MESSAGE;
                 break;
         }
         gameOver();
+        setMessages(message1, START_MESSAGE);
     }
 }
 
@@ -138,6 +151,21 @@ function updateBoardFromString(board) {
     cellElements.forEach((ce, index) => {
         setCell(ce, board.charAt(index));
     });
+}
+
+function setMessageWithSpinner(message) {
+    $('#messageArea').html(message)
+    showSpinner();
+}
+
+function setMessage(message) {
+    $('#messageArea').html(message)
+    hideSpinner();
+}
+
+function setMessages(...messages) {
+    $('#messageArea').html(messages.join('<br />'))
+    hideSpinner();
 }
 
 function showStartButton() {
