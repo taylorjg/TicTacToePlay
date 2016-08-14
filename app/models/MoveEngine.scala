@@ -26,7 +26,8 @@ object MoveEngine {
     else {
       val randomEmptyLocationIndex = random.nextInt(emptyLocations.indices.length)
       val randomEmptyLocation = emptyLocations(randomEmptyLocationIndex)
-      oldState.copy(board = board.updated(randomEmptyLocation, oldState.player2Piece.charAt(0)))
+      val newState = oldState.copy(board = board.updated(randomEmptyLocation, oldState.player2Piece.charAt(0)))
+      checkForWinOrDraw(newState).getOrElse(newState)
     }
   }
 
