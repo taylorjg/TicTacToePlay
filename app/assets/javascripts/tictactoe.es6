@@ -5,17 +5,23 @@ const PLAYER2_TURN_MESSAGE = 'The computer is thinking...';
 const PLAYER1_WON_MESSAGE = 'You won!';
 const PLAYER2_WON_MESSAGE = 'The computer won!';
 const DRAW_MESSAGE = 'It\'s a draw!';
-const UNKNOWN_WINNER_MESSAGE = 'I r confuse about who won!?';
-const ARTIFICIAL_THINKING_TIME = 750;
+const UNKNOWN_WINNER_MESSAGE = 'I am confused about who won!?';
+const ARTIFICIAL_THINKING_TIME = 0;
 const CROSS = 'X';
 const NOUGHT = 'O';
 const EMPTY = '-';
 
+// TODO: Allow the human player to choose whether to be NOUGHTS or CROSSES ?
+const player1Piece = CROSS;
+const player2Piece = NOUGHT;
+
+const STATE_NOT_STARTED = 0;
+const STATE_HUMAN_MOVE = 1;
+const STATE_COMPUTER_MOVE = 2;
+const STATE_GAME_OVER = 3;
+
+let state = STATE_NOT_STARTED;
 let cellElements;
-let player1Piece = CROSS;
-let player2Piece = NOUGHT;
-let started = false;
-let computerMoveInProgress = false;
 
 $(document).ready(() => {
     $('#startBtn').click(start);
@@ -30,26 +36,23 @@ $(document).ready(() => {
 });
 
 function reset() {
-    updateBoardFromString(EMPTY.repeat(9));
-    cellElements.forEach(ce => ce.removeClass('highlight'));
-    started = false;
-    computerMoveInProgress = false;
+    clearBoard();
     hideSpinner();
 }
 
 function start() {
     reset();
-    started = true;
+    state = STATE_HUMAN_MOVE;
     hideStartButton();
 }
 
 function gameOver() {
-    started = false;
+    state = STATE_GAME_OVER;
     showStartButton();
 }
 
 function onCellClick(e) {
-    if (!started || computerMoveInProgress) {
+    if (state != STATE_HUMAN_MOVE) {
         return;
     }
     const cellElement = $(this);
@@ -62,7 +65,7 @@ function onCellClick(e) {
 
 function makeComputerMove() {
 
-    computerMoveInProgress = true;
+    state = STATE_COMPUTER_MOVE;
 
     setTimeout(() => {
 
@@ -77,9 +80,9 @@ function makeComputerMove() {
             data: JSON.stringify(requestData),
             contentType: 'application/json'
         })
+        .always(() => state = STATE_HUMAN_MOVE)
         .then(handleComputerMoveResponse)
-        .catch(handleComputerMoveError)
-        .always(() => { computerMoveInProgress = false; });
+        .catch(handleComputerMoveError);
     }, ARTIFICIAL_THINKING_TIME);
 }
 
@@ -124,6 +127,11 @@ function saveBoardToString() {
         acc += getCell(ce);
         return acc;
     }, "");
+}
+
+function clearBoard() {
+    updateBoardFromString(EMPTY.repeat(9));
+    cellElements.forEach(ce => ce.removeClass('highlight'));
 }
 
 function updateBoardFromString(board) {
