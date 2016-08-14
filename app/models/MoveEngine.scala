@@ -13,19 +13,60 @@ object MoveEngine {
     List(2, 4, 6)
   )
 
+  val OUTCOME_PLAYER1_WIN = 1
+  val OUTCOME_PLAYER2_WIN = 2
+  val OUTCOME_DRAW = 3
+
   val random = scala.util.Random
 
-  def computerMove(oldState: GameState): GameState = {
-    checkForWinOrDraw(oldState).getOrElse(makeRandomMove(oldState))
+  def computerMove(state: GameState): GameState = {
+    checkForWinOrDraw(state)
+      .orElse(tryToWin(state))
+      .orElse(tryToBlock(state))
+      .getOrElse(makeRandomMove(state))
   }
 
-  private def makeRandomMove(oldState: GameState): GameState = {
-    val board = oldState.board
-    val emptyLocations = board.indices.filter(isEmpty(oldState, _))
+  private def makeRandomMove(state: GameState): GameState = {
+    val board = state.board
+    val emptyLocations = board.indices.filter(isEmpty(state, _))
     val randomEmptyLocationIndex = random.nextInt(emptyLocations.indices.length)
     val randomEmptyLocation = emptyLocations(randomEmptyLocationIndex)
-    val newState = oldState.copy(board = board.updated(randomEmptyLocation, oldState.player2Piece.charAt(0)))
+    val newState = state.copy(board = board.updated(randomEmptyLocation, state.player2Piece))
     checkForWinOrDraw(newState).getOrElse(newState)
+  }
+
+  private def tryToWin(state: GameState): Option[GameState] = {
+    checkForLineWithTwoPiecesAndOneEmpty(
+      state,
+      state.player2Piece,
+      (newBoard, line) => state.copy(board = newBoard, outcome = Some(OUTCOME_PLAYER2_WIN), winningLine = Some(line)))
+  }
+
+  private def tryToBlock(state: GameState): Option[GameState] = {
+    val newState = checkForLineWithTwoPiecesAndOneEmpty(
+      state,
+      state.player1Piece,
+      (newBoard, _) => state.copy(board = newBoard))
+    (newState flatMap checkForWinOrDraw) orElse (newState)
+  }
+
+  private def checkForLineWithTwoPiecesAndOneEmpty(state: GameState,
+                                                   givenPiece: Char,
+                                                   buildNewState: (String, List[Int]) => GameState): Option[GameState] = {
+    val computerMoves = LINES map {
+      line => {
+        val indicesWithGivenPiece = line filter (state.board(_) == givenPiece)
+        val indicesWithEmptyCells = line filter (isEmpty(state, _))
+        if (indicesWithGivenPiece.length == 2 && indicesWithEmptyCells.length == 1) {
+          val newBoard = state.board.updated(indicesWithEmptyCells.head, state.player2Piece)
+          Some(buildNewState(newBoard, line))
+        }
+        else None
+      }
+    }
+    computerMoves find {
+      _.isDefined
+    } getOrElse (None)
   }
 
   private def checkForWinOrDraw(state: GameState): Option[GameState] = {
@@ -43,23 +84,24 @@ object MoveEngine {
   }
 
   private def checkForWinningLine(state: GameState, line: List[Int]): Option[Int] = {
-    val PLAYER1_WINNING_LINE = List.fill(3)(state.player1Piece.charAt(0))
-    val PLAYER2_WINNING_LINE = List.fill(3)(state.player2Piece.charAt(0))
-    line map { state.board(_) } match {
-      case `PLAYER1_WINNING_LINE` => Some(1)
-      case `PLAYER2_WINNING_LINE` => Some(2)
+    val PLAYER1_WINNING_LINE = List.fill(3)(state.player1Piece)
+    val PLAYER2_WINNING_LINE = List.fill(3)(state.player2Piece)
+    line map {
+      state.board(_)
+    } match {
+      case `PLAYER1_WINNING_LINE` => Some(OUTCOME_PLAYER1_WIN)
+      case `PLAYER2_WINNING_LINE` => Some(OUTCOME_PLAYER2_WIN)
       case _ => None
     }
   }
 
   private def checkForDraw(state: GameState): Option[GameState] = {
     if (state.board.indices.exists(isEmpty(state, _))) None
-    else Some(state.copy(outcome = Some(3)))
+    else Some(state.copy(outcome = Some(OUTCOME_DRAW)))
   }
 
   private def isEmpty(state: GameState, index: Int): Boolean = {
-    val board = state.board
-    val piece = board(index)
-    piece != state.player1Piece.charAt(0) && piece != state.player2Piece.charAt(0)
+    val piece = state.board(index)
+    piece != state.player1Piece && piece != state.player2Piece
   }
 }
