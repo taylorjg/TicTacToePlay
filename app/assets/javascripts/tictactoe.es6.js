@@ -1,4 +1,3 @@
-//const CHOOSE_PIECE_MESSAGE = 'Choose noughts or crosses then click the Start button.';
 const START_MESSAGE = 'Click the Start button to start a new game.';
 const PLAYER1_TURN_MESSAGE = 'Your turn. Click an empty square to make your move.';
 const PLAYER2_TURN_MESSAGE = 'The computer is thinking...';
@@ -52,8 +51,8 @@ function gameOver() {
     showStartButton();
 }
 
-function onCellClick(e) {
-    if (state != STATE_HUMAN_MOVE) {
+function onCellClick(/* e */) {
+    if (state !== STATE_HUMAN_MOVE) {
         return;
     }
     const cellElement = $(this);
@@ -136,7 +135,7 @@ function saveBoardToString() {
     return cellElements.reduce((acc, ce) => {
         acc += getCell(ce);
         return acc;
-    }, "");
+    }, '');
 }
 
 function clearBoard() {
@@ -151,12 +150,12 @@ function updateBoardFromString(board) {
 }
 
 function setMessages(...messages) {
-    $('#messageArea').html(messages.join('<br />'))
+    $('#messageArea').html(messages.join('<br />'));
     hideSpinner();
 }
 
 function setMessagesWithSpinner(...messages) {
-    $('#messageArea').html(messages.join('<br />'))
+    $('#messageArea').html(messages.join('<br />'));
     showSpinner();
 }
 
