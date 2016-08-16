@@ -9,7 +9,6 @@ const CROSS = 'X';
 const NOUGHT = 'O';
 const EMPTY = '-';
 
-// TODO: Allow the human player to choose whether to be NOUGHTS or CROSSES ?
 const player1Piece = CROSS;
 const player2Piece = NOUGHT;
 
@@ -36,7 +35,7 @@ $(document).ready(() => {
 
 function reset() {
     clearBoard();
-    hideSpinner();
+    clearErrorMessage();
 }
 
 function start() {
@@ -67,6 +66,7 @@ function makeComputerMove() {
 
     state = STATE_COMPUTER_MOVE;
     setMessagesWithSpinner(PLAYER2_TURN_MESSAGE);
+    clearErrorMessage();
 
     setTimeout(() => {
 
@@ -112,8 +112,15 @@ function handleComputerMoveResponse(state) {
     }
 }
 
-function handleComputerMoveError(xhr, statusText, error) {
-    console.log(xhr, statusText, error);
+function handleComputerMoveError(xhr) {
+    const statusText = xhr.statusText;
+    const statusCode = xhr.status ? `(${xhr.status})` : '';
+    if (statusText && statusText !== 'error') {
+        setErrorMessage(`Error during computer move: ${statusText} ${statusCode}`);
+    }
+    else {
+        setErrorMessage(`Error during computer move`);
+    }
 }
 
 function getCell(cellElement) {
@@ -157,6 +164,15 @@ function setMessages(...messages) {
 function setMessagesWithSpinner(...messages) {
     $('#messageArea').html(messages.join('<br />'));
     showSpinner();
+}
+
+function setErrorMessage(errorMessage) {
+    $('#errorMessageArea').html(errorMessage);
+    $('#errorPanel').show();
+}
+
+function clearErrorMessage() {
+    $('#errorPanel').hide();
 }
 
 function showStartButton() {
