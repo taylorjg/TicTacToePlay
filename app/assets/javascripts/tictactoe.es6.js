@@ -1,8 +1,5 @@
 const PLAYER1_TURN_MESSAGE = 'Your turn. Click an empty square to make your move.';
 const PLAYER2_TURN_MESSAGE = 'The computer is thinking...';
-const PLAYER1_WON_MESSAGE = 'You won!';
-const PLAYER2_WON_MESSAGE = 'The computer won!';
-const DRAW_MESSAGE = 'It\'s a draw!';
 const ARTIFICIAL_THINKING_TIME = 0;
 const CROSS = 'X';
 const NOUGHT = 'O';
@@ -61,7 +58,7 @@ function gameOver() {
     showStartButton();
 }
 
-function onCellClick(/* e */) {
+function onCellClick() {
     if (state !== STATE_HUMAN_MOVE) {
         return;
     }
@@ -104,18 +101,12 @@ function makeComputerMove() {
 function handleComputerMoveResponse(state) {
     updateBoardFromString(state.board);
     if (state.outcome) {
-        let message1;
         switch (state.outcome) {
             case 1:
                 highlightWinningLine(state.winningLine);
-                message1 = PLAYER1_WON_MESSAGE;
                 break;
             case 2:
                 highlightWinningLine(state.winningLine);
-                message1 = PLAYER2_WON_MESSAGE;
-                break;
-            case 3:
-                message1 = DRAW_MESSAGE;
                 break;
         }
         gameOver();

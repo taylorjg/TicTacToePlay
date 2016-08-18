@@ -1,0 +1,84 @@
+
+# TicTacToePlay
+
+## Description
+
+This is a simple Tic-Tac-Toe web application that I am writing as a vehicle to learn the following technologies:
+
+* ~~Play~~
+* ~~JavaScript (ES2015)~~
+* Akka / Akka Persistence
+* Cassandra or Postgres
+
+## Deployed application
+
+See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herokuapp.com/).
+
+## Development Phases
+
+### Phase 1
+
+* ~~Basic Tic-Tac-Toe game implementation~~
+  * ~~Draw the grid~~
+  * ~~Make cells clickable~~
+  * ~~Add a Start button~~
+  * ~~Add instruction messages~~
+  * ~~Add a REST endpoint to calculate the computer's move and detect the end of the game~~
+  * ~~Add error handling (of the REST call)~~
+  * ~~Add a background image to the grid~~
+
+### Phase 2
+
+* Deploy to Heroku
+  * ~~Basic deployment~~
+  * Optimise assets e.g. JavaScript etc.
+  * Remove unneeded stuff included in the Activator template
+  * Add/display a version number
+
+### Phase 3
+
+* Add tests
+  * TODO: list the types of test to add
+
+### Phase 4
+
+* Add support for keyboard navigation
+* Add support for accessibility
+* Add support for &lt;noscript&gt;
+
+### Phase 5
+
+* Make the controller actions async using Akka
+
+### Phase 6
+
+* Add authentication to identify the player (required in order to maintain a leader board)
+    * Registration
+    * Login
+    * Logout
+
+### Phase 7
+
+* Use Akka Persistence to save Akka actor state
+  * Save state to Cassandra or Postgres
+
+### Phase 8
+
+* Refreshing the web page should restore the state of the game
+  * TODO: add a list of steps to achieve this
+
+### Phase 9
+
+* Add a leader board
+    * Dynamically updatable using Web Sockets
+
+### Phase 10
+
+* Use details of previous games to implement heuristics to improve the computer move
+
+## Links
+
+* [Heroku Scala Support](https://devcenter.heroku.com/articles/scala-support)
+* [Getting Started on Heroku with Scala and Play](https://devcenter.heroku.com/articles/getting-started-with-scala#introduction)
+* https://github.com/typesafehub/activator/issues/979
+* https://devcenter.heroku.com/articles/using-multiple-buildpacks-for-an-app
