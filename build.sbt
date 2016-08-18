@@ -18,4 +18,9 @@ resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 // https://github.com/playframework/playframework/issues/4839
 resolvers += Resolver.url("Typesafe Ivy releases", url("https://repo.typesafe.com/typesafe/ivy-releases"))(Resolver.ivyStylePatterns)
 
+// https://github.com/zenato/sbt-babel/issues/2
+resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+
+// http://stackoverflow.com/questions/20281554/sbt-error-when-forking-is-enabled
+// https://github.com/typesafehub/activator/issues/1036
 // fork in run := true
