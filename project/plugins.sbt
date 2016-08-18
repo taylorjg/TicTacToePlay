@@ -18,3 +18,6 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.1.0")
 addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.2")
 
 addSbtPlugin("io.teamscala.sbt" % "sbt-babel" % "1.0.5")
+
+// https://github.com/zenato/sbt-babel/issues/2
+resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
