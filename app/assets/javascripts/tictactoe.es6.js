@@ -1,10 +1,9 @@
-const START_MESSAGE = 'Click the Start button to start a new game.';
 const PLAYER1_TURN_MESSAGE = 'Your turn. Click an empty square to make your move.';
 const PLAYER2_TURN_MESSAGE = 'The computer is thinking...';
 const PLAYER1_WON_MESSAGE = 'You won!';
 const PLAYER2_WON_MESSAGE = 'The computer won!';
 const DRAW_MESSAGE = 'It\'s a draw!';
-const ARTIFICIAL_THINKING_TIME = 500;
+const ARTIFICIAL_THINKING_TIME = 0;
 const CROSS = 'X';
 const NOUGHT = 'O';
 const EMPTY = '-';
@@ -18,35 +17,47 @@ const STATE_COMPUTER_MOVE = 2;
 const STATE_GAME_OVER = 3;
 
 let state = STATE_NOT_STARTED;
-let cellElements;
+let $cellElements;
+let $instructionPanel;
+let $instructionMessage;
+let $spinner;
+let $errorPanel;
+let $errorMessage;
+let $startButton;
 
 $(document).ready(() => {
-    $('#startBtn').click(start);
     const cellIds = [
         '#cell00', '#cell01', '#cell02',
         '#cell10', '#cell11', '#cell12',
         '#cell20', '#cell21', '#cell22'
     ];
-    cellElements = cellIds.map(id => $(id));
-    cellElements.forEach(ce => ce.click(onCellClick));
+    $cellElements = cellIds.map(id => $(id));
+    $instructionPanel = $('#instructionPanel').click(start);
+    $instructionMessage = $('#instructionMessage').click(start);
+    $spinner = $('#spinner').click(start);
+    $errorPanel = $('#errorPanel').click(start);
+    $errorMessage = $('#errorMessage').click(start);
+    $startButton = $('#startButton').click(start);
+    $cellElements.forEach(ce => ce.click(onCellClick));
     reset();
-    setMessages(START_MESSAGE);
 });
 
 function reset() {
     clearBoard();
+    clearInstructionMessage();
     clearErrorMessage();
 }
 
 function start() {
     reset();
     state = STATE_HUMAN_MOVE;
-    setMessages(PLAYER1_TURN_MESSAGE);
+    setInstructionMessage(PLAYER1_TURN_MESSAGE);
     hideStartButton();
 }
 
 function gameOver() {
     state = STATE_GAME_OVER;
+    clearInstructionMessage();
     showStartButton();
 }
 
@@ -65,7 +76,7 @@ function onCellClick(/* e */) {
 function makeComputerMove() {
 
     state = STATE_COMPUTER_MOVE;
-    setMessagesWithSpinner(PLAYER2_TURN_MESSAGE);
+    setInstructionMessageWithSpinner(PLAYER2_TURN_MESSAGE);
     clearErrorMessage();
 
     setTimeout(() => {
@@ -83,7 +94,7 @@ function makeComputerMove() {
         })
         .always(() => {
             state = STATE_HUMAN_MOVE;
-            setMessages(PLAYER1_TURN_MESSAGE);
+            setInstructionMessage(PLAYER1_TURN_MESSAGE);
         })
         .then(handleComputerMoveResponse)
         .catch(handleComputerMoveError);
@@ -108,7 +119,6 @@ function handleComputerMoveResponse(state) {
                 break;
         }
         gameOver();
-        setMessages(message1, START_MESSAGE);
     }
 }
 
@@ -134,12 +144,12 @@ function setCell(cellElement, piece) {
 
 function highlightWinningLine(cellIndices) {
     cellIndices.forEach(cellIndex => {
-        cellElements[cellIndex].addClass('highlight');
+        $cellElements[cellIndex].addClass('highlight');
     });
 }
 
 function saveBoardToString() {
-    return cellElements.reduce((acc, ce) => {
+    return $cellElements.reduce((acc, ce) => {
         acc += getCell(ce);
         return acc;
     }, '');
@@ -147,46 +157,52 @@ function saveBoardToString() {
 
 function clearBoard() {
     updateBoardFromString(EMPTY.repeat(9));
-    cellElements.forEach(ce => ce.removeClass('highlight'));
+    $cellElements.forEach(ce => ce.removeClass('highlight'));
 }
 
 function updateBoardFromString(board) {
-    cellElements.forEach((ce, index) => {
+    $cellElements.forEach((ce, index) => {
         setCell(ce, board.charAt(index));
     });
 }
 
-function setMessages(...messages) {
-    $('#messageArea').html(messages.join('<br />'));
+function setInstructionMessage(message) {
+    $instructionMessage.html(message);
+    $instructionPanel.show();
     hideSpinner();
 }
 
-function setMessagesWithSpinner(...messages) {
-    $('#messageArea').html(messages.join('<br />'));
+function setInstructionMessageWithSpinner(message) {
+    $instructionMessage.html(message);
+    $instructionPanel.show();
     showSpinner();
 }
 
+function clearInstructionMessage() {
+    $instructionPanel.hide();
+}
+
 function setErrorMessage(errorMessage) {
-    $('#errorMessageArea').html(errorMessage);
-    $('#errorPanel').show();
+    $errorMessage.html(errorMessage);
+    $errorPanel.show();
 }
 
 function clearErrorMessage() {
-    $('#errorPanel').hide();
+    $errorPanel.hide();
 }
 
 function showStartButton() {
-    $('#startBtn').show();
+    $startButton.show();
 }
 
 function hideStartButton() {
-    $('#startBtn').hide();
+    $startButton.hide();
 }
 
 function showSpinner() {
-    $('#spinner').show();
+    $spinner.show();
 }
 
 function hideSpinner() {
-    $('#spinner').hide();
+    $spinner.hide();
 }
