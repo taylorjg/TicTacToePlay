@@ -1,4 +1,4 @@
-@()
+@(version: Option[String])
 
 <!DOCTYPE html>
 <html>
@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-md-offset-4 col-md-4">
             <h1 align="center">Tic-Tac-Toe</h1>
-            <table id="board">
+            <table id="board" align="center">
                 <tbody>
                     <tr class="thickBottom">
                         <td id="cell00" class="thickRight"></td>
@@ -46,6 +46,11 @@
     <div class="row">
         <div class="col-md-offset-3 col-md-6">
             <button id="startButton" type="button" class="btn btn-sm btn-primary">Start</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="pull-right"><i><small>(version: @version.getOrElse("?"))</small></i></span>
         </div>
     </div>
     <div id="errorPanel" class="row navbar-fixed-bottom">

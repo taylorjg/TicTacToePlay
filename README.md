@@ -26,6 +26,9 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
   * ~~Add a REST endpoint to calculate the computer's move and detect the end of the game~~
   * ~~Add error handling (of the REST call)~~
   * ~~Add a background image to the grid~~
+  * Randomly choose which player starts
+  * Add support for keyboard navigation
+  * Add an animation re the outcome of the game
 
 ### Phase 2
 
@@ -33,18 +36,18 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
   * ~~Basic deployment~~
   * Optimise assets e.g. JavaScript etc.
   * Remove unneeded stuff included in the Activator template
-  * Add/display a version number
+  * ~~Add/display a version number~~
 
 ### Phase 3
 
-* Add tests
-  * TODO: list the types of test to add
+* Improve the algorithm used to make the computer move
+    * [Minimax](https://en.wikipedia.org/wiki/Minimax)
+    * [Tic Tac Toe: Understanding The Minimax Algorithm](http://neverstopbuilding.com/minimax)
 
 ### Phase 4
 
-* Add support for keyboard navigation
-* Add support for accessibility
-* Add support for &lt;noscript&gt;
+* Add tests
+  * TODO: list the types of test to add
 
 ### Phase 5
 
@@ -72,9 +75,12 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
 * Add a leader board
     * Dynamically updatable using Web Sockets
 
-### Phase 10
+## Other
 
-* Use details of previous games to implement heuristics to improve the computer move
+* Add support for accessibility
+* Add support for &lt;noscript&gt;
+* Re-implement the client-side code in ScalaJS
+* Use Angular 2 on the client-side
 
 ## Links
 

@@ -59,8 +59,11 @@ function gameOver() {
 }
 
 function onCellClick() {
-    if (state !== STATE_HUMAN_MOVE) {
+    if (state === STATE_COMPUTER_MOVE) {
         return;
+    }
+    if (state === STATE_NOT_STARTED || state === STATE_GAME_OVER) {
+        start();
     }
     const cellElement = $(this);
     if (getCell(cellElement) !== EMPTY) {
