@@ -79,7 +79,7 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
 
 * Add support for accessibility
 * Add support for &lt;noscript&gt;
-* Re-implement the client-side code in ScalaJS
+* Re-implement the client-side code in [Scala.js](https://www.scala-js.org/)
 * Use Angular 2 on the client-side
 
 ## Links
