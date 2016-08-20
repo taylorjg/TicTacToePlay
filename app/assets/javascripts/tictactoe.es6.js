@@ -106,10 +106,10 @@ function handleComputerMoveResponse(state) {
     if (state.outcome) {
         switch (state.outcome) {
             case 1:
-                highlightWinningLine(state.winningLine);
+                highlightWinningLine(state.winningLine, 'highlightPlayer1Win');
                 break;
             case 2:
-                highlightWinningLine(state.winningLine);
+                highlightWinningLine(state.winningLine, 'highlightPlayer2Win');
                 break;
         }
         gameOver();
@@ -136,9 +136,9 @@ function setCell(cellElement, piece) {
     cellElement.html(piece === CROSS || piece === NOUGHT ? piece : '');
 }
 
-function highlightWinningLine(cellIndices) {
+function highlightWinningLine(cellIndices, cssClass) {
     cellIndices.forEach(cellIndex => {
-        $cellElements[cellIndex].addClass('highlight');
+        $cellElements[cellIndex].addClass(cssClass);
     });
 }
 
@@ -151,7 +151,8 @@ function saveBoardToString() {
 
 function clearBoard() {
     updateBoardFromString(EMPTY.repeat(9));
-    $cellElements.forEach(ce => ce.removeClass('highlight'));
+    $cellElements.forEach(ce => ce.removeClass('highlightPlayer1Win'));
+    $cellElements.forEach(ce => ce.removeClass('highlightPlayer2Win'));
 }
 
 function updateBoardFromString(board) {

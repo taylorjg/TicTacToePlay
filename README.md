@@ -29,6 +29,7 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
   * Randomly choose which player starts
   * Add support for keyboard navigation
   * Add an animation re the outcome of the game
+  * Add support for easy/hard mode (depends on minimax implementation below)
 
 ### Phase 2
 
@@ -37,6 +38,7 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
   * Optimise assets e.g. JavaScript etc.
   * Remove unneeded stuff included in the Activator template
   * ~~Add/display a version number~~
+  * Setup Jenkins in a docker container to build/deploy
 
 ### Phase 3
 
