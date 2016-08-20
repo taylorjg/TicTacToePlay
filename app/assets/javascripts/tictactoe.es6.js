@@ -28,14 +28,14 @@ $(document).ready(() => {
         '#cell10', '#cell11', '#cell12',
         '#cell20', '#cell21', '#cell22'
     ];
-    $cellElements = cellIds.map(id => $(id));
+    $cellElements = $(cellIds.join(','));
     $instructionPanel = $('#instructionPanel').click(start);
     $instructionMessage = $('#instructionMessage').click(start);
     $spinner = $('#spinner').click(start);
     $errorPanel = $('#errorPanel').click(start);
     $errorMessage = $('#errorMessage').click(start);
     $startButton = $('#startButton').click(start);
-    $cellElements.forEach(ce => ce.click(onCellClick));
+    $cellElements.click(onCellClick);
     reset();
 });
 
@@ -65,11 +65,11 @@ function onCellClick() {
     if (state === STATE_NOT_STARTED || state === STATE_GAME_OVER) {
         start();
     }
-    const cellElement = $(this);
-    if (getCell(cellElement) !== EMPTY) {
+    const $cellElement = $(this);
+    if (getCell($cellElement) !== EMPTY) {
         return;
     }
-    setCell(cellElement, player1Piece);
+    setCell($cellElement, player1Piece);
     makeComputerMove();
 }
 
@@ -127,37 +127,37 @@ function handleComputerMoveError(xhr) {
     }
 }
 
-function getCell(cellElement) {
-    var piece = cellElement.html();
+function getCell($cellElement) {
+    var piece = $cellElement.html();
     return piece === CROSS || piece === NOUGHT ? piece : EMPTY;
 }
 
-function setCell(cellElement, piece) {
-    cellElement.html(piece === CROSS || piece === NOUGHT ? piece : '');
+function setCell($cellElement, piece) {
+    $cellElement.html(piece === CROSS || piece === NOUGHT ? piece : '');
 }
 
 function highlightWinningLine(cellIndices, cssClass) {
     cellIndices.forEach(cellIndex => {
-        $cellElements[cellIndex].addClass(cssClass);
+        $cellElements.eq(cellIndex).addClass(cssClass);
     });
 }
 
 function saveBoardToString() {
-    return $cellElements.reduce((acc, ce) => {
-        acc += getCell(ce);
-        return acc;
+    return $cellElements.toArray().reduce((acc, cellElement) => {
+        return acc += getCell($(cellElement));
     }, '');
 }
 
 function clearBoard() {
     updateBoardFromString(EMPTY.repeat(9));
-    $cellElements.forEach(ce => ce.removeClass('highlightPlayer1Win'));
-    $cellElements.forEach(ce => ce.removeClass('highlightPlayer2Win'));
+    $cellElements
+        .removeClass('highlightPlayer1Win')
+        .removeClass('highlightPlayer2Win');
 }
 
 function updateBoardFromString(board) {
-    $cellElements.forEach((ce, index) => {
-        setCell(ce, board.charAt(index));
+    $cellElements.each((cellIndex, cellElement) => {
+        setCell($(cellElement), board.charAt(cellIndex));
     });
 }
 
