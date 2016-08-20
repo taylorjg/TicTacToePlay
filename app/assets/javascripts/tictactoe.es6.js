@@ -155,7 +155,7 @@ function getCell($cellElement) {
 }
 
 function setCell($cellElement, piece) {
-    $cellElement.html(piece === CROSS || piece === NOUGHT ? piece : '');
+    $cellElement.html(piece === CROSS || piece === NOUGHT ? piece : '&nbsp;');
 }
 
 function highlightCells(cellIndices, cssClass) {
