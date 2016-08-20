@@ -1,3 +1,8 @@
+0.0.4 (20th August 2016)
+
+* Fixed bug whereby clicking on the instruction panel would start a new game
+* On a draw, all cells are highlighted in amber
+
 0.0.3 (20th August 2016)
 
 * Player 1 win is now highlighted in green

@@ -13,6 +13,11 @@ const STATE_HUMAN_MOVE = 1;
 const STATE_COMPUTER_MOVE = 2;
 const STATE_GAME_OVER = 3;
 
+const HIGHLIGHT_PLAYER1_WIN = 'highlightPlayer1Win';
+const HIGHLIGHT_PLAYER2_WIN = 'highlightPlayer2Win';
+const HIGHLIGHT_DRAW = 'highlightDraw';
+const ALL_HIGHLIGHTS = `${HIGHLIGHT_PLAYER1_WIN} ${HIGHLIGHT_PLAYER2_WIN} ${HIGHLIGHT_DRAW}`;
+
 let state = STATE_NOT_STARTED;
 let $cellElements;
 let $instructionPanel;
@@ -23,19 +28,13 @@ let $errorMessage;
 let $startButton;
 
 $(document).ready(() => {
-    const cellIds = [
-        '#cell00', '#cell01', '#cell02',
-        '#cell10', '#cell11', '#cell12',
-        '#cell20', '#cell21', '#cell22'
-    ];
-    $cellElements = $(cellIds.join(','));
-    $instructionPanel = $('#instructionPanel').click(start);
-    $instructionMessage = $('#instructionMessage').click(start);
-    $spinner = $('#spinner').click(start);
-    $errorPanel = $('#errorPanel').click(start);
-    $errorMessage = $('#errorMessage').click(start);
+    $cellElements = $('#board td').click(makeHumanMove);
+    $instructionPanel = $('#instructionPanel');
+    $instructionMessage = $('#instructionMessage');
+    $spinner = $('#spinner');
+    $errorPanel = $('#errorPanel');
+    $errorMessage = $('#errorMessage');
     $startButton = $('#startButton').click(start);
-    $cellElements.click(onCellClick);
     reset();
 });
 
@@ -58,7 +57,7 @@ function gameOver() {
     showStartButton();
 }
 
-function onCellClick() {
+function makeHumanMove() {
     if (state === STATE_COMPUTER_MOVE) {
         return;
     }
@@ -106,10 +105,13 @@ function handleComputerMoveResponse(state) {
     if (state.outcome) {
         switch (state.outcome) {
             case 1:
-                highlightWinningLine(state.winningLine, 'highlightPlayer1Win');
+                highlightCells(state.winningLine, HIGHLIGHT_PLAYER1_WIN);
                 break;
             case 2:
-                highlightWinningLine(state.winningLine, 'highlightPlayer2Win');
+                highlightCells(state.winningLine, HIGHLIGHT_PLAYER2_WIN);
+                break;
+            case 3:
+                highlightCells([0,1,2,3,4,5,6,7,8], HIGHLIGHT_DRAW);
                 break;
         }
         gameOver();
@@ -136,23 +138,19 @@ function setCell($cellElement, piece) {
     $cellElement.html(piece === CROSS || piece === NOUGHT ? piece : '');
 }
 
-function highlightWinningLine(cellIndices, cssClass) {
-    cellIndices.forEach(cellIndex => {
-        $cellElements.eq(cellIndex).addClass(cssClass);
-    });
+function highlightCells(cellIndices, cssClass) {
+    $cellElements
+        .filter(cellIndex => cellIndices.includes(cellIndex))
+        .addClass(cssClass);
 }
 
 function saveBoardToString() {
-    return $cellElements.toArray().reduce((acc, cellElement) => {
-        return acc += getCell($(cellElement));
-    }, '');
+    return $cellElements.map((cellIndex, cellElement) => getCell($(cellElement))).get().join('');
 }
 
 function clearBoard() {
     updateBoardFromString(EMPTY.repeat(9));
-    $cellElements
-        .removeClass('highlightPlayer1Win')
-        .removeClass('highlightPlayer2Win');
+    $cellElements.removeClass(ALL_HIGHLIGHTS);
 }
 
 function updateBoardFromString(board) {
