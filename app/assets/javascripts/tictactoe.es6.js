@@ -45,13 +45,34 @@ function reset() {
 }
 
 function start() {
+
+    function whoGoesFirst() {
+        return (Math.random() < 0.5) ? 1 : 2;
+    }
+
     reset();
-    state = STATE_HUMAN_MOVE;
-    setInstructionMessage(PLAYER1_TURN_MESSAGE);
     hideStartButton();
+
+    if (whoGoesFirst() === 1) {
+        setStateHumanMove();
+    }
+    else {
+        makeComputerMove();
+    }
 }
 
-function gameOver() {
+function setStateHumanMove() {
+    state = STATE_HUMAN_MOVE;
+    setInstructionMessage(PLAYER1_TURN_MESSAGE);
+}
+
+function setStateComputerMove() {
+    state = STATE_COMPUTER_MOVE;
+    setInstructionMessageWithSpinner(PLAYER2_TURN_MESSAGE);
+    clearErrorMessage();
+}
+
+function setStateGameOver() {
     state = STATE_GAME_OVER;
     clearInstructionMessage();
     showStartButton();
@@ -63,6 +84,7 @@ function makeHumanMove() {
     }
     if (state === STATE_NOT_STARTED || state === STATE_GAME_OVER) {
         start();
+        makeHumanMove(...arguments);
     }
     const $cellElement = $(this);
     if (getCell($cellElement) !== EMPTY) {
@@ -74,9 +96,7 @@ function makeHumanMove() {
 
 function makeComputerMove() {
 
-    state = STATE_COMPUTER_MOVE;
-    setInstructionMessageWithSpinner(PLAYER2_TURN_MESSAGE);
-    clearErrorMessage();
+    setStateComputerMove();
 
     setTimeout(() => {
 
@@ -114,7 +134,7 @@ function handleComputerMoveResponse(state) {
                 highlightCells([0,1,2,3,4,5,6,7,8], HIGHLIGHT_DRAW);
                 break;
         }
-        gameOver();
+        setStateGameOver();
     }
 }
 

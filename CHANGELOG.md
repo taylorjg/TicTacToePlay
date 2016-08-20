@@ -1,3 +1,7 @@
+0.0.5 (20th August 2016)
+
+* We now choose who goes first at random
+
 0.0.4 (20th August 2016)
 
 * Fixed bug whereby clicking on the instruction panel would start a new game

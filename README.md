@@ -26,7 +26,7 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
   * ~~Add a REST endpoint to calculate the computer's move and detect the end of the game~~
   * ~~Add error handling (of the REST call)~~
   * ~~Add a background image to the grid~~
-  * Randomly choose which player starts
+  * ~~Randomly choose which player starts~~
   * Add support for keyboard navigation
   * Add an animation re the outcome of the game
   * Add support for easy/hard mode (depends on minimax implementation below)
