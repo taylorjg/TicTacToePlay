@@ -21,3 +21,5 @@ resolvers += Resolver.url("Typesafe Ivy releases", url("https://repo.typesafe.co
 // http://stackoverflow.com/questions/20281554/sbt-error-when-forking-is-enabled
 // https://github.com/typesafehub/activator/issues/1036
 // fork in run := true
+
+herokuAppName in Compile := "tictactoeplay"

@@ -38,7 +38,7 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
   * Optimise assets e.g. JavaScript etc.
   * ~~Remove unneeded cruft included in the Activator template~~
   * ~~Add/display a version number~~
-  * Setup Jenkins in a docker container to build/deploy
+  * ~~Setup Jenkins in a docker container to build/deploy~~
 
 ### Phase 3
 
@@ -90,3 +90,4 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
 * [Getting Started on Heroku with Scala and Play](https://devcenter.heroku.com/articles/getting-started-with-scala#introduction)
 * https://github.com/typesafehub/activator/issues/979
 * https://devcenter.heroku.com/articles/using-multiple-buildpacks-for-an-app
+* https://devcenter.heroku.com/articles/deploy-scala-and-play-applications-to-heroku-from-jenkins-ci

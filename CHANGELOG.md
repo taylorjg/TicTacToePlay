@@ -1,3 +1,8 @@
+0.0.6 (20th August 2016)
+
+* Use &nbsp; for empty cells so that the cells have a fixed size
+* Added sbt-heroku plugin to deploy to Heroku via Jenkins
+
 0.0.5 (20th August 2016)
 
 * We now choose who goes first at random

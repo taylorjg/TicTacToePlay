@@ -19,5 +19,7 @@ addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.2")
 
 addSbtPlugin("io.teamscala.sbt" % "sbt-babel" % "1.0.5")
 
+addSbtPlugin("com.heroku" % "sbt-heroku" % "1.0.1")
+
 // https://github.com/zenato/sbt-babel/issues/2
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
