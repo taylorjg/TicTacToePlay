@@ -36,7 +36,7 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
 * Deploy to Heroku
   * ~~Basic deployment~~
   * Optimise assets e.g. JavaScript etc.
-  * Remove unneeded stuff included in the Activator template
+  * ~~Remove unneeded cruft included in the Activator template~~
   * ~~Add/display a version number~~
   * Setup Jenkins in a docker container to build/deploy
 
