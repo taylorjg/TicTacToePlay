@@ -1,12 +1,15 @@
 const PLAYER1_TURN_MESSAGE = 'Your turn. Click an empty square to make your move.';
 const PLAYER2_TURN_MESSAGE = 'The computer is thinking...';
-const ARTIFICIAL_THINKING_TIME = 0;
+const ARTIFICIAL_THINKING_TIME = 100;
 const CROSS = 'X';
 const NOUGHT = 'O';
 const EMPTY = '-';
 
 const player1Piece = CROSS;
 const player2Piece = NOUGHT;
+
+const HUMAN_PLAYER = 1;
+const COMPUTER_PLAYER = 2;
 
 const STATE_NOT_STARTED = 0;
 const STATE_HUMAN_MOVE = 1;
@@ -44,21 +47,29 @@ function reset() {
     clearErrorMessage();
 }
 
-function start() {
+function startHelper() {
 
     function whoGoesFirst() {
-        return (Math.random() < 0.5) ? 1 : 2;
+        return (Math.random() < 0.5) ? HUMAN_PLAYER : COMPUTER_PLAYER;
     }
 
     reset();
     hideStartButton();
 
-    if (whoGoesFirst() === 1) {
+    const playerToGoFirst = whoGoesFirst();
+
+    if (playerToGoFirst === HUMAN_PLAYER) {
         setStateHumanMove();
     }
     else {
         makeComputerMove();
     }
+
+    return playerToGoFirst;
+}
+
+function start() {
+    startHelper();
 }
 
 function setStateHumanMove() {
@@ -83,8 +94,9 @@ function makeHumanMove() {
         return;
     }
     if (state === STATE_NOT_STARTED || state === STATE_GAME_OVER) {
-        start();
-        makeHumanMove(...arguments);
+        if (startHelper() === COMPUTER_PLAYER) {
+            return;
+        }
     }
     const $cellElement = $(this);
     if (getCell($cellElement) !== EMPTY) {
@@ -124,13 +136,13 @@ function handleComputerMoveResponse(state) {
     updateBoardFromString(state.board);
     if (state.outcome) {
         switch (state.outcome) {
-            case 1:
+            case HUMAN_PLAYER:
                 highlightCells(state.winningLine, HIGHLIGHT_PLAYER1_WIN);
                 break;
-            case 2:
+            case COMPUTER_PLAYER:
                 highlightCells(state.winningLine, HIGHLIGHT_PLAYER2_WIN);
                 break;
-            case 3:
+            default:
                 highlightCells([0,1,2,3,4,5,6,7,8], HIGHLIGHT_DRAW);
                 break;
         }

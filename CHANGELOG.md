@@ -1,3 +1,7 @@
+0.0.7 (21st August 2016)
+
+* Fixed a race condition
+
 0.0.6 (20th August 2016)
 
 * Use &nbsp; for empty cells so that the cells have a fixed size
