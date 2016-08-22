@@ -53,7 +53,7 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
 
 ### Phase 5
 
-* Make the controller actions async using Akka
+* ~~Make the controller actions async using Akka actors~~
 
 ### Phase 6
 

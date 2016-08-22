@@ -2,14 +2,21 @@ package controllers
 
 import javax.inject._
 
-import play.api.mvc._
-import play.api.libs.json._
+import akka.actor.ActorRef
+import akka.pattern.ask
+import akka.util.Timeout
+import scala.concurrent.ExecutionContext.Implicits.global
+import models._
 import play.api.Logger
 import play.api.data.validation.ValidationError
-import models._
+import play.api.libs.json._
+import play.api.mvc._
+
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 @Singleton
-class ApiController @Inject() extends Controller {
+class ApiController @Inject()(@Named("moveEngine") moveEngine: ActorRef) extends Controller {
 
   implicit object CharReads extends Reads[Char] {
     def reads(json: JsValue) = json match {
@@ -25,14 +32,17 @@ class ApiController @Inject() extends Controller {
   implicit val gameStateReads = Json.reads[GameState]
   implicit val gameStateWrites = Json.writes[GameState]
 
-  def computerMove = Action(parse.json) { request =>
+  implicit val timeout = Timeout(5 seconds)
+
+  def computerMoveAsync = Action.async(parse.json) { request =>
 
     val oldState = request.body.as[GameState]
-    Logger.info(s"computerMove: oldState: $oldState")
+    Logger.info(s"computerMoveAsync: oldState: $oldState")
 
-    val newState = MoveEngine.computerMove(oldState)
-    Logger.info(s"computerMove: newState: $newState")
-
-    Ok(Json.toJson(newState))
+    val future = (moveEngine ? oldState).mapTo[GameState]
+    future map { newState =>
+      Logger.info(s"computerMoveAsync: newState: $newState")
+      Ok(Json.toJson(newState))
+    }
   }
 }

@@ -1,3 +1,7 @@
+0.0.8 (22nd August 2016)
+
+* The action that computes the computer move is now implemented inside an actor
+
 0.0.7 (21st August 2016)
 
 * Fixed a race condition

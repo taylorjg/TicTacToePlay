@@ -1,3 +1,3 @@
 GET     /                           controllers.TicTacToeController.index
-POST    /api/computerMove           controllers.ApiController.computerMove
+POST    /api/computerMove           controllers.ApiController.computerMoveAsync
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
