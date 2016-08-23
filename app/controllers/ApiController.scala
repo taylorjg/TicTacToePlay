@@ -16,12 +16,12 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 @Singleton
-class ApiController @Inject()(@Named("moveEngine") moveEngine: ActorRef) extends Controller {
+class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef) extends Controller {
 
   implicit object CharReads extends Reads[Char] {
     def reads(json: JsValue) = json match {
       case JsString(s) if s.length == 1 => JsSuccess(s.head)
-      case _ => JsError(Seq(JsPath() -> Seq(ValidationError("expected "))))
+      case _ => JsError(Seq(JsPath() -> Seq(ValidationError("expected a string of length 1"))))
     }
   }
 
@@ -34,14 +34,26 @@ class ApiController @Inject()(@Named("moveEngine") moveEngine: ActorRef) extends
 
   implicit val timeout = Timeout(5 seconds)
 
-  def computerMoveAsync = Action.async(parse.json) { request =>
+  def unregisteredComputerMove = Action.async(parse.json) { request =>
 
     val oldState = request.body.as[GameState]
-    Logger.info(s"computerMoveAsync: oldState: $oldState")
+    Logger.info(s"unregisteredComputerMove: oldState: $oldState")
 
-    val future = (moveEngine ? oldState).mapTo[GameState]
+    val future = (mainActor ? oldState).mapTo[GameState]
     future map { newState =>
-      Logger.info(s"computerMoveAsync: newState: $newState")
+      Logger.info(s"unregisteredComputerMove: newState: $newState")
+      Ok(Json.toJson(newState))
+    }
+  }
+
+  def registeredComputerMove = Action.async(parse.json) { request =>
+
+    val oldState = request.body.as[GameState]
+    Logger.info(s"registeredComputerMove: oldState: $oldState")
+
+    val future = (mainActor ? oldState).mapTo[GameState]
+    future map { newState =>
+      Logger.info(s"registeredComputerMove: newState: $newState")
       Ok(Json.toJson(newState))
     }
   }

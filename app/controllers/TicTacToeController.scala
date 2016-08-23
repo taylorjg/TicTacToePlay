@@ -7,9 +7,21 @@ import play.api.mvc._
 
 @Singleton
 class TicTacToeController @Inject()(configuration: Configuration) extends Controller {
+
   def index = Action {
+    // TODO: use reverse routing ?
+    Redirect("/unregisteredGame")
+  }
+
+  def registeredGame = Action {
     val version = configuration.getString("app.version")
     Logger.info(s"version: $version")
-    Ok(views.html.tictactoe(version))
+    Ok(views.html.registeredGame(version))
+  }
+
+  def unregisteredGame = Action {
+    val version = configuration.getString("app.version")
+    Logger.info(s"version: $version")
+    Ok(views.html.unregisteredGame(version))
   }
 }

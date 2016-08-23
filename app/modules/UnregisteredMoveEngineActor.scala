@@ -2,15 +2,17 @@ package modules
 
 import akka.actor.{Actor, Props}
 import models.{GameState, MoveEngine}
+import play.api.Logger
 
-class MoveEngineActor extends Actor {
+class UnregisteredMoveEngineActor extends Actor {
+  Logger.info(s"MoveEngineActor ${context.self.path}")
   override def receive: Receive = {
     case oldState: GameState => sender ! MoveEngine.computerMove(oldState)
   }
 }
 
-object MoveEngineActor {
+object UnregisteredMoveEngineActor {
   def props: Props = {
-    Props(classOf[MoveEngineActor])
+    Props(classOf[UnregisteredMoveEngineActor])
   }
 }
