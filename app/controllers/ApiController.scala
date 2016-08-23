@@ -18,21 +18,9 @@ import scala.language.postfixOps
 @Singleton
 class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef) extends Controller {
 
-  implicit object CharReads extends Reads[Char] {
-    def reads(json: JsValue) = json match {
-      case JsString(s) if s.length == 1 => JsSuccess(s.head)
-      case _ => JsError(Seq(JsPath() -> Seq(ValidationError("expected a string of length 1"))))
-    }
-  }
+  import JsonFormatters._
 
-  implicit object CharWrites extends Writes[Char] {
-    def writes(o: Char) = JsString(o.toString)
-  }
-
-  implicit val gameStateReads = Json.reads[GameState]
-  implicit val gameStateWrites = Json.writes[GameState]
-
-  implicit val timeout = Timeout(5 seconds)
+  implicit val timeout = Timeout(2 seconds)
 
   def unregisteredComputerMove = Action.async(parse.json) { request =>
 
@@ -57,4 +45,21 @@ class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef) extends C
       Ok(Json.toJson(newState))
     }
   }
+}
+
+object JsonFormatters {
+
+  implicit object CharReads extends Reads[Char] {
+    def reads(json: JsValue) = json match {
+      case JsString(s) if s.length == 1 => JsSuccess(s.head)
+      case _ => JsError(Seq(JsPath() -> Seq(ValidationError("expected a string of length 1"))))
+    }
+  }
+
+  implicit object CharWrites extends Writes[Char] {
+    def writes(o: Char) = JsString(o.toString)
+  }
+
+  implicit val gameStateReads: Reads[GameState] = Json.reads[GameState]
+  implicit val gameStateWrites: Writes[GameState] = Json.writes[GameState]
 }
