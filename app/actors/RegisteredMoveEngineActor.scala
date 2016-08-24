@@ -1,4 +1,4 @@
-package modules
+package actors
 
 import akka.actor.{Actor, Props}
 import models.{GameState, MoveEngine}
