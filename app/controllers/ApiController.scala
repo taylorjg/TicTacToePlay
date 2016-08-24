@@ -22,26 +22,14 @@ class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef) extends C
 
   implicit val timeout = Timeout(2 seconds)
 
-  def unregisteredComputerMove = Action.async(parse.json) { request =>
+  def computerMove = Action.async(parse.json) { request =>
 
     val oldState = request.body.as[GameState]
-    Logger.info(s"unregisteredComputerMove: oldState: $oldState")
+    Logger.info(s"computerMove: oldState: $oldState")
 
     val future = (mainActor ? oldState).mapTo[GameState]
     future map { newState =>
-      Logger.info(s"unregisteredComputerMove: newState: $newState")
-      Ok(Json.toJson(newState))
-    }
-  }
-
-  def registeredComputerMove = Action.async(parse.json) { request =>
-
-    val oldState = request.body.as[GameState]
-    Logger.info(s"registeredComputerMove: oldState: $oldState")
-
-    val future = (mainActor ? oldState).mapTo[GameState]
-    future map { newState =>
-      Logger.info(s"registeredComputerMove: newState: $newState")
+      Logger.info(s"computerMove: newState: $newState")
       Ok(Json.toJson(newState))
     }
   }

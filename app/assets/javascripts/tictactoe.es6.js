@@ -29,6 +29,7 @@ let $spinner;
 let $errorPanel;
 let $errorMessage;
 let $startButton;
+let $username;
 
 $(document).ready(() => {
     $cellElements = $('#board td').click(makeHumanMove);
@@ -38,6 +39,7 @@ $(document).ready(() => {
     $errorPanel = $('#errorPanel');
     $errorMessage = $('#errorMessage');
     $startButton = $('#startButton').click(start);
+    $username = $('#username');
     reset();
 });
 
@@ -112,14 +114,17 @@ function makeComputerMove() {
 
     setTimeout(() => {
 
+        const registered = !!$username.length;
+
         const requestData = {
+            username: registered ? $username.val() : null,
             board: saveBoardToString(),
             player1Piece: player1Piece,
             player2Piece: player2Piece
         };
 
         $.post({
-            url: '/api/unregisteredComputerMove',
+            url: '/api/computerMove',
             data: JSON.stringify(requestData),
             contentType: 'application/json'
         })

@@ -12,55 +12,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="row">
-        <div class="col-md-offset-4 col-md-4">
-            <h1 align="center">Tic-Tac-Toe</h1>
-            <table id="board" align="center">
-                <tbody>
-                    <tr class="thickBottom">
-                        <td id="cell00" class="thickRight"></td>
-                        <td id="cell01" class="thickRight"></td>
-                        <td id="cell02"></td>
-                    </tr>
-                    <tr class="thickBottom">
-                        <td id="cell10" class="thickRight"></td>
-                        <td id="cell11" class="thickRight"></td>
-                        <td id="cell12"></td>
-                    </tr>
-                    <tr>
-                        <td id="cell20" class="thickRight"></td>
-                        <td id="cell21" class="thickRight"></td>
-                        <td id="cell22"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="instructionPanel" class="row">
-        <div class="col-md-offset-3 col-md-6">
-            <div class="alert alert-info">
-                <span id="instructionMessage"></span>
-                <img id="spinner" src='@routes.Assets.versioned("images/spinner.gif")' alt="spinner" />
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-md-6">
-            <button id="startButton" type="button" class="btn btn-sm btn-primary">Start</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <span class="pull-right"><i><small>(version: @version.getOrElse("?"))</small></i></span>
-        </div>
-    </div>
-    <div id="errorPanel" class="row navbar-fixed-bottom">
-        <div class="col-md-offset-3 col-md-6">
-            <div class="alert alert-danger">
-                <span id="errorMessage"></span>
-            </div>
-        </div>
-    </div>
+    @common(version, false)
 </div>
 </body>
 </html>
