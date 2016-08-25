@@ -1,5 +1,6 @@
 package actors
 
+import actors.LeaderboardActor.GetLeadersRequest
 import akka.actor.{Actor, Props}
 import models.GameState
 
@@ -9,6 +10,7 @@ class MainActor extends Actor {
   val leaderboard = context.actorOf(LeaderboardActor.props, "Leaderboard")
 
   override def receive: Receive = {
+
     case oldState: GameState =>
       val moveEngine = oldState.username match {
         case Some(username) =>
@@ -17,6 +19,8 @@ class MainActor extends Actor {
         case None => unregisteredMoveEngine
       }
       moveEngine forward oldState
+
+    case msg: GetLeadersRequest => leaderboard forward msg
   }
 }
 
