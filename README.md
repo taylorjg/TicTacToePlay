@@ -3,12 +3,17 @@
 
 ## Description
 
-This is a simple Tic-Tac-Toe web application that I am writing as a vehicle to learn the following technologies:
+This is a simple Tic-Tac-Toe web application that I am writing as a vehicle to learn
+the following tools and technologies:
 
-* ~~Play~~
+* ~~Play and Activator~~
 * ~~JavaScript (ES2015)~~
-* Akka / Akka Persistence
+* Akka and Akka Persistence
 * Cassandra or Postgres
+* IntelliJ IDEA
+* Jenkins
+* Docker
+* Heroku
 
 ## Deployed application
 
