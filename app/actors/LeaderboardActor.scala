@@ -8,16 +8,28 @@ import scala.collection.immutable.SortedSet
 class LeaderboardActor extends Actor {
 
   case class LeaderboardEntry(username: String, numWon: Int, numLost: Int, numDrawn: Int) extends Ordered[LeaderboardEntry] {
-    override def compare(that: LeaderboardEntry): Int = numWon - that.numWon
+    override def compare(that: LeaderboardEntry): Int = {
+      val comparison1 = -(numWon compare that.numWon)
+      val comparison2 = numLost compare that.numLost
+      val comparison3 = -(numDrawn compare that.numDrawn)
+      val comparison4 = username compare that.username
+      if (comparison1 != 0) comparison1
+      else {
+        if (comparison2 != 0) comparison2
+        else {
+          if (comparison3 != 0) comparison3 else comparison4
+        }
+      }
+    }
   }
 
-  var sortedSet: SortedSet[LeaderboardEntry] = SortedSet()
+  var entries: SortedSet[LeaderboardEntry] = SortedSet()
 
   import LeaderboardActor._
 
   override def receive: Receive = {
     case GameFinished(gameState) => {
-      val oldEntry = sortedSet find { e => e.username == gameState.username.get }
+      val oldEntry = entries find { e => e.username == gameState.username.get }
       val newEntry = oldEntry.fold(
         LeaderboardEntry(
           gameState.username.get,
@@ -25,18 +37,15 @@ class LeaderboardActor extends Actor {
           if (gameState.outcome.get == 2) 1 else 0,
           if (gameState.outcome.get == 3) 1 else 0)
       ) { e => {
-        println(s"sortedSet (before removal): $sortedSet")
-        sortedSet = sortedSet - e
-        println(s"sortedSet (after removal): $sortedSet")
+        entries -= e
         e.copy(
           numWon = e.numWon + (if (gameState.outcome.get == 1) 1 else 0),
           numLost = e.numLost + (if (gameState.outcome.get == 2) 1 else 0),
           numDrawn = e.numDrawn + (if (gameState.outcome.get == 3) 1 else 0))
       }
       }
-      println(s"sortedSet (before addition): $sortedSet")
-      sortedSet = sortedSet + newEntry
-      println(s"sortedSet (after addition): $sortedSet")
+      entries += newEntry
+      println(s"entruies: $entries")
     }
   }
 }
