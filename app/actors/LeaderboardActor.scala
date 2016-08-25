@@ -1,6 +1,7 @@
 package actors
 
 import akka.actor.{Actor, Props}
+import models.MoveEngine
 
 import scala.collection.immutable.SortedSet
 
@@ -28,7 +29,7 @@ class LeaderboardActor extends Actor {
 
   override def receive: Receive = {
     case GameFinished(username, outcome) =>
-      val (won, lost, drawn) = outcomeToValues(outcome)
+      val (won, lost, drawn) = wonLostDrawnFrom(outcome)
       entries find (_.username == username) match {
         case Some(oldEntry) =>
           entries -= oldEntry
@@ -42,10 +43,11 @@ class LeaderboardActor extends Actor {
       println(s"entries: $entries")
   }
 
-  private def outcomeToValues(outcome: Int): (Int, Int, Int) = {
-    val won = if (outcome == 1) 1 else 0
-    val lost = if (outcome == 2) 1 else 0
-    val drawn = if (outcome == 3) 1 else 0
+  private def wonLostDrawnFrom(outcome: Int): (Int, Int, Int) = {
+    def oneIfOutcomeIs(outcomeType: Int): Int = if (outcome == outcomeType) 1 else 0
+    val won = oneIfOutcomeIs(MoveEngine.OUTCOME_PLAYER1_WIN)
+    val lost = oneIfOutcomeIs(MoveEngine.OUTCOME_PLAYER2_WIN)
+    val drawn = oneIfOutcomeIs(MoveEngine.OUTCOME_DRAW)
     (won, lost, drawn)
   }
 }
