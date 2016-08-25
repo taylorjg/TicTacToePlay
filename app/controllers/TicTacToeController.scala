@@ -9,8 +9,7 @@ import play.api.mvc._
 class TicTacToeController @Inject()(configuration: Configuration) extends Controller {
 
   def index = Action {
-    // TODO: use reverse routing ?
-    Redirect("/unregisteredGame")
+    Redirect(routes.TicTacToeController.unregisteredGame().url)
   }
 
   def registeredGame = Action {

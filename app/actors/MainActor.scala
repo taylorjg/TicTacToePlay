@@ -9,16 +9,14 @@ class MainActor extends Actor {
   val leaderboard = context.actorOf(LeaderboardActor.props, "Leaderboard")
 
   override def receive: Receive = {
-    case oldState: GameState => {
+    case oldState: GameState =>
       val moveEngine = oldState.username match {
-        case Some(username) => {
+        case Some(username) =>
           lazy val newRegisteredMoveEngine = context.actorOf(RegisteredMoveEngineActor.props(leaderboard), username)
           context.child(username) getOrElse newRegisteredMoveEngine
-        }
         case None => unregisteredMoveEngine
       }
       moveEngine forward oldState
-    }
   }
 }
 

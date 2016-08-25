@@ -1,7 +1,6 @@
 package actors
 
 import akka.actor.{Actor, Props}
-import models.GameState
 
 import scala.collection.immutable.SortedSet
 
@@ -28,31 +27,32 @@ class LeaderboardActor extends Actor {
   import LeaderboardActor._
 
   override def receive: Receive = {
-    case GameFinished(gameState) => {
-      val oldEntry = entries find { e => e.username == gameState.username.get }
-      val newEntry = oldEntry.fold(
-        LeaderboardEntry(
-          gameState.username.get,
-          if (gameState.outcome.get == 1) 1 else 0,
-          if (gameState.outcome.get == 2) 1 else 0,
-          if (gameState.outcome.get == 3) 1 else 0)
-      ) { e => {
-        entries -= e
-        e.copy(
-          numWon = e.numWon + (if (gameState.outcome.get == 1) 1 else 0),
-          numLost = e.numLost + (if (gameState.outcome.get == 2) 1 else 0),
-          numDrawn = e.numDrawn + (if (gameState.outcome.get == 3) 1 else 0))
+    case GameFinished(username, outcome) =>
+      val (won, lost, drawn) = outcomeToValues(outcome)
+      entries find (_.username == username) match {
+        case Some(oldEntry) =>
+          entries -= oldEntry
+          entries += oldEntry.copy(
+            numWon = oldEntry.numWon + won,
+            numLost = oldEntry.numLost + lost,
+            numDrawn = oldEntry.numDrawn + drawn)
+        case None =>
+          entries += LeaderboardEntry(username, won, lost, drawn)
       }
-      }
-      entries += newEntry
-      println(s"entruies: $entries")
-    }
+      println(s"entries: $entries")
+  }
+
+  private def outcomeToValues(outcome: Int): (Int, Int, Int) = {
+    val won = if (outcome == 1) 1 else 0
+    val lost = if (outcome == 2) 1 else 0
+    val drawn = if (outcome == 3) 1 else 0
+    (won, lost, drawn)
   }
 }
 
 object LeaderboardActor {
 
-  case class GameFinished(gameState: GameState)
+  case class GameFinished(username: String, outcome: Int)
 
   def props: Props = {
     Props(classOf[LeaderboardActor])

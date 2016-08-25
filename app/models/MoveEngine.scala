@@ -47,7 +47,7 @@ object MoveEngine {
       state,
       state.player1Piece,
       (newBoard, _) => state.copy(board = newBoard))
-    newState flatMap checkForWinOrDraw orElse (newState)
+    newState flatMap checkForWinOrDraw orElse newState
   }
 
   private def checkForLineWithTwoPiecesAndOneEmpty(state: GameState,
@@ -66,7 +66,7 @@ object MoveEngine {
     }
     computerMoves find {
       _.isDefined
-    } getOrElse (None)
+    } getOrElse None
   }
 
   private def checkForWinOrDraw(state: GameState): Option[GameState] = {
@@ -80,7 +80,7 @@ object MoveEngine {
     }
     winningLines find {
       _.isDefined
-    } getOrElse (checkForDraw(state))
+    } getOrElse checkForDraw(state)
   }
 
   private def checkForWinningLine(state: GameState, line: List[Int]): Option[Int] = {
