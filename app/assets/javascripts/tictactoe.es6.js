@@ -29,6 +29,7 @@ let $spinner;
 let $errorPanel;
 let $errorMessage;
 let $startButton;
+let $refreshLeaderboardButton;
 let $username;
 
 $(document).ready(() => {
@@ -39,6 +40,7 @@ $(document).ready(() => {
     $errorPanel = $('#errorPanel');
     $errorMessage = $('#errorMessage');
     $startButton = $('#startButton').click(start);
+    $refreshLeaderboardButton = $('#refreshLeaderboardButton').click(refreshLeaderboardButton);
     $username = $('#username');
     reset();
 });
@@ -235,4 +237,24 @@ function showSpinner() {
 
 function hideSpinner() {
     $spinner.hide();
+}
+
+function refreshLeaderboardButton() {
+    $.get('api/getLeaderboard')
+        .then(leaders => {
+            const $tbody = $('#leaderboard tbody');
+            $tbody.empty();
+            const rows = leaders.map(leader => {
+                return $('<tr />', {
+                    html: [
+                        $('<td />', {html: leader.username}),
+                        $('<td />', {html: leader.numWon}),
+                        $('<td />', {html: leader.numLost}),
+                        $('<td />', {html: leader.numDrawn})
+                    ]
+                });
+            });
+            $tbody.append(rows);
+    });
+    // TODO: add error handling
 }
