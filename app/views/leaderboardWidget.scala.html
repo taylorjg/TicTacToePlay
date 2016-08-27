@@ -1,0 +1,27 @@
+@import actors.LeaderboardActor.LeaderboardEntry
+
+@(leaders: Seq[LeaderboardEntry])
+
+<div class="col-md-3">
+    <h1>Leaderboard</h1>
+    <table id="leaderboard">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Won</th>
+                <th>Lost</th>
+                <th>Drawn</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(leader <- leaders) {
+                <tr>
+                    <td>@leader.username</td>
+                    <td>@leader.numWon</td>
+                    <td>@leader.numLost</td>
+                    <td>@leader.numDrawn</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

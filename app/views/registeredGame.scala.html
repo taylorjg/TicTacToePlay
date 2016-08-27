@@ -1,4 +1,6 @@
-@(version: Option[String])
+@import actors.LeaderboardActor.LeaderboardEntry
+
+@(version: Option[String], leaders: Seq[LeaderboardEntry])
 
 <!DOCTYPE html>
 <html>
@@ -13,6 +15,7 @@
 <body>
 <div class="container">
     @common(version, true)
+    @leaderboardWidget(leaders)
 </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-table td {
+#board td {
     width: 100px;
     height: 100px;
     font-size: 48pt;
@@ -6,17 +6,17 @@ table td {
     text-align: center;
 }
 
-table {
+#board {
     margin-top: 10px;
     margin-bottom: 10px;
     background-image: url('/assets/images/woodenbackground.png');
 }
 
-.thickBottom td {
+#board .thickBottom td {
     border-bottom: 2px solid #000;
 }
 
-.thickRight {
+#board .thickRight {
     border-right: 2px solid #000;
 }
 
