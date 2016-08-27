@@ -12,7 +12,14 @@
 </head>
 <body>
 <div class="container">
-    @common(version, false)
+    <div class="row">
+        <div class="col-md-12">
+            <span class="pull-right"><i><small>(version: @version.getOrElse("?"))</small></i></span>
+        </div>
+    </div>
+    <div class="row">
+        @boardWidget(version, false)
+    </div>
 </div>
 </body>
 </html>
