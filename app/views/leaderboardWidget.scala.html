@@ -2,26 +2,30 @@
 
 @(leaders: Seq[LeaderboardEntry])
 
-<div>
-    <h1>Leaderboard</h1>
-    <table id="leaderboard">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Won</th>
-                <th>Lost</th>
-                <th>Drawn</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for(leader <- leaders) {
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Leaderboard</h3>
+    </div>
+    <div class="panel-body">
+        <table id="leaderboard">
+            <thead>
                 <tr>
-                    <td>@leader.username</td>
-                    <td>@leader.numWon</td>
-                    <td>@leader.numLost</td>
-                    <td>@leader.numDrawn</td>
+                    <th>Username</th>
+                    <th>Won</th>
+                    <th>Lost</th>
+                    <th>Drawn</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @for(leader <- leaders) {
+                    <tr>
+                        <td>@leader.username</td>
+                        <td>@leader.numWon</td>
+                        <td>@leader.numLost</td>
+                        <td>@leader.numDrawn</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

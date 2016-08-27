@@ -20,6 +20,14 @@
     border-right: 2px solid #000;
 }
 
+#leaderboard th {
+    padding: 5px;
+}
+
+#leaderboard td {
+    padding: 5px;
+}
+
 .highlightPlayer1Win {
     color: green;
 }
