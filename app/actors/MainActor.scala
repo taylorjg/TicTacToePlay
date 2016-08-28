@@ -1,6 +1,7 @@
 package actors
 
 import actors.LeaderboardActor.GetLeadersRequest
+import actors.LeaderboardUpdatesActor.SubscribeForLeaderboardUpdates
 import akka.actor.{Actor, Props}
 import models.GameState
 
@@ -21,6 +22,8 @@ class MainActor extends Actor {
       moveEngine forward oldState
 
     case msg: GetLeadersRequest => leaderboard forward msg
+
+    case msg: SubscribeForLeaderboardUpdates => leaderboard forward msg
   }
 }
 

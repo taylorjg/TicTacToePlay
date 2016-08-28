@@ -3,20 +3,23 @@ package controllers
 import javax.inject._
 
 import actors.LeaderboardActor._
-import akka.actor.ActorRef
+import actors.LeaderboardUpdatesActor
+import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
+import akka.stream.Materializer
 import akka.util.Timeout
 import models._
 import play.api.Logger
 import play.api.data.validation.ValidationError
 import play.api.libs.json._
+import play.api.libs.streams._
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 @Singleton
-class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)
+class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)(implicit system: ActorSystem, materializer: Materializer)
   extends Controller {
 
   import JsonFormatters._
@@ -40,6 +43,10 @@ class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)
     future map { getLeadersResponse =>
       Ok(Json.toJson(getLeadersResponse.leaders))
     }
+  }
+
+  def leaderboardUpdates = WebSocket.accept[JsValue, JsValue] {
+    request => ActorFlow.actorRef(out => LeaderboardUpdatesActor.props(mainActor, out))
   }
 }
 

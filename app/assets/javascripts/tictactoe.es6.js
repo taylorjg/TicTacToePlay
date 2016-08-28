@@ -43,6 +43,12 @@ $(document).ready(() => {
     $refreshLeaderboardButton = $('#refreshLeaderboardButton').click(refreshLeaderboardButton);
     $username = $('#username');
     reset();
+
+    const ws = new WebSocket('ws://localhost:9000/api/leaderboardUpdates');
+    ws.onmessage = e => {
+        const leaders = JSON.parse(e.data);
+        updateLeaderboard(leaders);
+    };
 });
 
 function reset() {
@@ -240,21 +246,22 @@ function hideSpinner() {
 }
 
 function refreshLeaderboardButton() {
-    $.get('api/getLeaderboard')
-        .then(leaders => {
-            const $tbody = $('#leaderboard tbody');
-            $tbody.empty();
-            const rows = leaders.map(leader => {
-                return $('<tr />', {
-                    html: [
-                        $('<td />', {html: leader.username}),
-                        $('<td />', {html: leader.numWon}),
-                        $('<td />', {html: leader.numLost}),
-                        $('<td />', {html: leader.numDrawn})
-                    ]
-                });
-            });
-            $tbody.append(rows);
-    });
     // TODO: add error handling
+    $.get('api/getLeaderboard').then(updateLeaderboard);
+}
+
+function updateLeaderboard(leaders) {
+    const $tbody = $('#leaderboard tbody');
+    $tbody.empty();
+    const rows = leaders.map(leader => {
+        return $('<tr />', {
+            html: [
+                $('<td />', {html: leader.username}),
+                $('<td />', {html: leader.numWon}),
+                $('<td />', {html: leader.numLost}),
+                $('<td />', {html: leader.numDrawn})
+            ]
+        });
+    });
+    $tbody.append(rows);
 }

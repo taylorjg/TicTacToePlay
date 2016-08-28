@@ -1,7 +1,8 @@
 package actors
 
-import akka.actor.{Actor, Props}
-import models.MoveEngine
+import actors.LeaderboardUpdatesActor.SubscribeForLeaderboardUpdates
+import akka.actor.{Actor, ActorRef, Props}
+import models.{LeaderboardEntry, MoveEngine}
 
 import scala.collection.immutable.SortedSet
 
@@ -10,6 +11,7 @@ class LeaderboardActor extends Actor {
   import LeaderboardActor._
 
   var entries: SortedSet[LeaderboardEntry] = SortedSet()
+  var subscriptions: Set[ActorRef] = Set()
 
   override def receive: Receive = {
 
@@ -25,11 +27,16 @@ class LeaderboardActor extends Actor {
         case None =>
           entries += LeaderboardEntry(username, won, lost, drawn)
       }
-      println(s"entries: $entries")
+      val leaders = (entries take 10).toSeq
+      val msg = GetLeadersResponse(leaders)
+      subscriptions foreach { _ ! msg }
 
     case GetLeadersRequest(count) =>
       val leaders = (entries take count).toSeq
       sender() ! GetLeadersResponse(leaders)
+
+    case SubscribeForLeaderboardUpdates(client) =>
+      subscriptions += client
   }
 
   private def wonLostDrawnFrom(outcome: Int): (Int, Int, Int) = {
@@ -42,22 +49,6 @@ class LeaderboardActor extends Actor {
 }
 
 object LeaderboardActor {
-
-  case class LeaderboardEntry(username: String, numWon: Int, numLost: Int, numDrawn: Int) extends Ordered[LeaderboardEntry] {
-    override def compare(that: LeaderboardEntry): Int = {
-      val comparison1 = -(numWon compare that.numWon)
-      val comparison2 = numLost compare that.numLost
-      val comparison3 = -(numDrawn compare that.numDrawn)
-      val comparison4 = username compare that.username
-      if (comparison1 != 0) comparison1
-      else {
-        if (comparison2 != 0) comparison2
-        else {
-          if (comparison3 != 0) comparison3 else comparison4
-        }
-      }
-    }
-  }
 
   case class GameFinished(username: String, outcome: Int)
   case class GetLeadersRequest(count: Int)
