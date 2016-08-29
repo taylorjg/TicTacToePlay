@@ -24,7 +24,7 @@ class TicTacToeController @Inject()(configuration: Configuration, @Named("mainAc
     Redirect(routes.TicTacToeController.unregisteredGame().url)
   }
 
-  def registeredGame = Action.async {
+  def registeredGame = Action.async { implicit request =>
     val future = (mainActor ? GetLeadersRequest).mapTo[GetLeadersResponse]
     future map { getLeadersResponse =>
       Ok(views.html.registeredGame(version, getLeadersResponse.leaders))

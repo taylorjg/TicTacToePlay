@@ -44,7 +44,7 @@ $(document).ready(() => {
     $username = $('#username');
     reset();
 
-    const ws = new WebSocket('ws://localhost:9000/api/leaderboardUpdates');
+    const ws = new WebSocket(window.leaderboardUpdatesUrl);
     ws.onmessage = e => {
         const leaders = JSON.parse(e.data);
         updateLeaderboard(leaders);

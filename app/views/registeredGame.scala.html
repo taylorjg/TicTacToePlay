@@ -1,6 +1,6 @@
 @import models.LeaderboardEntry
 
-@(version: Option[String], leaders: Seq[LeaderboardEntry])
+@(version: Option[String], leaders: Seq[LeaderboardEntry])(implicit request: RequestHeader)
 
 <!DOCTYPE html>
 <html>
@@ -31,6 +31,9 @@
             @leaderboardWidget(leaders)
         </div>
     </div>
+    <script>
+        window.leaderboardUpdatesUrl = '@routes.ApiController.leaderboardUpdates().webSocketURL()';
+    </script>
 </div>
 </body>
 </html>
