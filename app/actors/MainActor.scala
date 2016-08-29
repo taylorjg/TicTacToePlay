@@ -1,11 +1,12 @@
 package actors
 
-import actors.LeaderboardActor.GetLeadersRequest
-import actors.LeaderboardUpdatesActor.SubscribeForLeaderboardUpdates
 import akka.actor.{Actor, Props}
 import models.GameState
 
 class MainActor extends Actor {
+
+  import actors.LeaderboardActor.GetLeadersRequest
+  import actors.LeaderboardUpdatesActor.SubscribeForLeaderboardUpdates
 
   val unregisteredMoveEngine = context.actorOf(UnregisteredMoveEngineActor.props, "UnregisteredMoveEngine")
   val leaderboard = context.actorOf(LeaderboardActor.props, "Leaderboard")
@@ -21,9 +22,9 @@ class MainActor extends Actor {
       }
       moveEngine forward oldState
 
-    case msg: GetLeadersRequest => leaderboard forward msg
+    case GetLeadersRequest => leaderboard forward GetLeadersRequest
 
-    case msg: SubscribeForLeaderboardUpdates => leaderboard forward msg
+    case SubscribeForLeaderboardUpdates => leaderboard forward SubscribeForLeaderboardUpdates
   }
 }
 

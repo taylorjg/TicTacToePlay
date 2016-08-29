@@ -2,6 +2,8 @@ package actors
 
 import actors.LeaderboardUpdatesActor.SubscribeForLeaderboardUpdates
 import akka.actor.{Actor, ActorRef, Props}
+import akka.pattern.ask
+import defaults.Defaults._
 import models.{LeaderboardEntry, MoveEngine}
 
 import scala.collection.immutable.SortedSet
@@ -9,6 +11,8 @@ import scala.collection.immutable.SortedSet
 class LeaderboardActor extends Actor {
 
   import LeaderboardActor._
+
+  implicit val ex = context.dispatcher
 
   var entries: SortedSet[LeaderboardEntry] = SortedSet()
   var subscriptions: Set[ActorRef] = Set()
@@ -27,16 +31,17 @@ class LeaderboardActor extends Actor {
         case None =>
           entries += LeaderboardEntry(username, won, lost, drawn)
       }
-      val leaders = (entries take 10).toSeq
-      val msg = GetLeadersResponse(leaders)
-      subscriptions foreach { _ ! msg }
+      val future = (self ? GetLeadersRequest).mapTo[GetLeadersResponse]
+      future map { msg =>
+        subscriptions foreach { _ ! msg }
+      }
 
-    case GetLeadersRequest(count) =>
-      val leaders = (entries take count).toSeq
+    case GetLeadersRequest =>
+      val leaders = (entries take LEADERBOARD_SIZE).toSeq
       sender() ! GetLeadersResponse(leaders)
 
-    case SubscribeForLeaderboardUpdates(client) =>
-      subscriptions += client
+    case SubscribeForLeaderboardUpdates =>
+      subscriptions += sender()
   }
 
   private def wonLostDrawnFrom(outcome: Int): (Int, Int, Int) = {
@@ -51,7 +56,7 @@ class LeaderboardActor extends Actor {
 object LeaderboardActor {
 
   case class GameFinished(username: String, outcome: Int)
-  case class GetLeadersRequest(count: Int)
+  case object GetLeadersRequest
   case class GetLeadersResponse(leaders: Seq[LeaderboardEntry])
 
   def props: Props = {

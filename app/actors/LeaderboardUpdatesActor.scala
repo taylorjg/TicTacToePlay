@@ -7,9 +7,9 @@ import play.api.libs.json.Json
 class LeaderboardUpdatesActor(mainActor: ActorRef, out: ActorRef) extends Actor {
 
   import actors.LeaderboardUpdatesActor._
-  import controllers.JsonFormatters._
+  import formatters.JsonFormatters._
 
-  mainActor ! SubscribeForLeaderboardUpdates(self)
+  mainActor ! SubscribeForLeaderboardUpdates
 
   override def receive: Receive = {
     case GetLeadersResponse(leaders) =>
@@ -19,7 +19,7 @@ class LeaderboardUpdatesActor(mainActor: ActorRef, out: ActorRef) extends Actor 
 
 object LeaderboardUpdatesActor {
 
-  case class SubscribeForLeaderboardUpdates(out: ActorRef)
+  case object SubscribeForLeaderboardUpdates
 
   def props(mainActor: ActorRef, out: ActorRef): Props = {
     Props(classOf[LeaderboardUpdatesActor], mainActor, out)
