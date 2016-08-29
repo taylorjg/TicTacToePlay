@@ -1,16 +1,10 @@
 {
   "name": "tic-tac-toe-play",
   "version": "1.0.0",
-  "description": "This is your new Play application =================================",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
+  "description": "TicTacToe web application using Play",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.11.4",
     "babel-core": "^6.13.2",
@@ -19,5 +13,12 @@
   },
   "dependencies": {
     "jquery": "^3.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/taylorjg/TicTacToePlay.git"
+  },
+  "author": "Jonathan Taylor",
+  "homepage": "https://github.com/taylorjg/TicTacToePlay",
+  "license": "MIT"
 }

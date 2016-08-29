@@ -1,7 +1,7 @@
 package actors
 
 import actors.LeaderboardUpdatesActor.SubscribeForLeaderboardUpdates
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef, Props, Terminated}
 import akka.pattern.ask
 import defaults.Defaults._
 import models.{LeaderboardEntry, MoveEngine}
@@ -41,7 +41,12 @@ class LeaderboardActor extends Actor {
       sender() ! GetLeadersResponse(leaders)
 
     case SubscribeForLeaderboardUpdates =>
-      subscriptions += sender()
+      val subscriber = sender()
+      context.watch(subscriber)
+      subscriptions += subscriber
+
+    case Terminated(subscriber) =>
+      subscriptions -= subscriber
   }
 
   private def wonLostDrawnFrom(outcome: Int): (Int, Int, Int) = {
