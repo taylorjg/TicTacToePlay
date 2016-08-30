@@ -13,6 +13,7 @@ import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.streams._
 import play.api.mvc._
+import play.api.routing._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -21,6 +22,10 @@ class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)(implicit 
   extends Controller {
 
   import formatters.JsonFormatters._
+
+  def jsRoutes = Action { implicit request =>
+    Ok(JavaScriptReverseRouter("jsRoutes")(routes.javascript.ApiController.leaderboardUpdates)).as("text/javascript")
+  }
 
   def computerMove = Action.async(parse.json) { request =>
 

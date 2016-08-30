@@ -1,7 +1,10 @@
 GET     /                               controllers.TicTacToeController.index
 GET     /registeredGame                 controllers.TicTacToeController.registeredGame
 GET     /unregisteredGame               controllers.TicTacToeController.unregisteredGame
+
+GET     /jsRoutes                       controllers.ApiController.jsRoutes
 POST    /api/computerMove               controllers.ApiController.computerMove
 GET     /api/getLeaderboard             controllers.ApiController.getLeaderboard
 GET     /api/leaderboardUpdates         controllers.ApiController.leaderboardUpdates
+
 GET     /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)

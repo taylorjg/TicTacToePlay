@@ -8,6 +8,7 @@
     <title>Tic-Tac-Toe</title>
     <script src='@routes.Assets.versioned("jquery/jquery.js")'></script>
     <script src='@routes.Assets.versioned("polyfill/polyfill.js")'></script>
+    <script src="@routes.ApiController.jsRoutes"></script>
     <script src='@routes.Assets.versioned("javascripts/tictactoe.js")'></script>
     <link href='@routes.Assets.versioned("bootstrap/bootstrap.css")' rel="stylesheet">
     <link href='@routes.Assets.versioned("stylesheets/main.css")' rel="stylesheet">
@@ -31,9 +32,6 @@
             @leaderboardWidget(leaders)
         </div>
     </div>
-    <script>
-        window.leaderboardUpdatesUrl = '@routes.ApiController.leaderboardUpdates().webSocketURL()';
-    </script>
 </div>
 </body>
 </html>

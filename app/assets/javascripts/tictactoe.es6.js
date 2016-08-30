@@ -44,10 +44,15 @@ $(document).ready(() => {
     $username = $('#username');
     reset();
 
-    const ws = new WebSocket(window.leaderboardUpdatesUrl);
+    const route = window.jsRoutes.controllers.ApiController.leaderboardUpdates();
+    const ws = new WebSocket(route.webSocketURL());
     ws.onmessage = e => {
         const leaders = JSON.parse(e.data);
         updateLeaderboard(leaders);
+    };
+    ws.onopen = function() {
+    };
+    ws.onclosed = function() {
     };
 });
 
