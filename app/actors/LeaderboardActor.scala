@@ -19,21 +19,13 @@ class LeaderboardActor extends Actor {
 
   override def receive: Receive = {
 
-    case GameFinished(username, outcome) =>
-      val (won, lost, drawn) = wonLostDrawnFrom(outcome)
-      entries find (_.username == username) match {
-        case Some(oldEntry) =>
-          entries -= oldEntry
-          entries += oldEntry.copy(
-            numWon = oldEntry.numWon + won,
-            numLost = oldEntry.numLost + lost,
-            numDrawn = oldEntry.numDrawn + drawn)
-        case None =>
-          entries += LeaderboardEntry(username, won, lost, drawn)
-      }
-      val future = (self ? GetLeadersRequest).mapTo[GetLeadersResponse]
-      future map { msg =>
-        subscriptions foreach { _ ! msg }
+    case command: GameFinished =>
+      persist(command) { event =>
+        updateState(event)
+        val future = (self ? GetLeadersRequest).mapTo[GetLeadersResponse]
+        future map { response =>
+          subscriptions foreach { _ ! response }
+        }
       }
 
     case GetLeadersRequest =>
@@ -55,6 +47,27 @@ class LeaderboardActor extends Actor {
     val lost = oneIfOutcomeIs(MoveEngine.OUTCOME_PLAYER2_WIN)
     val drawn = oneIfOutcomeIs(MoveEngine.OUTCOME_DRAW)
     (won, lost, drawn)
+  }
+
+  private def persist[A](command: A)(handler: A => Unit): Unit = {
+    handler(command)
+  }
+
+  private def updateState[A](event: A): Unit = {
+    event match {
+      case GameFinished(username, outcome) =>
+        val (won, lost, drawn) = wonLostDrawnFrom(outcome)
+        entries find (_.username == username) match {
+          case Some(oldEntry) =>
+            entries -= oldEntry
+            entries += oldEntry.copy(
+              numWon = oldEntry.numWon + won,
+              numLost = oldEntry.numLost + lost,
+              numDrawn = oldEntry.numDrawn + drawn)
+          case None =>
+            entries += LeaderboardEntry(username, won, lost, drawn)
+        }
+    }
   }
 }
 

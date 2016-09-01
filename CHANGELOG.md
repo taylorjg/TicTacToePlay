@@ -1,3 +1,7 @@
+0.0.9 (1st September 2016)
+
+* Latent work on registered games
+
 0.0.8 (22nd August 2016)
 
 * The action that computes the computer move is now implemented inside an actor
