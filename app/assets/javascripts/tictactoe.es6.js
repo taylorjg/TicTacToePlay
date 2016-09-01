@@ -263,8 +263,8 @@ function updateLeaderboard(leaders) {
             html: [
                 $('<td />', {html: leader.username}),
                 $('<td />', {html: leader.numWon}),
-                $('<td />', {html: leader.numLost}),
-                $('<td />', {html: leader.numDrawn})
+                $('<td />', {html: leader.numDrawn}),
+                $('<td />', {html: leader.numLost})
             ]
         });
     });

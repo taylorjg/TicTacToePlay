@@ -13,6 +13,9 @@ libraryDependencies ++= Seq(
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test
 )
 
+libraryDependencies += "com.okumin" %% "akka-persistence-sql-async" % "0.3.1"
+libraryDependencies += "com.github.mauricio" %% "postgresql-async" % "0.2.16"
+
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
 // https://github.com/playframework/playframework/issues/4839
