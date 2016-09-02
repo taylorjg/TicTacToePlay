@@ -1,3 +1,8 @@
+0.0.10 (2nd September 2016)
+
+* Leaderboard columns are now Won/Drawn/Lost and sort order is based on 3 points for a win and 1 point for a draw
+* Added Akka Persistence for the leaderboard (state is saved to Postgres)
+
 0.0.9 (1st September 2016)
 
 * Latent work on registered games
