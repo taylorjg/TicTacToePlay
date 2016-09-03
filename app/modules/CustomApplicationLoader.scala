@@ -2,39 +2,37 @@ package modules
 
 import java.net.URI
 
-import play.api.{ApplicationLoader, Configuration, Logger}
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceApplicationLoader}
+import play.api.{ApplicationLoader, Configuration}
 
 class CustomApplicationLoader extends GuiceApplicationLoader() {
-
-  println("CustomApplicationLoader")
 
   override def builder(context: ApplicationLoader.Context): GuiceApplicationBuilder = {
 
     val databaseUrl = context.initialConfiguration.getString("app.databaseUrl")
-    Logger.info(s"databaseUrl: $databaseUrl")
+    val extraConfiguration = databaseUrl.fold(Configuration())(parseDatabaseUrl)
 
-    val uri = new URI(databaseUrl.get)
-    val bits = uri.getUserInfo.split(":")
-    val numBits = bits.length
-    val user = if (numBits >= 1) bits(0) else ""
-    val password = if (numBits >= 2) bits(1) else ""
-    val port = if (uri.getPort != -1) uri.getPort else 5432
+    initialBuilder
+      .in(context.environment)
+      .loadConfig(context.initialConfiguration ++ extraConfiguration)
+      .overrides(overrides(context): _*)
+  }
+
+  private val DEFAULT_POSTGRES_PORT = 5432
+
+  private def parseDatabaseUrl(databaseUrl: String): Configuration = {
+
+    val uri = new URI(databaseUrl)
+    val bits = uri.getUserInfo.split(":").lift
+    val user = bits(0).getOrElse("")
+    val password = bits(1).getOrElse("")
+    val port = if (uri.getPort != -1) uri.getPort else DEFAULT_POSTGRES_PORT
     val url = s"jdbc:postgresql://${uri.getHost}:${port}${uri.getPath}"
 
-    Logger.info(s"user: $user")
-    Logger.info(s"password: $password")
-    Logger.info(s"url: $url")
-
-    val extra = Configuration(
+    Configuration(
       "akka-persistence-sql-async.user" -> user,
       "akka-persistence-sql-async.password" -> password,
       "akka-persistence-sql-async.url" -> url
     )
-
-    initialBuilder
-      .in(context.environment)
-      .loadConfig(context.initialConfiguration ++ extra)
-      .overrides(overrides(context): _*)
   }
 }
