@@ -1,5 +1,3 @@
-@(version: Option[String], registered: Boolean)
-
 <div class="row">
     <h1 align="center">Tic-Tac-Toe</h1>
     <table id="board" align="center">
@@ -36,21 +34,5 @@
             <i class="fa fa-play" aria-hidden="true"></i>
             Start
         </button>
-    </div>
-</div>
-@if(registered) {
-    <br />
-    <div class="row">
-        <div class="col-md-offset-1 col-md-10">
-            <lable class="control-label" for="username">Username:</lable>
-            <input class="form-control" type="text" id="username">
-        </div>
-    </div>
-}
-<div id="errorPanel" class="row navbar-fixed-bottom">
-    <div class="col-md-offset-1 col-md-10">
-        <div class="alert alert-danger">
-            <span id="errorMessage"></span>
-        </div>
     </div>
 </div>

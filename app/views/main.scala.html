@@ -1,0 +1,37 @@
+@(title: String, version: String)(content: Html)(implicit request: RequestHeader)
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@title</title>
+    <script src='@routes.Assets.versioned("jquery/jquery.js")'></script>
+    <script src='@routes.Assets.versioned("polyfill/polyfill.js")'></script>
+    <script src="@routes.ApiController.jsRoutes"></script>
+    <script src='@routes.Assets.versioned("javascripts/tictactoe.js")'></script>
+    <link href='@routes.Assets.versioned("bootstrap/bootstrap.css")' rel="stylesheet">
+    <link href='@routes.Assets.versioned("stylesheets/font-awesome.min.css")' rel="stylesheet">
+    <link href='@routes.Assets.versioned("stylesheets/main.css")' rel="stylesheet">
+</head>
+<body>
+<br >
+<br >
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <span class="pull-right"><i><small>(version: @version)</small></i></span>
+        </div>
+        <br />
+    </div>
+
+    @content
+
+    <div id="errorPanel" class="row navbar-fixed-bottom">
+        <div class="col-md-offset-1 col-md-10">
+            <div class="alert alert-danger">
+                <span id="errorMessage"></span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

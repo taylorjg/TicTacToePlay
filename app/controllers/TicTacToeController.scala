@@ -14,11 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @Singleton
 class TicTacToeController @Inject()(configuration: Configuration, @Named("mainActor") mainActor: ActorRef) extends Controller {
 
-  val version = {
-    val version = configuration.getString("app.version")
-    Logger.info(s"version: $version")
-    version
-  }
+  val version = configuration.getString("app.version") getOrElse "?"
 
   def index = Action {
     Redirect(routes.TicTacToeController.unregisteredGame().url)
@@ -31,7 +27,7 @@ class TicTacToeController @Inject()(configuration: Configuration, @Named("mainAc
     }
   }
 
-  def unregisteredGame = Action {
+  def unregisteredGame = Action { implicit request =>
     Ok(views.html.unregisteredGame(version))
   }
 }
