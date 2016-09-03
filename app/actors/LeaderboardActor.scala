@@ -1,7 +1,7 @@
 package actors
 
 import actors.LeaderboardUpdatesActor.SubscribeForLeaderboardUpdates
-import akka.actor.{Actor, ActorRef, Props, Terminated}
+import akka.actor.{ActorRef, Props, Terminated}
 import akka.pattern.ask
 import akka.persistence.{PersistentActor, RecoveryCompleted}
 import defaults.Defaults._
@@ -24,7 +24,7 @@ class LeaderboardActor extends PersistentActor {
   override def receiveRecover: Receive = {
     case event: GameFinished => {
       Logger.info(s"[LeaderboardActor.receiveRecover] event: $event")
-      updateState(event)
+      entries = applyEvent(event)
     }
     case RecoveryCompleted => Logger.info("[LeaderboardActor.receiveRecover] RecoveryCompleted")
   }
@@ -33,10 +33,12 @@ class LeaderboardActor extends PersistentActor {
 
     case command: GameFinished =>
       persist(command) { event =>
-        updateState(event)
+        entries = applyEvent(event)
         val future = (self ? GetLeadersRequest).mapTo[GetLeadersResponse]
         future map { response =>
-          subscriptions foreach { _ ! response }
+          subscriptions foreach {
+            _ ! response
+          }
         }
       }
 
@@ -53,36 +55,37 @@ class LeaderboardActor extends PersistentActor {
       subscriptions -= subscriber
   }
 
-  private def wonLostDrawnFrom(outcome: Int): (Int, Int, Int) = {
+  private def wonDrawnLostFrom(outcome: Int): (Int, Int, Int) = {
     def oneIfOutcomeIs(outcomeType: Int): Int = if (outcome == outcomeType) 1 else 0
     val won = oneIfOutcomeIs(MoveEngine.OUTCOME_PLAYER1_WIN)
-    val lost = oneIfOutcomeIs(MoveEngine.OUTCOME_PLAYER2_WIN)
     val drawn = oneIfOutcomeIs(MoveEngine.OUTCOME_DRAW)
-    (won, lost, drawn)
+    val lost = oneIfOutcomeIs(MoveEngine.OUTCOME_PLAYER2_WIN)
+    (won, drawn, lost)
   }
 
-  private def updateState[A](event: A): Unit = {
-    event match {
-      case GameFinished(username, outcome) =>
-        val (won, lost, drawn) = wonLostDrawnFrom(outcome)
-        entries find (_.username == username) match {
-          case Some(oldEntry) =>
-            entries -= oldEntry
-            entries += oldEntry.copy(
-              numWon = oldEntry.numWon + won,
-              numLost = oldEntry.numLost + lost,
-              numDrawn = oldEntry.numDrawn + drawn)
-          case None =>
-            entries += LeaderboardEntry(username, won, lost, drawn)
-        }
-    }
+  private def applyEvent: PartialFunction[GameFinished, SortedSet[LeaderboardEntry]] = {
+    case GameFinished(username, outcome) =>
+      val (won, drawn, lost) = wonDrawnLostFrom(outcome)
+      val oldEntryOption = entries find (_.username == username)
+      val newEntry = oldEntryOption match {
+        case Some(oldEntry) =>
+          oldEntry.copy(
+            numWon = oldEntry.numWon + won,
+            numDrawn = oldEntry.numDrawn + drawn,
+            numLost = oldEntry.numLost + lost)
+        case None =>
+          LeaderboardEntry(username, won, drawn, lost)
+      }
+      entries -- oldEntryOption.toList + newEntry
   }
 }
 
 object LeaderboardActor {
 
   case class GameFinished(username: String, outcome: Int)
+
   case object GetLeadersRequest
+
   case class GetLeadersResponse(leaders: Seq[LeaderboardEntry])
 
   def props: Props = {

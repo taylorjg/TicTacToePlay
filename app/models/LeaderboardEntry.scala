@@ -1,6 +1,6 @@
 package models
 
-case class LeaderboardEntry(username: String, numWon: Int, numLost: Int, numDrawn: Int) extends Ordered[LeaderboardEntry] {
+case class LeaderboardEntry(username: String, numWon: Int, numDrawn: Int, numLost: Int) extends Ordered[LeaderboardEntry] {
   override def compare(that: LeaderboardEntry): Int = {
     def calcScore(le: LeaderboardEntry): Int = le.numWon * 3 + le.numDrawn
     val thisScore = calcScore(this)
