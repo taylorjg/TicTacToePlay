@@ -9,11 +9,19 @@
             @boardWidget()
             <br />
             <div class="row">
-                <div class="col-md-offset-1 col-md-10">
-                    <label class="control-label" for="username">Username:</label>
-                    <input class="form-control" type="text" id="username">
+                <div class="col-md-offset-2 col-md-8">
+                    <form novalidate>
+                        <div id="usernameFormGroup" class="form-group">
+                            <label class="control-label" for="username">Username:</label>
+                            <input class="form-control" type="text" id="username" aria-describedby="usernameHelpBlock" required>
+                            <span id="usernameSuccessGlyph" class="glyphicon glyphicon-ok form-control-feedback hidden" aria-hidden="true"></span>
+                            <span id="usernameErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback hidden" aria-hidden="true"></span>
+                            <span id="usernameHelpBlock" class="help-block hidden"><i><small>Please enter your name for the leaderboard</small></i></span>
+                        </div>
+                    </form>
                 </div>
             </div>
+            <br />
         </div>
 
         <div class="col-md-4">
