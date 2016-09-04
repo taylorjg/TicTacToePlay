@@ -49,7 +49,10 @@ $(document).ready(() => {
 
     if (registered) {
         const route = window.jsRoutes.controllers.ApiController.leaderboardUpdates();
-        const ws = new WebSocket(route.webSocketURL());
+        let ws = new WebSocket(route.webSocketURL());
+        if (window.location.protocol === 'https:') {
+            ws = 'wss:' + ws.substring(3);
+        }
         ws.onmessage = e => {
             const leaders = JSON.parse(e.data);
             updateLeaderboard(leaders);
