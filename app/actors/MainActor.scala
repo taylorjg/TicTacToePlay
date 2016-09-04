@@ -16,8 +16,10 @@ class MainActor extends Actor {
     case oldState: GameState =>
       val moveEngine = oldState.username match {
         case Some(username) =>
-          lazy val newRegisteredMoveEngine = context.actorOf(RegisteredMoveEngineActor.props(leaderboard), username)
-          context.child(username) getOrElse newRegisteredMoveEngine
+          val enc = java.nio.charset.StandardCharsets.UTF_8.name()
+          val encodedUsername = java.net.URLEncoder.encode(username, enc)
+          lazy val newRegisteredMoveEngine = context.actorOf(RegisteredMoveEngineActor.props(leaderboard), encodedUsername)
+          context.child(encodedUsername) getOrElse newRegisteredMoveEngine
         case None => unregisteredMoveEngine
       }
       moveEngine forward oldState

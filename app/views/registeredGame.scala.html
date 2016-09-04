@@ -5,27 +5,26 @@
 @main("Tic-Tac-Toe", version) {
     <div class="row">
 
-        <div class="col-md-8">
-            @boardWidget()
-            <br />
-            <div class="row">
-                <div class="col-md-offset-2 col-md-8">
-                    <form novalidate>
-                        <div id="usernameFormGroup" class="form-group">
-                            <label class="control-label" for="username">Username</label>
-                            <input class="form-control" type="text" id="username" aria-describedby="usernameHelpBlock" required>
-                            <span id="usernameSuccessGlyph" class="glyphicon glyphicon-ok form-control-feedback hidden" aria-hidden="true"></span>
-                            <span id="usernameErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback hidden" aria-hidden="true"></span>
-                            <span id="usernameHelpBlock" class="help-block hidden">Please enter your name for the leaderboard</span>
-                        </div>
-                    </form>
-                </div>
+        @boardWidget()
+
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <form novalidate>
+                    <div id="usernameFormGroup" class="form-group">
+                        <label class="control-label" for="username">Username</label>
+                        <input class="form-control" type="text" id="username" aria-describedby="usernameHelpBlock" required>
+                        <span id="usernameSuccessGlyph" class="glyphicon glyphicon-ok form-control-feedback hidden" aria-hidden="true"></span>
+                        <span id="usernameErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback hidden" aria-hidden="true"></span>
+                        <span id="usernameHelpBlock" class="help-block hidden">Please enter your name for the leaderboard</span>
+                    </div>
+                </form>
             </div>
-            <br />
         </div>
 
-        <div class="col-md-4">
-            @leaderboardWidget(leaders)
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                @leaderboardWidget(leaders)
+            </div>
         </div>
 
     </div>

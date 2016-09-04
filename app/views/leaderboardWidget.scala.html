@@ -7,22 +7,22 @@
     <div class="panel-body">
         <table id="leaderboard">
             <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Won</th>
-                    <th>Drawn</th>
-                    <th>Lost</th>
-                </tr>
+            <tr>
+                <th>Username</th>
+                <th>Won</th>
+                <th>Drawn</th>
+                <th>Lost</th>
+            </tr>
             </thead>
             <tbody>
-                @for(leader <- leaders) {
-                    <tr>
-                        <td>@leader.username</td>
-                        <td>@leader.numWon</td>
-                        <td>@leader.numDrawn</td>
-                        <td>@leader.numLost</td>
-                    </tr>
-                }
+            @for(leader <- leaders) {
+            <tr>
+                <td>@leader.username</td>
+                <td>@leader.numWon</td>
+                <td>@leader.numDrawn</td>
+                <td>@leader.numLost</td>
+            </tr>
+            }
             </tbody>
         </table>
         <button id="refreshLeaderboardButton" type="button" class="btn btn-sm btn-success">
