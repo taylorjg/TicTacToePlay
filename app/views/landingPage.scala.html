@@ -46,15 +46,15 @@
                     <form novalidate>
                         
                         <div id="usernameFormGroup" class="form-group">
-                            <label class="control-label" for="username">Username:</label>
+                            <label class="control-label" for="username">Username</label>
                             <input class="form-control" type="text" id="username" aria-describedby="usernameHelpBlock" required>
-                            <span id="usernameHelpBlock" class="help-block hidden"><i><small>Please enter your username</small></i></span>
+                            <span id="usernameHelpBlock" class="help-block hidden">Please enter your username</span>
                         </div>
 
                         <div id="passwordFormGroup" class="form-group">
-                            <label class="control-label" for="password">Password:</label>
+                            <label class="control-label" for="password">Password</label>
                             <input class="form-control" type="password" id="password" aria-describedby="passwordHelpBlock" required>
-                            <span id="passwordHelpBlock" class="help-block hidden"><i><small>Please enter your password</small></i></span>
+                            <span id="passwordHelpBlock" class="help-block hidden">Please enter your password</span>
                         </div>
 
                         <button id="signInButton" type="submit" class="btn btn-sm btn-success">Sign in</button>
@@ -63,7 +63,7 @@
 
                         <p>Not registered ? Click below to create an account.</p>
 
-                        <a href="#" class="btn btn-sm btn-success">Register</a>
+                        <a href="@controllers.routes.TicTacToeController.registration" class="btn btn-sm btn-success">Register</a>
                     </form>
                 </div>
             </div>

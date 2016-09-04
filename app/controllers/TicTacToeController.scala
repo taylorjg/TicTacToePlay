@@ -31,4 +31,8 @@ class TicTacToeController @Inject()(configuration: Configuration, @Named("mainAc
   def unregisteredGame = Action { implicit request =>
     Ok(views.html.unregisteredGame(version))
   }
+
+  def registration = Action { implicit request =>
+    Ok(views.html.registration(version))
+  }
 }

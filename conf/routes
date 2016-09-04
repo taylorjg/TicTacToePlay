@@ -1,6 +1,7 @@
 GET     /                               controllers.TicTacToeController.index
 GET     /registeredGame                 controllers.TicTacToeController.registeredGame
 GET     /unregisteredGame               controllers.TicTacToeController.unregisteredGame
+GET     /registration                   controllers.TicTacToeController.registration
 
 GET     /jsRoutes                       controllers.ApiController.jsRoutes
 POST    /api/computerMove               controllers.ApiController.computerMove
