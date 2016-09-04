@@ -20,15 +20,18 @@
             @for(leader <- leaders) {
             <tr>
                 <td>@leader.username</td>
-                <td>@leader.played</td>
-                <td>@leader.numWon</td>
-                <td>@leader.numDrawn</td>
-                <td>@leader.numLost</td>
-                <td>@leader.points</td>
+                <td class="numeric">@leader.played</td>
+                <td class="numeric">@leader.numWon</td>
+                <td class="numeric">@leader.numDrawn</td>
+                <td class="numeric">@leader.numLost</td>
+                <td class="numeric">@leader.points</td>
             </tr>
             }
             </tbody>
         </table>
+
+        <br />
+
         <button id="refreshLeaderboardButton" type="button" class="btn btn-sm btn-success">
             <i class="fa fa-refresh" aria-hidden="true"></i>
             Refresh

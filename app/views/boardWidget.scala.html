@@ -1,38 +1,37 @@
-<div class="row">
-    <h1 align="center">Tic-Tac-Toe</h1>
-    <table id="board" align="center">
-        <tbody>
-            <tr class="thickBottom">
-                <td id="cell00" class="thickRight"></td>
-                <td id="cell01" class="thickRight"></td>
-                <td id="cell02"></td>
-            </tr>
-            <tr class="thickBottom">
-                <td id="cell10" class="thickRight"></td>
-                <td id="cell11" class="thickRight"></td>
-                <td id="cell12"></td>
-            </tr>
-            <tr>
-                <td id="cell20" class="thickRight"></td>
-                <td id="cell21" class="thickRight"></td>
-                <td id="cell22"></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<div id="instructionPanel" class="row">
-    <div class="col-md-offset-2 col-md-8">
-        <div class="alert alert-info">
-            <span id="instructionMessage"></span>
-            <img id="spinner" src='@routes.Assets.versioned("images/spinner.gif")' alt="spinner"/>
-        </div>
+<h1 align="center">Tic-Tac-Toe</h1>
+
+<table id="board" align="center">
+    <tbody>
+        <tr class="thickBottom">
+            <td id="cell00" class="thickRight"></td>
+            <td id="cell01" class="thickRight"></td>
+            <td id="cell02"></td>
+        </tr>
+        <tr class="thickBottom">
+            <td id="cell10" class="thickRight"></td>
+            <td id="cell11" class="thickRight"></td>
+            <td id="cell12"></td>
+        </tr>
+        <tr>
+            <td id="cell20" class="thickRight"></td>
+            <td id="cell21" class="thickRight"></td>
+            <td id="cell22"></td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+
+<div id="instructionPanel">
+    <div class="alert alert-info">
+        <span id="instructionMessage"></span>
+        <img id="spinner" src='@routes.Assets.versioned("images/spinner.gif")' alt="spinner"/>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-offset-2 col-md-8">
-        <button id="startButton" type="submit" class="btn btn-sm btn-primary">
-            <i class="fa fa-play" aria-hidden="true"></i>
-            Start
-        </button>
-    </div>
+
+<div>
+    <button id="startButton" type="submit" class="btn btn-sm btn-primary">
+        <i class="fa fa-play" aria-hidden="true"></i>
+        Start
+    </button>
 </div>
