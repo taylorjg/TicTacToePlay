@@ -15,6 +15,7 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "com.okumin" %% "akka-persistence-sql-async" % "0.3.1"
 libraryDependencies += "com.github.mauricio" %% "postgresql-async" % "0.2.16"
+libraryDependencies += filters
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
