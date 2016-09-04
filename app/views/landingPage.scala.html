@@ -1,0 +1,72 @@
+@(version: String)(implicit request: RequestHeader)
+
+@main("Tic-Tac-Toe", version) {
+    <div class="row">
+        <div class="col-md-offset-4 col-md-4">
+            <h1 align="center">Tic-Tac-Toe</h1>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-offset-4 col-md-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Unregistered Games</h3>
+                </div>
+                <div class="panel-body">
+
+                    <p>
+                        Click below to play ad-hoc games without creating an account.
+                        You will be not be able participate in the leaderboard when playing
+                        ad-hoc games.
+                    </p>
+
+                    <a href="@controllers.routes.TicTacToeController.unregisteredGame" class="btn btn-sm btn-success">
+                        <i class="fa fa-play" aria-hidden="true"></i>
+                        Play
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-offset-4 col-md-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Registered Games</h3>
+                </div>
+                <div class="panel-body">
+
+                    <p>
+                        If you create an account, you will be able to play games and
+                        participate in the leaderboard.
+                    </p>
+
+                    <form novalidate>
+                        
+                        <div id="usernameFormGroup" class="form-group">
+                            <label class="control-label" for="username">Username:</label>
+                            <input class="form-control" type="text" id="username" aria-describedby="usernameHelpBlock" required>
+                            <span id="usernameHelpBlock" class="help-block hidden"><i><small>Please enter your username</small></i></span>
+                        </div>
+
+                        <div id="passwordFormGroup" class="form-group">
+                            <label class="control-label" for="password">Password:</label>
+                            <input class="form-control" type="password" id="password" aria-describedby="passwordHelpBlock" required>
+                            <span id="passwordHelpBlock" class="help-block hidden"><i><small>Please enter your password</small></i></span>
+                        </div>
+
+                        <button id="signInButton" type="submit" class="btn btn-sm btn-success">Sign in</button>
+
+                        <hr />
+
+                        <p>Not registered ? Click below to create an account.</p>
+
+                        <a href="#" class="btn btn-sm btn-success">Register</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -6,18 +6,19 @@ import actors.LeaderboardActor._
 import akka.actor.ActorRef
 import akka.pattern.ask
 import defaults.Defaults._
+import play.api.Configuration
 import play.api.mvc._
-import play.api.{Configuration, Logger}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class TicTacToeController @Inject()(configuration: Configuration, @Named("mainActor") mainActor: ActorRef) extends Controller {
 
   val version = configuration.getString("app.version") getOrElse "?"
 
-  def index = Action {
-    Redirect(routes.TicTacToeController.unregisteredGame().url)
+  def index = Action.async { implicit request =>
+    Future.successful(Ok(views.html.landingPage(version)))
   }
 
   def registeredGame = Action.async { implicit request =>
