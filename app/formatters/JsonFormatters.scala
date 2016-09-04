@@ -3,6 +3,7 @@ package formatters
 import models.{GameState, LeaderboardEntry}
 import play.api.data.validation.ValidationError
 import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 object JsonFormatters {
 
@@ -20,6 +21,12 @@ object JsonFormatters {
   implicit val gameStateReads: Reads[GameState] = Json.reads[GameState]
   implicit val gameStateWrites: Writes[GameState] = Json.writes[GameState]
 
-  implicit val leaderboardEntryReads: Reads[LeaderboardEntry] = Json.reads[LeaderboardEntry]
-  implicit val leaderboardEntryWrites: Writes[LeaderboardEntry] = Json.writes[LeaderboardEntry]
+  implicit val leaderboardEntryWrites: Writes[LeaderboardEntry] = (
+    (JsPath \ "username").write[String] and
+    (JsPath \ "numWon").write[Int] and
+    (JsPath \ "numDrawn").write[Int] and
+    (JsPath \ "numLost").write[Int] and
+    (JsPath \ "played").write[Int] and
+    (JsPath \ "points").write[Int]
+    )(le => (le.username, le.numWon, le.numDrawn, le.numLost, le.played, le.points))
 }

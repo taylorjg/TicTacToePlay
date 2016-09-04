@@ -9,18 +9,22 @@
             <thead>
             <tr>
                 <th>Username</th>
+                <th>Played</th>
                 <th>Won</th>
                 <th>Drawn</th>
                 <th>Lost</th>
+                <th>Points</th>
             </tr>
             </thead>
             <tbody>
             @for(leader <- leaders) {
             <tr>
                 <td>@leader.username</td>
+                <td>@leader.played</td>
                 <td>@leader.numWon</td>
                 <td>@leader.numDrawn</td>
                 <td>@leader.numLost</td>
+                <td>@leader.points</td>
             </tr>
             }
             </tbody>
