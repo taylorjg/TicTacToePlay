@@ -51,7 +51,7 @@ $(document).ready(() => {
         const route = window.jsRoutes.controllers.ApiController.leaderboardUpdates();
         let wsUrl = route.webSocketURL();
         if (window.location.protocol === 'https:') {
-            wsUrl = 'wss:' + ws.substring(3);
+            wsUrl = 'wss:' + wsUrl.substring(3);
         }
         const ws = new WebSocket(wsUrl);
         ws.onmessage = e => {
