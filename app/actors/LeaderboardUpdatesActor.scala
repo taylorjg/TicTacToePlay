@@ -1,11 +1,11 @@
 package actors
 
-import actors.LeaderboardActor.GetLeadersResponse
 import akka.actor.{Actor, ActorRef, Props}
 import play.api.libs.json.Json
 
 class LeaderboardUpdatesActor(mainActor: ActorRef, out: ActorRef) extends Actor {
 
+  import actors.LeaderboardActor.GetLeadersResponse
   import actors.LeaderboardUpdatesActor._
   import formatters.JsonFormatters._
 
