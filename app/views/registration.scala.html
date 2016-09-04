@@ -15,28 +15,27 @@
                 </div>
                 <div class="panel-body">
 
-                    <form novalidate>
-                        
-                        <div id="usernameFormGroup" class="form-group">
-                            <label class="control-label" for="username">Username</label>
-                            <input class="form-control" type="text" id="username" aria-describedby="usernameHelpBlock" required>
-                            <span id="usernameHelpBlock" class="help-block hidden">Please enter your chosen username</span>
-                        </div>
+                @helper.form(action = controllers.routes.AuthenticationController.register()) {
+                    <div id="usernameFormGroup" class="form-group">
+                        <label class="control-label" for="username">Username</label>
+                        <input class="form-control" type="text" id="username" name="username" aria-describedby="usernameHelpBlock" required>
+                        <span id="usernameHelpBlock" class="help-block hidden">Please enter your chosen username</span>
+                    </div>
 
-                        <div id="passwordFormGroup" class="form-group">
-                            <label class="control-label" for="password">Password</label>
-                            <input class="form-control" type="password" id="password" aria-describedby="passwordHelpBlock" required>
-                            <span id="passwordHelpBlock" class="help-block hidden">Please enter your chosen password</span>
-                        </div>
+                    <div id="passwordFormGroup" class="form-group">
+                        <label class="control-label" for="password">Password</label>
+                        <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelpBlock" required>
+                        <span id="passwordHelpBlock" class="help-block hidden">Please enter your chosen password</span>
+                    </div>
 
-                        <div id="password2FormGroup" class="form-group">
-                            <label class="control-label" for="password2">Confirm password</label>
-                            <input class="form-control" type="password" id="password2" aria-describedby="password2HelpBlock" required>
-                            <span id="password2HelpBlock" class="help-block hidden">Please confirm your password</span>
-                        </div>
+                    <div id="password2FormGroup" class="form-group">
+                        <label class="control-label" for="password2">Password again</label>
+                        <input class="form-control" type="password" id="password2" name="password2" aria-describedby="password2HelpBlock" required>
+                        <span id="password2HelpBlock" class="help-block hidden">Please confirm your password</span>
+                    </div>
 
-                        <button id="registerButton" type="submit" class="btn btn-sm btn-success">Register</button>
-                    </form>
+                    <button id="registerButton" type="submit" class="btn btn-sm btn-success">Register</button>
+                }
                 </div>
             </div>
         </div>

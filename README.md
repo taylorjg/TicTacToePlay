@@ -79,8 +79,8 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
 
 ### Phase 9
 
-* Add a leader board
-    * Dynamically updatable using Web Sockets
+* ~~Add a leader board~~
+    * ~~Dynamically updatable using Web Sockets~~
 
 ## Other
 

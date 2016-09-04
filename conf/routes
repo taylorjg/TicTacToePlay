@@ -3,6 +3,10 @@ GET     /registeredGame                 controllers.TicTacToeController.register
 GET     /unregisteredGame               controllers.TicTacToeController.unregisteredGame
 GET     /registration                   controllers.TicTacToeController.registration
 
+POST    /register                       controllers.AuthenticationController.register
+POST    /login                          controllers.AuthenticationController.login
+POST    /logout                         controllers.AuthenticationController.logout
+
 GET     /jsRoutes                       controllers.ApiController.jsRoutes
 POST    /api/computerMove               controllers.ApiController.computerMove
 GET     /api/getLeaderboard             controllers.ApiController.getLeaderboard

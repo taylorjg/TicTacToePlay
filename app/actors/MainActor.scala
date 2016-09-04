@@ -7,9 +7,11 @@ class MainActor extends Actor {
 
   import actors.LeaderboardActor.GetLeadersRequest
   import actors.LeaderboardUpdatesActor.SubscribeForLeaderboardUpdates
+  import actors.UsersActor.RegisterUserRequest
 
   val unregisteredMoveEngine = context.actorOf(UnregisteredMoveEngineActor.props, "UnregisteredMoveEngine")
   val leaderboard = context.actorOf(LeaderboardActor.props, "Leaderboard")
+  val users = context.actorOf(UsersActor.props, "Users")
 
   override def receive: Receive = {
 
@@ -27,6 +29,8 @@ class MainActor extends Actor {
     case GetLeadersRequest => leaderboard forward GetLeadersRequest
 
     case SubscribeForLeaderboardUpdates => leaderboard forward SubscribeForLeaderboardUpdates
+
+    case msg: RegisterUserRequest => users forward msg
   }
 }
 

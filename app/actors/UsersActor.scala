@@ -27,6 +27,7 @@ class UsersActor extends PersistentActor {
     case command @ RegisterUserRequest(username, password) =>
       persist(command) { event =>
         if (users exists (_.username == username)) {
+          println(s"username $username already exists")
           sender() ! RegisterUserResponse(None)
         }
         val passwordHash = password.bcrypt
