@@ -25,19 +25,32 @@ class UsersActor extends PersistentActor {
   override def receiveCommand: Receive = {
 
     case command @ RegisterUserRequest(username, password) =>
+      val capturedSender = sender()
+      findUserByUsername(username) match {
+        case Some(_) =>
+          capturedSender ! RegisterUserResponse(None)
+        case None =>
+          val passwordHash = password.bcrypt
+          val user = User(username, passwordHash)
+          persist(user) { user =>
+            users = applyEvent(user)
+            capturedSender ! RegisterUserResponse(Some(user))
+          }
+      }
       persist(command) { event =>
-        if (users exists (_.username == username)) {
-          println(s"username $username already exists")
-          sender() ! RegisterUserResponse(None)
+        findUserByUsername(username) match {
+          case Some(_) =>
+            capturedSender ! RegisterUserResponse(None)
+          case None =>
+            val passwordHash = password.bcrypt
+            val user = User(username, passwordHash)
+            users = applyEvent(user)
+            capturedSender ! RegisterUserResponse(Some(user))
         }
-        val passwordHash = password.bcrypt
-        val user = User(username, passwordHash)
-        users = applyEvent(user)
-        sender() ! RegisterUserResponse(Some(user))
       }
 
     case command @ LoginRequest(username, password) => {
-      val userOption = users find (_.username == username) filter {
+      val userOption = findUserByUsername(username) filter {
         case User(_, hash) => password.isBcrypted(hash)
       }
       sender ! LoginResponse(userOption)
@@ -46,6 +59,11 @@ class UsersActor extends PersistentActor {
 
   private def applyEvent: PartialFunction[User, Set[User]] = {
     case user: User => users + user
+  }
+
+  private def findUserByUsername(username: String): Option[User] = {
+    val loweredUsername = username.toLowerCase()
+    users find { _.username.toLowerCase() == loweredUsername }
   }
 }
 

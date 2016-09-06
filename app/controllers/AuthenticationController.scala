@@ -28,11 +28,11 @@ class AuthenticationController @Inject()(@Named("mainActor") mainActor: ActorRef
     val response = (mainActor ? RegisterUserRequest(registrationData.username, registrationData.password)).mapTo[RegisterUserResponse]
     response map {
       case RegisterUserResponse(Some(user)) => {
-        println(s"new user: $user")
+        play.api.Logger.info(s"new user: $user")
         Redirect(routes.TicTacToeController.registeredGame())
       }
       case _ => {
-        println("user registration failed!")
+        play.api.Logger.warn(s"user with username ${registrationData.username} already exists")
         // TODO: set a global form error
         Redirect(routes.TicTacToeController.registeredGame())
       }

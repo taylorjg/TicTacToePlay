@@ -21,8 +21,7 @@
 }
 
 #leaderboard th, #leaderboard td {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 2px 10px;
 }
 
 #leaderboard td.numeric {

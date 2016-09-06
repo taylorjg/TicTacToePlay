@@ -1,3 +1,14 @@
+0.0.next
+
+* bug fix: usernames containing characters that are not valid in an actor name
+* cosmetic tweaks
+* layout changes
+* added number of games played and total number of points to the leaderboard
+* Akka Persistence
+* Forcing use of SSL on Heroku
+* bug fix: use wss when using https
+* IN PROGRESS: landing page, registration page, registration/login/logout functionality
+
 0.0.10 (2nd September 2016)
 
 * Leaderboard columns are now Won/Drawn/Lost and sort order is based on 3 points for a win and 1 point for a draw
