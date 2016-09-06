@@ -37,17 +37,6 @@ class UsersActor extends PersistentActor {
             capturedSender ! RegisterUserResponse(Some(user))
           }
       }
-      persist(command) { event =>
-        findUserByUsername(username) match {
-          case Some(_) =>
-            capturedSender ! RegisterUserResponse(None)
-          case None =>
-            val passwordHash = password.bcrypt
-            val user = User(username, passwordHash)
-            users = applyEvent(user)
-            capturedSender ! RegisterUserResponse(Some(user))
-        }
-      }
 
     case command @ LoginRequest(username, password) => {
       val userOption = findUserByUsername(username) filter {
