@@ -5,7 +5,7 @@ GET     /registration                   controllers.TicTacToeController.registra
 
 POST    /register                       controllers.AuthenticationController.register
 POST    /login                          controllers.AuthenticationController.login
-POST    /logout                         controllers.AuthenticationController.logout
+GET     /logout                         controllers.AuthenticationController.logout
 
 GET     /jsRoutes                       controllers.ApiController.jsRoutes
 POST    /api/computerMove               controllers.ApiController.computerMove

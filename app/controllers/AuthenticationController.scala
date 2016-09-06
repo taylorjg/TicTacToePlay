@@ -50,8 +50,7 @@ class AuthenticationController @Inject()(@Named("mainActor") mainActor: ActorRef
   }
 
   def logout = Action { implicit request =>
-    // TODO: some cookie twiddling ?
-    Redirect(routes.TicTacToeController.index())
+    Redirect(routes.TicTacToeController.index()).withSession(request.session - "username")
   }
 }
 
