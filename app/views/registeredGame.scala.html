@@ -1,6 +1,6 @@
 @import models.LeaderboardEntry
 
-@(version: String, leaders: Seq[LeaderboardEntry])(implicit request: RequestHeader)
+@(version: String, username: String, leaders: Seq[LeaderboardEntry])(implicit request: RequestHeader)
 
 @main("Tic-Tac-Toe", version) {
     <div class="row">
@@ -16,7 +16,7 @@
             <form novalidate>
                 <div id="usernameFormGroup" class="form-group">
                     <label class="control-label" for="username">Username</label>
-                    <input class="form-control" type="text" id="username" aria-describedby="usernameHelpBlock" required>
+                    <input class="form-control" type="text" id="username" aria-describedby="usernameHelpBlock" value="@username" required>
                     <span id="usernameSuccessGlyph" class="glyphicon glyphicon-ok form-control-feedback hidden" aria-hidden="true"></span>
                     <span id="usernameErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback hidden" aria-hidden="true"></span>
                     <span id="usernameHelpBlock" class="help-block hidden">Please enter your name for the leaderboard</span>

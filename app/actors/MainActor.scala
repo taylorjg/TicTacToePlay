@@ -33,6 +33,8 @@ class MainActor extends Actor {
     case msg: RegisterUserRequest => users forward msg
 
     case msg: LoginRequest => users forward msg
+
+    case msg: LookupUsernameRequest => users forward msg
   }
 }
 

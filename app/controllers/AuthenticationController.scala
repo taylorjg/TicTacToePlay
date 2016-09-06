@@ -8,7 +8,7 @@ import defaults.Defaults._
 import play.api.Logger
 import play.api.data.Forms._
 import play.api.data._
-import play.api.mvc.{Action, Controller}
+import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -43,7 +43,7 @@ class AuthenticationController @Inject()(@Named("mainActor") mainActor: ActorRef
     val response = (mainActor ? LoginRequest(loginData.username, loginData.password)).mapTo[LoginResponse]
     response map {
       case LoginResponse(Some(user)) =>
-        Redirect(routes.TicTacToeController.registeredGame())
+        Redirect(routes.TicTacToeController.registeredGame()).withSession("username" -> user.username)
       case LoginResponse(None) =>
         Redirect(routes.TicTacToeController.index())
     }

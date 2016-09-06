@@ -5,6 +5,7 @@ import javax.inject._
 import actors.LeaderboardActor._
 import akka.actor.ActorRef
 import akka.pattern.ask
+import models.User
 import defaults.Defaults._
 import play.api.Configuration
 import play.api.mvc._
@@ -21,10 +22,10 @@ class TicTacToeController @Inject()(configuration: Configuration, @Named("mainAc
     Future.successful(Ok(views.html.landingPage(version)))
   }
 
-  def registeredGame = Action.async { implicit request =>
+  def registeredGame = AuthenticatedBuilder.async { implicit request =>
     val future = (mainActor ? GetLeadersRequest).mapTo[GetLeadersResponse]
     future map { getLeadersResponse =>
-      Ok(views.html.registeredGame(version, getLeadersResponse.leaders))
+      Ok(views.html.registeredGame(version, request.user.username, getLeadersResponse.leaders))
     }
   }
 
@@ -34,5 +35,26 @@ class TicTacToeController @Inject()(configuration: Configuration, @Named("mainAc
 
   def registration = Action { implicit request =>
     Ok(views.html.registration(version))
+  }
+
+  case class AuthenticatedRequest[A](user: User, request: Request[A]) extends WrappedRequest[A](request)
+
+  object AuthenticatedBuilder extends ActionBuilder[AuthenticatedRequest] with Results {
+    import actors.UsersActor.{LookupUsernameRequest, LookupUsernameResponse}
+    override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
+      val indexCall = routes.TicTacToeController.index()
+      request.session.get("username") match {
+        case Some(username) =>
+          val response = (mainActor ? LookupUsernameRequest(username)).mapTo[LookupUsernameResponse]
+          response flatMap {
+            case LookupUsernameResponse(Some(user)) =>
+              val authenticatedUser = AuthenticatedRequest[A](user, request)
+              block(authenticatedUser)
+            case LookupUsernameResponse(None) =>
+              Future.successful(Redirect(indexCall).withNewSession)
+          }
+        case None => Future.successful(Redirect(indexCall).withNewSession)
+      }
+    }
   }
 }

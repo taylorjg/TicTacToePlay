@@ -38,11 +38,15 @@ class UsersActor extends PersistentActor {
           }
       }
 
-    case command @ LoginRequest(username, password) => {
+    case LoginRequest(username, password) => {
       val userOption = findUserByUsername(username) filter {
         case User(_, hash) => password.isBcrypted(hash)
       }
       sender ! LoginResponse(userOption)
+    }
+
+    case LookupUsernameRequest(username) => {
+      sender() ! LookupUsernameResponse(findUserByUsername(username))
     }
   }
 
@@ -63,6 +67,9 @@ object UsersActor {
 
   case class LoginRequest(username: String, password: String)
   case class LoginResponse(user: Option[User])
+
+  case class LookupUsernameRequest(username: String)
+  case class LookupUsernameResponse(user: Option[User])
 
   def props: Props = {
     Props(classOf[UsersActor])
