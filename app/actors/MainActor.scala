@@ -7,7 +7,7 @@ class MainActor extends Actor {
 
   import actors.LeaderboardActor.GetLeadersRequest
   import actors.LeaderboardUpdatesActor.SubscribeForLeaderboardUpdates
-  import actors.UsersActor.RegisterUserRequest
+  import actors.UsersActor._
 
   val unregisteredMoveEngine = context.actorOf(UnregisteredMoveEngineActor.props, "UnregisteredMoveEngine")
   val leaderboard = context.actorOf(LeaderboardActor.props, "Leaderboard")
@@ -31,6 +31,8 @@ class MainActor extends Actor {
     case SubscribeForLeaderboardUpdates => leaderboard forward SubscribeForLeaderboardUpdates
 
     case msg: RegisterUserRequest => users forward msg
+
+    case msg: LoginRequest => users forward msg
   }
 }
 

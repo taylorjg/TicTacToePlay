@@ -43,29 +43,28 @@
                         participate in the leaderboard.
                     </p>
 
-                    <form novalidate>
-                        
+                    @helper.form(action = controllers.routes.AuthenticationController.login()) {
+
                         <div id="usernameFormGroup" class="form-group">
                             <label class="control-label" for="username">Username</label>
-                            <input class="form-control" type="text" id="username" aria-describedby="usernameHelpBlock" required>
+                            <input class="form-control" type="text" id="username" name="username" aria-describedby="usernameHelpBlock" required>
                             <span id="usernameHelpBlock" class="help-block hidden">Please enter your username</span>
                         </div>
 
                         <div id="passwordFormGroup" class="form-group">
                             <label class="control-label" for="password">Password</label>
-                            <input class="form-control" type="password" id="password" aria-describedby="passwordHelpBlock" required>
+                            <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelpBlock" required>
                             <span id="passwordHelpBlock" class="help-block hidden">Please enter your password</span>
                         </div>
 
-                        <!--<button id="signInButton" type="submit" class="btn btn-sm btn-success">Sign in</button>-->
-                        <a href="@controllers.routes.TicTacToeController.registeredGame" class="btn btn-sm btn-success">Sign in</a>
+                        <button id="signInButton" type="submit" class="btn btn-sm btn-success">Sign in</button>
 
                         <hr />
 
                         <p>Not registered ? Click below to create an account.</p>
 
                         <a href="@controllers.routes.TicTacToeController.registration" class="btn btn-sm btn-success">Register</a>
-                    </form>
+                    }
                 </div>
             </div>
         </div>
