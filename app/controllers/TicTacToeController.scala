@@ -8,6 +8,7 @@ import akka.pattern.ask
 import models.User
 import defaults.Defaults._
 import play.api.Configuration
+import play.api.mvc.Security.AuthenticatedRequest
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -22,10 +23,10 @@ class TicTacToeController @Inject()(configuration: Configuration, @Named("mainAc
     Future.successful(Ok(views.html.landingPage(version)))
   }
 
-  def registeredGame = AuthenticatedBuilder.async { implicit request =>
+  def registeredGame = AuthenticatedBuilder.async { implicit authenticatedRequest =>
     val future = (mainActor ? GetLeadersRequest).mapTo[GetLeadersResponse]
     future map { getLeadersResponse =>
-      Ok(views.html.registeredGame(version, request.user.username, getLeadersResponse.leaders))
+      Ok(views.html.registeredGame(version, authenticatedRequest.user.username, getLeadersResponse.leaders))
     }
   }
 
@@ -37,21 +38,21 @@ class TicTacToeController @Inject()(configuration: Configuration, @Named("mainAc
     Ok(views.html.registration(version))
   }
 
-  case class AuthenticatedRequest[A](user: User, request: Request[A]) extends WrappedRequest[A](request)
+  object AuthenticatedBuilder extends ActionBuilder[({ type R[A] = AuthenticatedRequest[A, User] })#R] with Results {
 
-  object AuthenticatedBuilder extends ActionBuilder[AuthenticatedRequest] with Results {
     import actors.UsersActor.{LookupUsernameRequest, LookupUsernameResponse}
-    override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
-      val indexCall = routes.TicTacToeController.index()
+
+    private val indexCall = routes.TicTacToeController.index()
+
+    override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A, User]) => Future[Result]): Future[Result] = {
       request.session.get("username") match {
         case Some(username) =>
           val response = (mainActor ? LookupUsernameRequest(username)).mapTo[LookupUsernameResponse]
           response flatMap {
             case LookupUsernameResponse(Some(user)) =>
-              val authenticatedUser = AuthenticatedRequest[A](user, request)
-              block(authenticatedUser)
-            case LookupUsernameResponse(None) =>
-              Future.successful(Redirect(indexCall).withNewSession)
+              val authenticatedRequest = new AuthenticatedRequest(user, request)
+              block(authenticatedRequest)
+            case LookupUsernameResponse(None) => Future.successful(Redirect(indexCall).withNewSession)
           }
         case None => Future.successful(Redirect(indexCall).withNewSession)
       }
