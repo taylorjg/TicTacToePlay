@@ -22,7 +22,6 @@ const HIGHLIGHT_DRAW = 'highlightDraw';
 const ALL_HIGHLIGHTS = `${HIGHLIGHT_PLAYER1_WIN} ${HIGHLIGHT_PLAYER2_WIN} ${HIGHLIGHT_DRAW}`;
 
 let state = STATE_NOT_STARTED;
-let registered;
 let $cellElements;
 let $instructionPanel;
 let $instructionMessage;
@@ -30,8 +29,8 @@ let $spinner;
 let $errorPanel;
 let $errorMessage;
 let $startButton;
+let $leaderboard;
 let $refreshLeaderboardButton;
-let $username;
 
 $(document).ready(() => {
     $cellElements = $('#board td').click(makeHumanMove);
@@ -41,13 +40,11 @@ $(document).ready(() => {
     $errorPanel = $('#errorPanel');
     $errorMessage = $('#errorMessage');
     $startButton = $('#startButton').click(start);
+    $leaderboard = $('#leaderboard');
     $refreshLeaderboardButton = $('#refreshLeaderboardButton').click(refreshLeaderboardButton);
-    $username = $('#username');
     reset();
 
-    registered = !!$username.length;
-
-    if (registered) {
+    if ($leaderboard.length) {
         const route = window.jsRoutes.controllers.ApiController.leaderboardUpdates();
         let wsUrl = route.webSocketURL();
         if (window.location.protocol === 'https:') {
@@ -72,32 +69,6 @@ function reset() {
 }
 
 function startHelper() {
-
-    if (registered) {
-        const $usernameFormGroup = $('#usernameFormGroup');
-        const $usernameSuccessGlyph = $('#usernameSuccessGlyph');
-        const $usernameErrorGlyph = $('#usernameErrorGlyph');
-        const $usernameHelpBlock = $('#usernameHelpBlock');
-        $usernameFormGroup.addClass('has-feedback');
-        $usernameSuccessGlyph.removeClass('hidden');
-        $usernameErrorGlyph.removeClass('hidden');
-        $usernameHelpBlock.removeClass('hidden');
-        if ($username.val()) {
-            $usernameFormGroup.addClass('has-success');
-            $usernameFormGroup.removeClass('has-error');
-            $usernameSuccessGlyph.show();
-            $usernameErrorGlyph.hide();
-            $usernameHelpBlock.hide();
-        }
-        else {
-            $usernameFormGroup.addClass('has-error');
-            $usernameFormGroup.removeClass('has-success');
-            $usernameErrorGlyph.show();
-            $usernameSuccessGlyph.hide();
-            $usernameHelpBlock.show();
-            return;
-        }
-    }
 
     function whoGoesFirst() {
         return (Math.random() < 0.5) ? HUMAN_PLAYER : COMPUTER_PLAYER;
@@ -163,7 +134,6 @@ function makeComputerMove() {
     setTimeout(() => {
 
         const requestData = {
-            username: registered ? $username.val() : null,
             board: saveBoardToString(),
             player1Piece: player1Piece,
             player2Piece: player2Piece
@@ -289,7 +259,7 @@ function refreshLeaderboardButton() {
 }
 
 function updateLeaderboard(leaders) {
-    const $tbody = $('#leaderboard tbody');
+    const $tbody = $('tbody', $leaderboard);
     $tbody.empty();
     const rows = leaders.map(leader => {
         return $('<tr />', {

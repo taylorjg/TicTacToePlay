@@ -22,6 +22,8 @@ class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)(implicit 
   extends Controller {
 
   import formatters.JsonFormatters._
+  import actors.UnregisteredMoveEngineActor.UnregisteredGameMove
+  import actors.RegisteredMoveEngineActor.RegisteredGameMove
 
   def jsRoutes = Action { implicit request =>
     Ok(JavaScriptReverseRouter("jsRoutes")(routes.javascript.ApiController.leaderboardUpdates)).as("text/javascript")
@@ -32,8 +34,12 @@ class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)(implicit 
     val oldState = request.body.as[GameState]
     Logger.info(s"computerMove: oldState: $oldState")
 
-    val future = (mainActor ? oldState).mapTo[GameState]
-    future map { newState =>
+    val msg = request.session.get("username") match {
+      case Some(username) => RegisteredGameMove(oldState, username)
+      case None => UnregisteredGameMove(oldState)
+    }
+
+    (mainActor ? msg).mapTo[GameState] map { newState =>
       Logger.info(s"computerMove: newState: $newState")
       Ok(Json.toJson(newState))
     }

@@ -1,7 +1,6 @@
 package models
 
-case class GameState(username: Option[String],
-                     board: String,
+case class GameState(board: String,
                      player1Piece: Char,
                      player2Piece: Char,
                      outcome: Option[Int],
