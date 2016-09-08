@@ -28,7 +28,7 @@ class AuthenticationController @Inject()(@Named("mainActor") mainActor: ActorRef
     response map {
       case RegisterUserResponse(Some(user)) => {
         Logger.info(s"new user: $user")
-        Redirect(routes.TicTacToeController.registeredGame())
+        Redirect(routes.TicTacToeController.registeredGame()).withSession("username" -> user.username)
       }
       case RegisterUserResponse(None) => {
         Logger.warn(s"user with username ${registrationData.username} already exists")
