@@ -1,13 +1,16 @@
-0.0.next
+0.0.11 (8th September 2016)
 
-* bug fix: usernames containing characters that are not valid in an actor name
-* cosmetic tweaks
-* layout changes
-* added number of games played and total number of points to the leaderboard
-* Akka Persistence
-* Forcing use of SSL on Heroku
-* bug fix: use wss when using https
-* IN PROGRESS: landing page, registration page, registration/login/logout functionality
+* Added support for user registration, login and logout
+* Added a landing page to provide a choice between casual and serious game play
+* Now forcing use of SSL on Heroku
+* Cosmetic tweaks
+* Layout tweaks
+* Added leaderboard columns for the number of games played and the total number of points
+
+## Bug Fixes
+
+* Usernames containing characters that are not valid in actor names caused problems
+* Need to use wss for the leaderboard WebSocket connection when loading the page over https
 
 0.0.10 (2nd September 2016)
 

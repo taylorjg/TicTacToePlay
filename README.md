@@ -62,15 +62,15 @@ See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herok
 
 ### Phase 6
 
-* Add authentication to identify the player (required in order to maintain a leader board)
-    * Registration
-    * Login
-    * Logout
+* ~~Add authentication to identify the player (required in order to maintain a leader board)~~
+    * ~~Registration~~
+    * ~~Login~~
+    * ~~Logout~~
 
 ### Phase 7
 
-* Use Akka Persistence to save Akka actor state
-  * Save state to Cassandra or Postgres
+* ~~Use Akka Persistence to save Akka actor state~~
+  * ~~Persist state to Postgres~~
 
 ### Phase 8
 
