@@ -1,4 +1,4 @@
-@(title: String, version: String)(content: Html)(implicit request: RequestHeader)
+@(title: String, version: String, user: Option[User])(content: Html)(implicit request: RequestHeader)
 
 <!DOCTYPE html>
 <html>
@@ -13,14 +13,18 @@
     <link href='@routes.Assets.versioned("stylesheets/main.css")' rel="stylesheet">
 </head>
 <body>
-<br >
-<br >
+<br>
+<br>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            @if(user.isDefined) {
+                <span class="label label-success">@user.get.username</span>
+                <a href="@controllers.routes.AuthenticationController.logout">Logout</a>
+            }
             <span class="pull-right"><i><small>(version: @version)</small></i></span>
         </div>
-        <br />
+        <br/>
     </div>
 
     @content

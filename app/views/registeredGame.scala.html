@@ -1,19 +1,11 @@
 @import models.LeaderboardEntry
 
-@(version: String, username: String, leaders: Seq[LeaderboardEntry])(implicit request: RequestHeader)
+@(version: String, user: User, leaders: Seq[LeaderboardEntry])(implicit request: RequestHeader)
 
-@main("Tic-Tac-Toe", version) {
+@main("Tic-Tac-Toe", version, Some(user)) {
     <div class="row">
         <div class="col-md-offset-4 col-md-4">
             @boardWidget()
-        </div>
-    </div>
-
-    <br />
-
-    <div class="row">
-        <div class="col-md-offset-4 col-md-4">
-            <a href="@controllers.routes.AuthenticationController.logout">Logout</a>
         </div>
     </div>
 

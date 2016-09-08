@@ -11,11 +11,11 @@ import play.api.mvc.{ActionBuilder, Request, Result, Results}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait MyActionBuilders{
+trait MyActionBuilders {
 
   def mainActor: ActorRef
 
-  def AuthenticatedBuilder = new ActionBuilder[({ type R[A] = AuthenticatedRequest[A, User] })#R] with Results {
+  def AuthenticatedBuilder = new ActionBuilder[({type R[A] = AuthenticatedRequest[A, User]})#R] with Results {
 
     import actors.UsersActor.{LookupUsernameRequest, LookupUsernameResponse}
 
@@ -37,7 +37,7 @@ trait MyActionBuilders{
     }
   }
 
-  def OptionallyAuthenticatedBuilder = new ActionBuilder[({ type R[A] = AuthenticatedRequest[A, Option[User]] })#R] with Results {
+  def OptionallyAuthenticatedBuilder = new ActionBuilder[({type R[A] = AuthenticatedRequest[A, Option[User]]})#R] with Results {
 
     import actors.UsersActor.{LookupUsernameRequest, LookupUsernameResponse}
 

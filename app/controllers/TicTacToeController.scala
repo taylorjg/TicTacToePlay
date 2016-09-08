@@ -21,22 +21,26 @@ class TicTacToeController @Inject()(configuration: Configuration, @Named("mainAc
 
   val version = configuration.getString("app.version") getOrElse "?"
 
-  def index = Action.async { implicit request =>
-    Future.successful(Ok(views.html.landingPage(version)))
+  def index = OptionallyAuthenticatedBuilder.async { implicit request =>
+    play.api.Logger.info(s"user: ${request.user}")
+    Future.successful(Ok(views.html.landingPage(version, request.user)))
   }
 
-  def registeredGame = AuthenticatedBuilder.async { implicit authenticatedRequest =>
+  def registeredGame = AuthenticatedBuilder.async { implicit request =>
+    play.api.Logger.info(s"user: ${request.user}")
     val future = (mainActor ? GetLeadersRequest).mapTo[GetLeadersResponse]
     future map { getLeadersResponse =>
-      Ok(views.html.registeredGame(version, authenticatedRequest.user.username, getLeadersResponse.leaders))
+      Ok(views.html.registeredGame(version, request.user, getLeadersResponse.leaders))
     }
   }
 
-  def unregisteredGame = Action { implicit request =>
-    Ok(views.html.unregisteredGame(version))
+  def unregisteredGame = OptionallyAuthenticatedBuilder { implicit request =>
+    play.api.Logger.info(s"user: ${request.user}")
+    Ok(views.html.unregisteredGame(version, request.user))
   }
 
-  def registration = Action { implicit request =>
-    Ok(views.html.registration(version))
+  def registration = OptionallyAuthenticatedBuilder { implicit request =>
+    play.api.Logger.info(s"user: ${request.user}")
+    Ok(views.html.registration(version, request.user))
   }
 }
