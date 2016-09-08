@@ -2,71 +2,71 @@
 
 @main("Tic-Tac-Toe", version, user) {
     <div class="row">
-        <div class="col-md-offset-4 col-md-4">
+        <div class="col-md-12">
             <h1 align="center">Tic-Tac-Toe</h1>
         </div>
     </div>
     <br />
     <div class="row">
-        <div class="col-md-offset-4 col-md-4">
+
+        <div class="col-md-offset-2 col-md-4">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Unregistered Games</h3>
+                    <h3 class="panel-title">Casual Games</h3>
                 </div>
                 <div class="panel-body">
 
                     <p>
                         Click below to play ad-hoc games without creating an account.
-                        You will be not be able participate in the leaderboard when playing
+                        You will <b>not</b> be able participate in the leaderboard when playing
                         ad-hoc games.
                     </p>
 
-                    <a href="@controllers.routes.TicTacToeController.unregisteredGame" class="btn btn-sm btn-success">
+                    <a href="@controllers.routes.TicTacToeController.unregisteredGame" class="btn btn-sm btn-default">
                         <i class="fa fa-play" aria-hidden="true"></i>
                         Play
                     </a>
                 </div>
             </div>
         </div>
-    </div>
-    <br />
-    <div class="row">
-        <div class="col-md-offset-4 col-md-4">
+
+        <div class="col-md-4">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Registered Games</h3>
+                    <h3 class="panel-title">Serious Games</h3>
                 </div>
                 <div class="panel-body">
 
                     <p>
-                        If you create an account, you will be able to play games and
+                        If you have account, you will be able to play games and
                         participate in the leaderboard.
                     </p>
 
                     @helper.form(action = controllers.routes.AuthenticationController.login()) {
 
-                        <div id="usernameFormGroup" class="form-group">
-                            <label class="control-label" for="username">Username</label>
-                            <input class="form-control" type="text" id="username" name="username" aria-describedby="usernameHelpBlock" required>
-                            <span id="usernameHelpBlock" class="help-block hidden">Please enter your username</span>
-                        </div>
+                    <div id="usernameFormGroup" class="form-group">
+                        <label class="control-label" for="username">Username</label>
+                        <input class="form-control" type="text" id="username" name="username" aria-describedby="usernameHelpBlock" required>
+                        <span id="usernameHelpBlock" class="help-block hidden">Please enter your username</span>
+                    </div>
 
-                        <div id="passwordFormGroup" class="form-group">
-                            <label class="control-label" for="password">Password</label>
-                            <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelpBlock" required>
-                            <span id="passwordHelpBlock" class="help-block hidden">Please enter your password</span>
-                        </div>
+                    <div id="passwordFormGroup" class="form-group">
+                        <label class="control-label" for="password">Password</label>
+                        <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelpBlock" required>
+                        <span id="passwordHelpBlock" class="help-block hidden">Please enter your password</span>
+                    </div>
 
-                        <button id="signInButton" type="submit" class="btn btn-sm btn-success">Sign in</button>
+                    <button id="signInButton" type="submit" class="btn btn-sm btn-primary">Sign in</button>
 
-                        <hr />
+                    <hr />
 
-                        <p>Not registered ? Click below to create an account.</p>
+                    <p>No account ? Click below to create one.</p>
 
-                        <a href="@controllers.routes.TicTacToeController.registration" class="btn btn-sm btn-success">Register</a>
+                    <a href="@controllers.routes.TicTacToeController.registration" class="btn btn-sm btn-default">Register</a>
                     }
                 </div>
             </div>
         </div>
+
     </div>
 }
