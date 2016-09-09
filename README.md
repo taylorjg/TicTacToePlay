@@ -19,6 +19,32 @@ the following tools and technologies:
 
 See the Tic-Tac-Toe web application in action [here](https://tictactoeplay.herokuapp.com/).
 
+## Screenshots
+
+### Landing Page
+
+The initial page offers the choice of casual or serious game play.
+
+![LandingPage](Images/LandingPage.png)
+
+### Casual Games
+
+Casual games do not require registration but have no leaderboard.
+
+![UnregisteredGame](Images/UnregisteredGame.png)
+
+### Registration
+
+In order to play serious games, it is first necessary to create an account using the registration page.
+
+![Registration](Images/Registration.png)
+
+### Serious Games
+
+You can then enjoy playing serious games and try to conquer the leaderboard.
+
+![RegisteredGame](Images/RegisteredGame.png)
+
 ## Development Phases
 
 ### Phase 1
