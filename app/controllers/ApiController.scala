@@ -14,6 +14,7 @@ import play.api.libs.json._
 import play.api.libs.streams._
 import play.api.mvc._
 import play.api.routing._
+import utils.Utils
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -48,7 +49,8 @@ class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)(implicit 
   def getLeaderboard = Action.async { request =>
     val future = (mainActor ? GetLeadersRequest).mapTo[GetLeadersResponse]
     future map { getLeadersResponse =>
-      Ok(Json.toJson(getLeadersResponse.leaders))
+      val clippedLeaders = getLeadersResponse.leaders map (le => le.copy(username = Utils.userDisplayName(le.username).toString()))
+      Ok(Json.toJson(clippedLeaders))
     }
   }
 

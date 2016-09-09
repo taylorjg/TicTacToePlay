@@ -2,6 +2,7 @@ package actors
 
 import akka.actor.{Actor, ActorRef, Props}
 import play.api.libs.json.Json
+import utils.Utils
 
 class LeaderboardUpdatesActor(mainActor: ActorRef, out: ActorRef) extends Actor {
 
@@ -13,7 +14,8 @@ class LeaderboardUpdatesActor(mainActor: ActorRef, out: ActorRef) extends Actor 
 
   override def receive: Receive = {
     case GetLeadersResponse(leaders) =>
-      out ! Json.toJson(leaders)
+      val clippedLeaders = leaders map (le => le.copy(username = Utils.userDisplayName(le.username).toString()))
+      out ! Json.toJson(clippedLeaders)
   }
 }
 

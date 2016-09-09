@@ -1,3 +1,5 @@
+@import utils.Utils
+
 @(leaders: Seq[models.LeaderboardEntry])
 
 <div class="panel panel-primary">
@@ -19,7 +21,7 @@
             <tbody>
             @for(leader <- leaders) {
             <tr>
-                <td>@leader.username</td>
+                <td>@Utils.userDisplayName(leader.username)</td>
                 <td class="numeric">@leader.played</td>
                 <td class="numeric">@leader.numWon</td>
                 <td class="numeric">@leader.numDrawn</td>

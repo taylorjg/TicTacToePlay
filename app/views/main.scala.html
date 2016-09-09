@@ -1,3 +1,5 @@
+@import utils.Utils
+
 @(title: String, version: String, user: Option[User])(content: Html)(implicit request: RequestHeader)
 
 <!DOCTYPE html>
@@ -19,7 +21,7 @@
     <div class="row">
         <div class="col-md-12">
             @if(user.isDefined) {
-                <span class="label label-success">@user.get.username</span>
+                <span class="label label-success">@Utils.userDisplayName(user.get.username)</span>
                 <a href="@controllers.routes.AuthenticationController.logout">Logout</a>
             }
             <span class="pull-right"><i><small>(version: @version)</small></i></span>
