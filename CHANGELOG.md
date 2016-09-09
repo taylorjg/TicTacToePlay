@@ -1,3 +1,8 @@
+0.0.12 (9th September 2016)
+
+* Limit length of usernames displayed
+* Some UI tweaks
+
 0.0.11 (8th September 2016)
 
 * Added support for user registration, login and logout
