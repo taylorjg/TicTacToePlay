@@ -1,4 +1,6 @@
-@(version: String, user: Option[User])(implicit request: RequestHeader)
+@import controllers.AuthenticationController._
+
+@(version: String, user: Option[User])(registrationForm: Form[RegistrationData])(implicit request: RequestHeader, messages: Messages)
 
 @main("Registration", version, user) {
     <div class="row">
@@ -10,6 +12,20 @@
                 <div class="panel-body">
 
                 @helper.form(action = controllers.routes.AuthenticationController.register()) {
+
+                    <div class="has-error">
+                        @if(registrationForm.globalErrors.length == 1) {
+                        <span class="help-block">@registrationForm.globalErrors.head.message</span>
+                        }
+
+                        @if(registrationForm.globalErrors.length > 1) {
+                        <ul>
+                            @for(error <- registrationForm.globalErrors) {
+                            <li><span class="help-block">@error.message</span></li>
+                            }
+                        </ul>
+                        }
+                    </div>
 
                     <div id="usernameFormGroup" class="form-group">
                         <label class="control-label" for="username">Username</label>

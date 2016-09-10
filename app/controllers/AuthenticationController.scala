@@ -8,34 +8,48 @@ import defaults.Defaults._
 import play.api.Logger
 import play.api.data.Forms._
 import play.api.data._
+import play.api.i18n.MessagesApi
+import play.api.i18n.I18nSupport
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
-class AuthenticationController @Inject()(@Named("mainActor") mainActor: ActorRef)
-  extends Controller {
+class AuthenticationController @Inject()(@Named("mainActor") mainActor: ActorRef, val messagesApi: MessagesApi)
+  extends Controller
+  with I18nSupport {
 
   import AuthenticationController._
   import actors.UsersActor._
 
-  def register = Action.async(parse.form(registrationForm)) { implicit request =>
-    val registrationData = request.body
-    if (registrationData.password != registrationData.password2) {
-      // TODO: set a global form error
-    }
-    val response = (mainActor ? RegisterUserRequest(registrationData.username, registrationData.password)).mapTo[RegisterUserResponse]
-    response map {
-      case RegisterUserResponse(Some(user)) => {
-        Logger.info(s"new user: $user")
-        Redirect(routes.TicTacToeController.registeredGame()).withSession("username" -> user.username)
+  def register = Action.async { implicit request =>
+    registrationForm.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(BadRequest(views.html.registration("", None)(formWithErrors)))
+      },
+      registrationData => {
+        if (registrationData.password != registrationData.password2) {
+          val msg = "Password and confirmation password don't match"
+          Logger.warn(msg)
+          Future.successful(Ok(views.html.registration("", None)(registrationForm.withGlobalError(msg))))
+        }
+        else {
+          val response = (mainActor ? RegisterUserRequest(registrationData.username, registrationData.password)).mapTo[RegisterUserResponse]
+          response map {
+            case RegisterUserResponse(Some(user)) => {
+              Logger.info(s"Created new user: $user")
+              Redirect(routes.TicTacToeController.registeredGame()).withSession("username" -> user.username)
+            }
+            case RegisterUserResponse(None) => {
+              val msg = s"Username ${registrationData.username} already exists"
+              Logger.warn(msg)
+              Ok(views.html.registration("", None)(registrationForm.withGlobalError(msg)))
+            }
+          }
+        }
       }
-      case RegisterUserResponse(None) => {
-        Logger.warn(s"user with username ${registrationData.username} already exists")
-        // TODO: set a global form error
-        Redirect(routes.TicTacToeController.registration())
-      }
-    }
+    )
   }
 
   def login = Action.async(parse.form(loginForm)) { implicit request =>

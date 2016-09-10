@@ -9,13 +9,17 @@ import builders.MyActionBuilders
 import defaults.Defaults._
 import play.api.Configuration
 import play.api.mvc._
+import play.api.i18n.MessagesApi
+import play.api.i18n.I18nSupport
+import controllers.AuthenticationController._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class TicTacToeController @Inject()(configuration: Configuration, @Named("mainActor") val mainActor: ActorRef)
+class TicTacToeController @Inject()(configuration: Configuration, @Named("mainActor") val mainActor: ActorRef, val messagesApi: MessagesApi)
   extends Controller
+  with I18nSupport
   with MyActionBuilders
 {
 
@@ -41,6 +45,8 @@ class TicTacToeController @Inject()(configuration: Configuration, @Named("mainAc
 
   def registration = OptionallyAuthenticatedBuilder { implicit request =>
     play.api.Logger.info(s"user: ${request.user}")
-    Ok(views.html.registration(version, request.user))
+    val form = registrationForm
+    val filledForm = form.fill(RegistrationData("Example", "pw", "pw2"))
+    Ok(views.html.registration(version, request.user)(filledForm))
   }
 }
