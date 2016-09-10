@@ -1,5 +1,7 @@
 package models
 
+import models.Outcome._
+
 object MoveEngine {
 
   val LINES = List(
@@ -12,10 +14,6 @@ object MoveEngine {
     List(0, 4, 8),
     List(2, 4, 6)
   )
-
-  val OUTCOME_PLAYER1_WIN = 1
-  val OUTCOME_PLAYER2_WIN = 2
-  val OUTCOME_DRAW = 3
 
   val random = scala.util.Random
 
@@ -39,7 +37,7 @@ object MoveEngine {
     checkForLineWithTwoPiecesAndOneEmpty(
       state,
       state.player2Piece,
-      (newBoard, line) => state.copy(board = newBoard, outcome = Some(OUTCOME_PLAYER2_WIN), winningLine = Some(line)))
+      (newBoard, line) => state.copy(board = newBoard, outcome = Some(Player2Win), winningLine = Some(line)))
   }
 
   private def tryToBlock(state: GameState): Option[GameState] = {
@@ -83,21 +81,21 @@ object MoveEngine {
     } getOrElse checkForDraw(state)
   }
 
-  private def checkForWinningLine(state: GameState, line: List[Int]): Option[Int] = {
+  private def checkForWinningLine(state: GameState, line: List[Int]): Option[Outcome] = {
     val PLAYER1_WINNING_LINE = List.fill(3)(state.player1Piece)
     val PLAYER2_WINNING_LINE = List.fill(3)(state.player2Piece)
     line map {
       state.board(_)
     } match {
-      case `PLAYER1_WINNING_LINE` => Some(OUTCOME_PLAYER1_WIN)
-      case `PLAYER2_WINNING_LINE` => Some(OUTCOME_PLAYER2_WIN)
+      case `PLAYER1_WINNING_LINE` => Some(Player1Win)
+      case `PLAYER2_WINNING_LINE` => Some(Player2Win)
       case _ => None
     }
   }
 
   private def checkForDraw(state: GameState): Option[GameState] = {
     if (state.board.indices.exists(isEmpty(state, _))) None
-    else Some(state.copy(outcome = Some(OUTCOME_DRAW)))
+    else Some(state.copy(outcome = Some(Draw)))
   }
 
   private def isEmpty(state: GameState, index: Int): Boolean = {

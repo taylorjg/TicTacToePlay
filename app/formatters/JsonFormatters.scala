@@ -1,21 +1,38 @@
 package formatters
 
+import models.Outcome.{Outcome, _}
 import models.{GameState, LeaderboardEntry}
-import play.api.data.validation.ValidationError
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 object JsonFormatters {
 
   implicit object CharReads extends Reads[Char] {
-    def reads(json: JsValue) = json match {
+    def reads(json: JsValue): JsResult[Char] = json match {
       case JsString(s) if s.length == 1 => JsSuccess(s.head)
-      case _ => JsError(Seq(JsPath() -> Seq(ValidationError("expected a string of length 1"))))
+      case _ => JsError("expected a string of length 1")
     }
   }
 
   implicit object CharWrites extends Writes[Char] {
-    def writes(o: Char) = JsString(o.toString)
+    def writes(o: Char): JsValue = JsString(o.toString)
+  }
+
+  implicit object OutcomeReads extends Reads[Outcome] {
+    def reads(json: JsValue): JsResult[Outcome] = json match {
+      case JsNumber(n) if n == 1 => JsSuccess(Player1Win)
+      case JsNumber(n) if n == 2 => JsSuccess(Player2Win)
+      case JsNumber(n) if n == 3 => JsSuccess(Draw)
+      case _ => JsError("expected 1|2|3")
+    }
+  }
+
+  implicit object OutcomeWrites extends Writes[Outcome] {
+    def writes(o: Outcome): JsValue = o match {
+      case Player1Win => JsNumber(1)
+      case Player2Win => JsNumber(2)
+      case Draw => JsNumber(3)
+    }
   }
 
   implicit val gameStateReads: Reads[GameState] = Json.reads[GameState]

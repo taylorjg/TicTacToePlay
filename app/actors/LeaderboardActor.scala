@@ -5,7 +5,8 @@ import akka.actor.{ActorRef, Props, Terminated}
 import akka.pattern.ask
 import akka.persistence.{PersistentActor, RecoveryCompleted}
 import defaults.Defaults._
-import models.{LeaderboardEntry, MoveEngine}
+import models.LeaderboardEntry
+import models.Outcome._
 import play.api.Logger
 
 import scala.collection.immutable.SortedSet
@@ -22,10 +23,9 @@ class LeaderboardActor extends PersistentActor {
   override def persistenceId: String = self.path.name
 
   override def receiveRecover: Receive = {
-    case event: GameFinished => {
+    case event: GameFinished =>
       Logger.info(s"[LeaderboardActor.receiveRecover] event: $event")
       entries = applyEvent(event)
-    }
     case RecoveryCompleted => Logger.info("[LeaderboardActor.receiveRecover] RecoveryCompleted")
   }
 
@@ -55,11 +55,11 @@ class LeaderboardActor extends PersistentActor {
       subscriptions -= subscriber
   }
 
-  private def wonDrawnLostFrom(outcome: Int): (Int, Int, Int) = {
-    def oneIfOutcomeIs(outcomeType: Int): Int = if (outcome == outcomeType) 1 else 0
-    val won = oneIfOutcomeIs(MoveEngine.OUTCOME_PLAYER1_WIN)
-    val drawn = oneIfOutcomeIs(MoveEngine.OUTCOME_DRAW)
-    val lost = oneIfOutcomeIs(MoveEngine.OUTCOME_PLAYER2_WIN)
+  private def wonDrawnLostFrom(outcome: Outcome): (Int, Int, Int) = {
+    def oneIfOutcomeIs(outcomeType: Outcome): Int = if (outcome == outcomeType) 1 else 0
+    val won = oneIfOutcomeIs(Player1Win)
+    val drawn = oneIfOutcomeIs(Draw)
+    val lost = oneIfOutcomeIs(Player2Win)
     (won, drawn, lost)
   }
 
@@ -82,7 +82,7 @@ class LeaderboardActor extends PersistentActor {
 
 object LeaderboardActor {
 
-  case class GameFinished(username: String, outcome: Int)
+  case class GameFinished(username: String, outcome: Outcome)
 
   case object GetLeadersRequest
 
