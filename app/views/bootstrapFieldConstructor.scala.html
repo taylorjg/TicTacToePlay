@@ -1,0 +1,32 @@
+@import play.api.i18n._
+@import views.html.helper._
+
+@(elements: FieldElements)
+
+@helpBlockId = @{
+    elements.id + "HelpBlock"
+}
+
+@elementsInput() = @{
+    val s = elements.input.toString()
+    val posLeftAngle = s.indexOf('<')
+    val posFirstSpace = s.indexOf(' ', posLeftAngle)
+    val startingBit = s.substring(0, posFirstSpace)
+    val endingBit = s.substring(posFirstSpace + 1)
+    val bits = Seq(
+        startingBit,
+        """class="form-control"""",
+        s"""aria-describedby="$helpBlockId"""",
+        endingBit)
+    val s2 = bits.mkString(" ")
+    Html(s2)
+}
+
+<!-- TODO: conditionally add has-feedback / has-success too -->
+<div class="form-group @if(elements.errors.nonEmpty) {has-error}">
+    <label class="control-label" for="@elements.id">@elements.label</label>
+    @elementsInput()
+    @if(elements.errors.nonEmpty) {
+    <span id="@helpBlockId" class="help-block">@(elements.errors.head)</span>
+    }
+</div>

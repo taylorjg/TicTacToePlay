@@ -8,12 +8,13 @@ the following tools and technologies:
 
 * ~~Play and Activator~~
 * ~~JavaScript (ES2015)~~
-* Akka and Akka Persistence
+* ~~Akka and Akka Persistence~~
 * Cassandra or Postgres
-* IntelliJ IDEA
-* Jenkins
+* ~~IntelliJ IDEA~~
+* ~~Jenkins~~
 * Docker
-* Heroku
+* ~~Heroku~~
+* Gatling
 
 ## Deployed application
 

@@ -17,12 +17,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class TicTacToeController @Inject()(configuration: Configuration, @Named("mainActor") val mainActor: ActorRef, val messagesApi: MessagesApi)
+class TicTacToeController @Inject()(@Named("mainActor") val mainActor: ActorRef,
+                                    val messagesApi: MessagesApi,
+                                    configuration: Configuration)
   extends Controller
   with I18nSupport
   with MyActionBuilders
 {
-
   val version = configuration.getString("app.version") getOrElse "?"
 
   def index = OptionallyAuthenticatedBuilder.async { implicit request =>

@@ -1,54 +1,52 @@
 @import controllers.AuthenticationController._
+@import views.html.helper.bootstrap._
 
 @(version: String, user: Option[User])(registrationForm: Form[RegistrationData])(implicit request: RequestHeader, messages: Messages)
 
 @main("Registration", version, user) {
-    <div class="row">
-        <div class="col-md-offset-4 col-md-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Registration</h3>
+<div class="row">
+    <div class="col-md-offset-4 col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Registration</h3>
+            </div>
+            <div class="panel-body">
+
+                @helper.form(action = controllers.routes.AuthenticationController.register(), 'novalidate -> "") {
+
+                <div class="has-error">
+                    @if(registrationForm.globalErrors.length == 1) {
+                    <span class="help-block">@registrationForm.globalErrors.head.message</span>
+                    }
+
+                    @if(registrationForm.globalErrors.length > 1) {
+                    <ul>
+                        @for(error <- registrationForm.globalErrors) {
+                        <li><span class="help-block">@error.message</span></li>
+                        }
+                    </ul>
+                    }
                 </div>
-                <div class="panel-body">
 
-                @helper.form(action = controllers.routes.AuthenticationController.register()) {
+                @helper.inputText(
+                registrationForm("username"),
+                '_label -> "Username",
+                '_help -> "Please enter your chosen username")
 
-                    <div class="has-error">
-                        @if(registrationForm.globalErrors.length == 1) {
-                        <span class="help-block">@registrationForm.globalErrors.head.message</span>
-                        }
+                @helper.inputPassword(
+                registrationForm("password"),
+                '_label -> "Password",
+                '_help -> "Please enter your chosen password")
 
-                        @if(registrationForm.globalErrors.length > 1) {
-                        <ul>
-                            @for(error <- registrationForm.globalErrors) {
-                            <li><span class="help-block">@error.message</span></li>
-                            }
-                        </ul>
-                        }
-                    </div>
+                @helper.inputPassword(
+                registrationForm("password2"),
+                '_label -> "Password again",
+                '_help -> "Please confirm your password")
 
-                    <div id="usernameFormGroup" class="form-group">
-                        <label class="control-label" for="username">Username</label>
-                        <input class="form-control" type="text" id="username" name="username" aria-describedby="usernameHelpBlock" required>
-                        <span id="usernameHelpBlock" class="help-block hidden">Please enter your chosen username</span>
-                    </div>
-
-                    <div id="passwordFormGroup" class="form-group">
-                        <label class="control-label" for="password">Password</label>
-                        <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelpBlock" required>
-                        <span id="passwordHelpBlock" class="help-block hidden">Please enter your chosen password</span>
-                    </div>
-
-                    <div id="password2FormGroup" class="form-group">
-                        <label class="control-label" for="password2">Password again</label>
-                        <input class="form-control" type="password" id="password2" name="password2" aria-describedby="password2HelpBlock" required>
-                        <span id="password2HelpBlock" class="help-block hidden">Please confirm your password</span>
-                    </div>
-
-                    <button id="registerButton" type="submit" class="btn btn-sm btn-primary">Register</button>
+                <button id="registerButton" type="submit" class="btn btn-sm btn-primary">Register</button>
                 }
-                </div>
             </div>
         </div>
     </div>
+</div>
 }
