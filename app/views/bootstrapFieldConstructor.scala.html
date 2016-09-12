@@ -28,5 +28,9 @@
     @elementsInput()
     @if(elements.errors.nonEmpty) {
     <span id="@helpBlockId" class="help-block">@(elements.errors.head)</span>
+    } else {
+        @if(elements.infos.nonEmpty) {
+        <span id="@helpBlockId" class="help-block hidden">@(elements.infos.head)</span>
+        }
     }
 </div>

@@ -46,8 +46,6 @@ class TicTacToeController @Inject()(@Named("mainActor") val mainActor: ActorRef,
 
   def registration = OptionallyAuthenticatedBuilder { implicit request =>
     play.api.Logger.info(s"user: ${request.user}")
-    val form = registrationForm
-    val filledForm = form.fill(RegistrationData("Example", "pw", "pw2"))
-    Ok(views.html.registration(version, request.user)(filledForm))
+    Ok(views.html.registration(version, request.user)(registrationForm))
   }
 }
