@@ -59,15 +59,25 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
     )
   }
 
-  def login = Action.async(parse.form(loginForm)) { implicit request =>
-    val loginData = request.body
-    val response = (mainActor ? LoginRequest(loginData.username, loginData.password)).mapTo[LoginResponse]
-    response map {
-      case LoginResponse(Some(user)) =>
-        Redirect(routes.TicTacToeController.registeredGame()).withSession("username" -> user.username)
-      case LoginResponse(None) =>
-        Redirect(routes.TicTacToeController.index())
-    }
+  def login = OptionallyAuthenticatedBuilder.async { implicit request =>
+    loginForm.bindFromRequest.fold(
+      formWithErrors => {
+        Logger.warn(formWithErrors.errors.mkString(", "))
+        Future.successful(BadRequest(views.html.landingPage(version, request.user)(formWithErrors)))
+      },
+      loginData => {
+        val filledForm = loginForm.fill(loginData)
+        val response = (mainActor ? LoginRequest(loginData.username, loginData.password)).mapTo[LoginResponse]
+        response map {
+          case LoginResponse(Some(user)) =>
+            Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_KEY -> user.username)
+          case LoginResponse(None) =>
+            val msg = "Incorrect username or password"
+            Logger.warn(msg)
+            Ok(views.html.landingPage(version, request.user)(filledForm.withGlobalError(msg)))
+        }
+      }
+    )
   }
 
   def logout = Action { implicit request =>

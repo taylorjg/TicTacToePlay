@@ -51,13 +51,13 @@
                         @helper.form(action = controllers.routes.AuthenticationController.login(), 'novalidate -> "") {
 
                         <div class="has-error">
-                            @if(registrationForm.globalErrors.length == 1) {
-                            <span class="help-block">@registrationForm.globalErrors.head.message</span>
+                            @if(loginForm.globalErrors.length == 1) {
+                            <span class="help-block">@loginForm.globalErrors.head.message</span>
                             }
 
-                            @if(registrationForm.globalErrors.length > 1) {
+                            @if(loginForm.globalErrors.length > 1) {
                             <ul>
-                                @for(error <- registrationForm.globalErrors) {
+                                @for(error <- loginForm.globalErrors) {
                                 <li><span class="help-block">@error.message</span></li>
                                 }
                             </ul>
@@ -65,12 +65,12 @@
                         </div>
 
                         @helper.inputText(
-                        registrationForm(USERNAME_KEY),
+                        loginForm(USERNAME_KEY),
                         '_label -> "Username",
                         '_help -> "Please enter your username")
 
                         @helper.inputPassword(
-                        registrationForm(PASSWORD_KEY),
+                        loginForm(PASSWORD_KEY),
                         '_label -> "Password",
                         '_help -> "Please enter your password")
 
