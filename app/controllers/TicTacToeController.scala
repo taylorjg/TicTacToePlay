@@ -28,7 +28,7 @@ class TicTacToeController @Inject()(@Named("mainActor") val mainActor: ActorRef,
 
   def index = OptionallyAuthenticatedBuilder.async { implicit request =>
     play.api.Logger.info(s"user: ${request.user}")
-    Future.successful(Ok(views.html.landingPage(version, request.user)))
+    Future.successful(Ok(views.html.landingPage(version, request.user)(loginForm)))
   }
 
   def registeredGame = AuthenticatedBuilder.async { implicit request =>

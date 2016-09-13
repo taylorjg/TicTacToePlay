@@ -1,4 +1,7 @@
-@(version: String, user: Option[User])(implicit request: RequestHeader)
+@import controllers.AuthenticationController._
+@import views.html.helper.bootstrap._
+
+@(version: String, user: Option[User])(loginForm: Form[LoginData])(implicit request: RequestHeader, messages: Messages)
 
 @main("Tic-Tac-Toe", version, user) {
     <div class="row">
@@ -45,19 +48,31 @@
                             participate in the leaderboard.
                         </p>
 
-                        @helper.form(action = controllers.routes.AuthenticationController.login()) {
+                        @helper.form(action = controllers.routes.AuthenticationController.login(), 'novalidate -> "") {
 
-                        <div id="usernameFormGroup" class="form-group">
-                            <label class="control-label" for="username">Username</label>
-                            <input class="form-control" type="text" id="username" name="username" aria-describedby="usernameHelpBlock" required>
-                            <span id="usernameHelpBlock" class="help-block hidden">Please enter your username</span>
+                        <div class="has-error">
+                            @if(registrationForm.globalErrors.length == 1) {
+                            <span class="help-block">@registrationForm.globalErrors.head.message</span>
+                            }
+
+                            @if(registrationForm.globalErrors.length > 1) {
+                            <ul>
+                                @for(error <- registrationForm.globalErrors) {
+                                <li><span class="help-block">@error.message</span></li>
+                                }
+                            </ul>
+                            }
                         </div>
 
-                        <div id="passwordFormGroup" class="form-group">
-                            <label class="control-label" for="password">Password</label>
-                            <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelpBlock" required>
-                            <span id="passwordHelpBlock" class="help-block hidden">Please enter your password</span>
-                        </div>
+                        @helper.inputText(
+                        registrationForm(USERNAME_KEY),
+                        '_label -> "Username",
+                        '_help -> "Please enter your username")
+
+                        @helper.inputPassword(
+                        registrationForm(PASSWORD_KEY),
+                        '_label -> "Password",
+                        '_help -> "Please enter your password")
 
                         <button id="signInButton" type="submit" class="btn btn-sm btn-primary">Sign in</button>
 

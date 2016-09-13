@@ -29,17 +29,17 @@
                 </div>
 
                 @helper.inputText(
-                registrationForm("username"),
+                registrationForm(USERNAME_KEY),
                 '_label -> "Username",
                 '_help -> "Please enter your chosen username")
 
                 @helper.inputPassword(
-                registrationForm("password"),
+                registrationForm(PASSWORD_KEY),
                 '_label -> "Password",
                 '_help -> "Please enter your chosen password")
 
                 @helper.inputPassword(
-                registrationForm("password2"),
+                registrationForm(PASSWORD2_KEY),
                 '_label -> "Password again",
                 '_help -> "Please confirm your password")
 
