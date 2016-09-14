@@ -9,8 +9,7 @@ import defaults.Defaults._
 import play.api.{Configuration, Logger}
 import play.api.data.Forms._
 import play.api.data._
-import play.api.i18n.MessagesApi
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,7 +37,7 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
       registrationData => {
         val filledForm = registrationForm.fill(registrationData)
         if (registrationData.password != registrationData.password2) {
-          val msg = "Password and confirmation password don't match"
+          val msg = Messages("registrationForm.passwordMismatch")
           Logger.warn(msg)
           Future.successful(Ok(views.html.registration(version, request.user)(filledForm.withGlobalError(msg))))
         }
@@ -49,7 +48,7 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
               Logger.info(s"Created new user: $user")
               Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_FIELD -> user.username)
             case RegisterUserResponse(None) =>
-              val msg = s"""Username "${registrationData.username}" already exists"""
+              val msg = Messages("registrationForm.usernameAlreadyExists", registrationData.username)
               Logger.warn(msg)
               val formError = FormError(USERNAME_FIELD, msg)
               Ok(views.html.registration(version, request.user)(filledForm.withError(formError)))
@@ -72,7 +71,7 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
           case LoginResponse(Some(user)) =>
             Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_FIELD -> user.username)
           case LoginResponse(None) =>
-            val msg = "Incorrect username or password"
+            val msg = Messages("loginForm.badLogin")
             Logger.warn(msg)
             Ok(views.html.landingPage(version, request.user)(filledForm.withGlobalError(msg)))
         }

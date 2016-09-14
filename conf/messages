@@ -1,0 +1,4 @@
+registrationForm.passwordMismatch=Password and confirmation password don''t match
+registrationForm.usernameAlreadyExists=Username "{0}" already exists
+
+loginForm.badLogin=Incorrect username or password
