@@ -47,11 +47,11 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
           response map {
             case RegisterUserResponse(Some(user)) =>
               Logger.info(s"Created new user: $user")
-              Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_KEY -> user.username)
+              Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_FIELD -> user.username)
             case RegisterUserResponse(None) =>
               val msg = s"""Username "${registrationData.username}" already exists"""
               Logger.warn(msg)
-              val formError = FormError(USERNAME_KEY, msg)
+              val formError = FormError(USERNAME_FIELD, msg)
               Ok(views.html.registration(version, request.user)(filledForm.withError(formError)))
           }
         }
@@ -70,7 +70,7 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
         val response = (mainActor ? LoginRequest(loginData.username, loginData.password)).mapTo[LoginResponse]
         response map {
           case LoginResponse(Some(user)) =>
-            Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_KEY -> user.username)
+            Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_FIELD -> user.username)
           case LoginResponse(None) =>
             val msg = "Incorrect username or password"
             Logger.warn(msg)
@@ -87,17 +87,17 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
 
 object AuthenticationController {
 
-  val USERNAME_KEY = "username"
-  val PASSWORD_KEY = "password"
-  val PASSWORD2_KEY = "password2"
+  val USERNAME_FIELD = "username"
+  val PASSWORD_FIELD = "password"
+  val PASSWORD2_FIELD = "password2"
 
   case class RegistrationData(username: String, password: String, password2: String)
 
   val registrationForm = Form(
     mapping(
-      USERNAME_KEY -> nonEmptyText,
-      PASSWORD_KEY -> nonEmptyText,
-      PASSWORD2_KEY -> nonEmptyText
+      USERNAME_FIELD -> nonEmptyText,
+      PASSWORD_FIELD -> nonEmptyText,
+      PASSWORD2_FIELD -> nonEmptyText
     )(RegistrationData.apply)(RegistrationData.unapply)
   )
 
@@ -105,8 +105,8 @@ object AuthenticationController {
 
   val loginForm = Form(
     mapping(
-      USERNAME_KEY -> nonEmptyText,
-      PASSWORD_KEY -> nonEmptyText
+      USERNAME_FIELD -> nonEmptyText,
+      PASSWORD_FIELD -> nonEmptyText
     )(LoginData.apply)(LoginData.unapply)
   )
 }
