@@ -19,7 +19,8 @@ import utils.Utils
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)(implicit system: ActorSystem, materializer: Materializer)
+class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)
+                             (implicit system: ActorSystem, materializer: Materializer)
   extends Controller {
 
   import formatters.JsonFormatters._
