@@ -7,6 +7,7 @@ import actors.LeaderboardUpdatesActor
 import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.stream.Materializer
+import builders.MyActionBuilders
 import defaults.Defaults._
 import models._
 import play.api.Logger
@@ -19,9 +20,10 @@ import utils.Utils
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)
+class ApiController @Inject()(@Named("mainActor") val mainActor: ActorRef)
                              (implicit system: ActorSystem, materializer: Materializer)
-  extends Controller {
+  extends Controller
+  with MyActionBuilders {
 
   import formatters.JsonFormatters._
   import actors.UnregisteredMoveEngineActor.UnregisteredGameMove
@@ -31,18 +33,20 @@ class ApiController @Inject()(@Named("mainActor") mainActor: ActorRef)
     Ok(JavaScriptReverseRouter("jsRoutes")(routes.javascript.ApiController.leaderboardUpdates)).as("text/javascript")
   }
 
-  def computerMove = Action.async(parse.json) { request =>
+  def computerMove = OptionallyAuthenticatedBuilder.async(parse.json) { request =>
+
+    val usernameOption = request.user map (_.username)
 
     val oldState = request.body.as[GameState]
-    Logger.info(s"computerMove: oldState: $oldState")
+    Logger.info(s"computerMove(username: $usernameOption): oldState: $oldState")
 
-    val msg = request.session.get("username") match {
+    val msg = usernameOption match {
       case Some(username) => RegisteredGameMove(oldState, username)
       case None => UnregisteredGameMove(oldState)
     }
 
     (mainActor ? msg).mapTo[GameState] map { newState =>
-      Logger.info(s"computerMove: newState: $newState")
+      Logger.info(s"computerMove(username: $usernameOption): newState: $newState")
       Ok(Json.toJson(newState))
     }
   }
