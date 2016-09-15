@@ -36,9 +36,7 @@ class LeaderboardActor extends PersistentActor {
         entries = applyEvent(event)
         val future = (self ? GetLeadersRequest).mapTo[GetLeadersResponse]
         future map { response =>
-          subscriptions foreach {
-            _ ! response
-          }
+          subscriptions foreach (_ ! response)
         }
       }
 
@@ -56,7 +54,7 @@ class LeaderboardActor extends PersistentActor {
   }
 
   private def wonDrawnLostFrom(outcome: Outcome): (Int, Int, Int) = {
-    def oneIfOutcomeIs(outcomeType: Outcome): Int = if (outcome == outcomeType) 1 else 0
+    def oneIfOutcomeIs(specificOutcome: Outcome): Int = if (outcome == specificOutcome) 1 else 0
     val won = oneIfOutcomeIs(Player1Win)
     val drawn = oneIfOutcomeIs(Draw)
     val lost = oneIfOutcomeIs(Player2Win)
@@ -66,6 +64,7 @@ class LeaderboardActor extends PersistentActor {
   private def applyEvent: PartialFunction[GameFinished, SortedSet[LeaderboardEntry]] = {
     case GameFinished(username, outcome) =>
       val (won, drawn, lost) = wonDrawnLostFrom(outcome)
+      require(won + drawn + lost == 1)
       val oldEntryOption = entries find (_.username == username)
       val newEntry = oldEntryOption match {
         case Some(oldEntry) =>
