@@ -21,8 +21,8 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
                                          val messagesApi: MessagesApi,
                                          configuration: Configuration)
   extends Controller
-  with I18nSupport
-  with MyActionBuilders {
+    with I18nSupport
+    with MyActionBuilders {
 
   import AuthenticationController._
   import actors.UsersActor._
@@ -37,23 +37,16 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
       },
       registrationData => {
         val filledForm = registrationForm.fill(registrationData)
-        if (registrationData.password != registrationData.password2) {
-          val filledFormWithGlobalError = filledForm.withGlobalError("registrationForm.passwordMismatch")
-          Logger.warn(filledFormWithGlobalError.translatedErrorMessages)
-          Future.successful(Ok(views.html.registration(version, request.user)(filledFormWithGlobalError)))
-        }
-        else {
-          val response = (mainActor ? RegisterUserRequest(registrationData.username, registrationData.password)).mapTo[RegisterUserResponse]
-          response map {
-            case RegisterUserResponse(Some(user)) =>
-              Logger.info(s"Created new user: $user")
-              Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_FIELD -> user.username)
-            case RegisterUserResponse(None) =>
-              val formError = FormError(USERNAME_FIELD, "registrationForm.usernameAlreadyExists", Seq(registrationData.username))
-              val filledFormWithError = filledForm.withError(formError)
-              Logger.warn(formError.translatedErrorMessages)
-              Ok(views.html.registration(version, request.user)(filledFormWithError))
-          }
+        val response = (mainActor ? RegisterUserRequest(registrationData.username, registrationData.password)).mapTo[RegisterUserResponse]
+        response map {
+          case RegisterUserResponse(Some(user)) =>
+            Logger.info(s"Created new user: $user")
+            Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_FIELD -> user.username)
+          case RegisterUserResponse(None) =>
+            val formError = FormError(USERNAME_FIELD, "registrationForm.usernameAlreadyExists", Seq(registrationData.username))
+            val filledFormWithError = filledForm.withError(formError)
+            Logger.warn(formError.translatedErrorMessages)
+            Ok(views.html.registration(version, request.user)(filledFormWithError))
         }
       }
     )
@@ -99,6 +92,7 @@ object AuthenticationController {
       PASSWORD_FIELD -> nonEmptyText,
       PASSWORD2_FIELD -> nonEmptyText
     )(RegistrationData.apply)(RegistrationData.unapply)
+      .verifying("registrationForm.passwordMismatch", registrationData => registrationData.password == registrationData.password2)
   )
 
   case class LoginData(username: String, password: String)
