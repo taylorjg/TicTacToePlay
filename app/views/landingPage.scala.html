@@ -52,13 +52,14 @@
 
                         <div class="has-error">
                             @if(loginForm.globalErrors.length == 1) {
-                            <span class="help-block">@loginForm.globalErrors.head.message</span>
+                                @defining(loginForm.globalErrors.head) { error =>
+                                <span class="help-block">@Messages(error.messages, error.args)</span>
+                                }
                             }
-
                             @if(loginForm.globalErrors.length > 1) {
                             <ul>
                                 @for(error <- loginForm.globalErrors) {
-                                <li><span class="help-block">@error.message</span></li>
+                                <li><span class="help-block">@Messages(error.messages, error.args)</span></li>
                                 }
                             </ul>
                             }

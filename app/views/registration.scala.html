@@ -16,13 +16,14 @@
 
                 <div class="has-error">
                     @if(registrationForm.globalErrors.length == 1) {
-                    <span class="help-block">@registrationForm.globalErrors.head.message</span>
+                        @defining(registrationForm.globalErrors.head) { error =>
+                        <span class="help-block">@Messages(error.messages, error.args)</span>
+                        }
                     }
-
                     @if(registrationForm.globalErrors.length > 1) {
                     <ul>
                         @for(error <- registrationForm.globalErrors) {
-                        <li><span class="help-block">@error.message</span></li>
+                        <li><span class="help-block">@Messages(error.messages, error.args)</span></li>
                         }
                     </ul>
                     }
