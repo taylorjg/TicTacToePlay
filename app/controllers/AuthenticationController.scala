@@ -11,9 +11,36 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc._
+import play.twirl.api.HtmlFormat
+import views.html.helper.FieldElements
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+object FormsExtensions {
+
+  import play.api.data.format.Formats.stringFormat
+  private val dummyFieldMapping = FieldMapping[String]()
+  private val dummyForm = Form(dummyFieldMapping)
+
+  implicit class FormErrorExtensions(formError: FormError) {
+    def translatedErrorMessages(implicit messages: Messages): String = {
+      val key = formError.key
+      val dummyField = Field(dummyForm, key, Seq.empty, None, Seq(formError), None)
+      val dummyFieldElement = FieldElements(key, dummyField, HtmlFormat.empty, Map(), messages)
+      val keyOrGlobal = if (key.isEmpty) "(global form error)" else key
+      dummyFieldElement.errors map (e => s"$keyOrGlobal: $e") mkString ", "
+    }
+  }
+
+  implicit class FormExtensions[A](form: Form[A]) {
+    def translatedErrorMessages(implicit messages: Messages): String = {
+      form.errors map (_.translatedErrorMessages) mkString ", "
+    }
+  }
+}
+
+import FormsExtensions._
 
 @Singleton
 class AuthenticationController @Inject()(@Named("mainActor") val mainActor: ActorRef,
@@ -31,15 +58,15 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
   def register = OptionallyAuthenticatedBuilder.async { implicit request =>
     registrationForm.bindFromRequest.fold(
       formWithErrors => {
-        Logger.warn(formWithErrors.errors.mkString(", "))
+        Logger.warn(formWithErrors.translatedErrorMessages)
         Future.successful(BadRequest(views.html.registration(version, request.user)(formWithErrors)))
       },
       registrationData => {
         val filledForm = registrationForm.fill(registrationData)
         if (registrationData.password != registrationData.password2) {
-          val msg = Messages("registrationForm.passwordMismatch")
-          Logger.warn(msg)
-          Future.successful(Ok(views.html.registration(version, request.user)(filledForm.withGlobalError(msg))))
+          val filledFormWithGlobalError = filledForm.withGlobalError("registrationForm.passwordMismatch")
+          Logger.warn(filledFormWithGlobalError.translatedErrorMessages)
+          Future.successful(Ok(views.html.registration(version, request.user)(filledFormWithGlobalError)))
         }
         else {
           val response = (mainActor ? RegisterUserRequest(registrationData.username, registrationData.password)).mapTo[RegisterUserResponse]
@@ -48,10 +75,10 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
               Logger.info(s"Created new user: $user")
               Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_FIELD -> user.username)
             case RegisterUserResponse(None) =>
-              val msg = Messages("registrationForm.usernameAlreadyExists", registrationData.username)
-              Logger.warn(msg)
-              val formError = FormError(USERNAME_FIELD, msg)
-              Ok(views.html.registration(version, request.user)(filledForm.withError(formError)))
+              val formError = FormError(USERNAME_FIELD, "registrationForm.usernameAlreadyExists", Seq(registrationData.username))
+              val filledFormWithError = filledForm.withError(formError)
+              Logger.warn(formError.translatedErrorMessages)
+              Ok(views.html.registration(version, request.user)(filledFormWithError))
           }
         }
       }
@@ -61,7 +88,7 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
   def login = OptionallyAuthenticatedBuilder.async { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => {
-        Logger.warn(formWithErrors.errors.mkString(", "))
+        Logger.warn(formWithErrors.translatedErrorMessages)
         Future.successful(BadRequest(views.html.landingPage(version, request.user)(formWithErrors)))
       },
       loginData => {
@@ -71,9 +98,9 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
           case LoginResponse(Some(user)) =>
             Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_FIELD -> user.username)
           case LoginResponse(None) =>
-            val msg = Messages("loginForm.badLogin")
-            Logger.warn(msg)
-            Ok(views.html.landingPage(version, request.user)(filledForm.withGlobalError(msg)))
+            val filledFormWithGlobalError = filledForm.withGlobalError("loginForm.badLogin")
+            Logger.warn(filledFormWithGlobalError.translatedErrorMessages)
+            Ok(views.html.landingPage(version, request.user)(filledFormWithGlobalError))
         }
       }
     )
