@@ -1,23 +1,9 @@
-let $form;
-let $username;
-let $password;
-let $password2;
-let $submit;
-
 $(document).ready(() => {
 
-    $form = $('form');
-    $username = $('#username', $form);
-    $password = $('#password', $form);
-    $password2 = $('#password2', $form);
-    $submit = $('#registerButton', $form);
-
-    checkSubmitButton();
-
-    function checkSubmitButton() {
-        const formIsValid = $form.find('.has-success').length === 3;
-        $submit.prop('disabled', !formIsValid);
-    }
+    const $form = $('form');
+    const $username = $('#username', $form);
+    const $password = $('#password', $form);
+    const $password2 = $('#password2', $form);
 
     function validateControl($control) {
         if ($control.val()) {
@@ -26,7 +12,6 @@ $(document).ready(() => {
         else {
             fieldHasError($control);
         }
-        checkSubmitButton();
     }
 
     function fieldHasSuccess($control) {
@@ -53,7 +38,6 @@ $(document).ready(() => {
 
         if (!val) {
             fieldHasError($control);
-            checkSubmitButton();
             return;
         }
 
@@ -73,8 +57,6 @@ $(document).ready(() => {
                 fieldHasError($password2);
             }
         }
-
-        checkSubmitButton();
     }
 
     $username.blur(function() { validateControl($(this)); });
