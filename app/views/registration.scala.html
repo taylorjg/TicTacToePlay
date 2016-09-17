@@ -4,7 +4,7 @@
 @(version: String, user: Option[User])(registrationForm: Form[RegistrationData])(implicit request: RequestHeader, messages: Messages)
 
 @main("Registration", version, user) {
-    <script src='@routes.Assets.versioned("javascripts/registration.js")'></script>
+<script src='@routes.Assets.versioned("javascripts/registration.js")' xmlns="http://www.w3.org/1999/html"></script>
 } {
 <div class="row">
     <div class="col-md-offset-4 col-md-4">
@@ -17,6 +17,10 @@
                 @helper.form(action = controllers.routes.AuthenticationController.register(), 'novalidate -> "") {
 
                 @formGlobalErrors(registrationForm)
+
+                <div class="has-error">
+                    <span id="passwordMismatchError" class="help-block hidden">@Messages("registrationForm.passwordMismatch")</span>
+                </div>
 
                 @helper.inputText(
                 registrationForm(USERNAME_FIELD),

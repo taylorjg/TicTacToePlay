@@ -4,6 +4,7 @@ $(document).ready(() => {
     const $username = $('#username', $form);
     const $password = $('#password', $form);
     const $password2 = $('#password2', $form);
+    const $passwordMismatchError = $('#passwordMismatchError', $form);
 
     function validateControl($control) {
         if ($control.val()) {
@@ -51,12 +52,22 @@ $(document).ready(() => {
             if (password === password2) {
                 fieldHasSuccess($password);
                 fieldHasSuccess($password2);
+                hidePasswordMismatchError();
             }
             else {
                 fieldHasError($password);
                 fieldHasError($password2);
+                showPasswordMismatchError();
             }
         }
+    }
+
+    function showPasswordMismatchError() {
+        $passwordMismatchError.removeClass('hidden').show();
+    }
+
+    function hidePasswordMismatchError() {
+        $passwordMismatchError.hide();
     }
 
     $username.blur(function() { validateControl($(this)); });
