@@ -1,6 +1,6 @@
 @import utils.Utils
 
-@(title: String, version: String, user: Option[User])(content: Html)(implicit request: RequestHeader)
+@(title: String, version: String, user: Option[User])(headContent: Html)(bodyContent: Html)(implicit request: RequestHeader)
 
 <!DOCTYPE html>
 <html>
@@ -8,11 +8,10 @@
     <title>@title</title>
     <script src='@routes.Assets.versioned("jquery/jquery.js")'></script>
     <script src='@routes.Assets.versioned("polyfill/polyfill.js")'></script>
-    <script src="@routes.ApiController.jsRoutes"></script>
-    <script src='@routes.Assets.versioned("javascripts/tictactoe.js")'></script>
     <link href='@routes.Assets.versioned("bootstrap/bootstrap.css")' rel="stylesheet">
     <link href='@routes.Assets.versioned("stylesheets/font-awesome.min.css")' rel="stylesheet">
     <link href='@routes.Assets.versioned("stylesheets/main.css")' rel="stylesheet">
+    @headContent
 </head>
 <body>
 <br>
@@ -35,9 +34,9 @@
         </div>
     </div>
 
-    @content
+    @bodyContent
 
-    <div id="errorPanel" class="row navbar-fixed-bottom">
+    <div id="errorPanel" class="row navbar-fixed-bottom hidden">
         <div class="col-md-offset-1 col-md-10">
             <div class="alert alert-danger">
                 <span id="errorMessage"></span>

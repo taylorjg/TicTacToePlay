@@ -4,6 +4,8 @@
 @(version: String, user: Option[User])(registrationForm: Form[RegistrationData])(implicit request: RequestHeader, messages: Messages)
 
 @main("Registration", version, user) {
+    <script src='@routes.Assets.versioned("javascripts/registration.js")'></script>
+} {
 <div class="row">
     <div class="col-md-offset-4 col-md-4">
         <div class="panel panel-primary">

@@ -230,6 +230,7 @@ function clearInstructionMessage() {
 
 function setErrorMessage(errorMessage) {
     $errorMessage.html(errorMessage);
+    $errorPanel.removeClass('hidden');
     $errorPanel.show();
 }
 

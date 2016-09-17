@@ -1,6 +1,9 @@
 @(version: String, user: Option[User])(implicit request: RequestHeader)
 
 @main("Tic-Tac-Toe", version, user) {
+    <script src="@routes.ApiController.jsRoutes"></script>
+    <script src='@routes.Assets.versioned("javascripts/tictactoe.js")'></script>
+} {
     <div class="row">
         <div class="col-md-offset-4 col-md-4">
             @boardWidget()

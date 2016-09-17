@@ -4,6 +4,8 @@
 @(version: String, user: Option[User])(loginForm: Form[LoginData])(implicit request: RequestHeader, messages: Messages)
 
 @main("Tic-Tac-Toe", version, user) {
+    <script src='@routes.Assets.versioned("javascripts/landingPage.js")'></script>
+} {
     <div class="row">
 
         <div class="col-md-offset-2 col-md-4">
