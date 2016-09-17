@@ -1,0 +1,18 @@
+@(form: Form[_])(implicit request: RequestHeader, messages: Messages)
+
+<div class="has-error">
+
+    @if(form.globalErrors.length == 1) {
+    @defining(form.globalErrors.head) { error =>
+    <span class="help-block">@Messages(error.messages, error.args)</span>
+    }
+    }
+
+    @if(form.globalErrors.length > 1) {
+    <ul>
+        @for(error <- form.globalErrors) {
+        <li><span class="help-block">@Messages(error.messages, error.args)</span></li>
+        }
+    </ul>
+    }
+</div>
