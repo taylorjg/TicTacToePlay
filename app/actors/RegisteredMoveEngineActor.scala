@@ -23,7 +23,5 @@ object RegisteredMoveEngineActor {
 
   case class RegisteredGameMove(oldState: GameState, username: String)
 
-  def props(leaderboard: ActorRef): Props = {
-    Props(classOf[RegisteredMoveEngineActor], leaderboard)
-  }
+  def props(leaderboard: ActorRef): Props = Props(new RegisteredMoveEngineActor(leaderboard))
 }

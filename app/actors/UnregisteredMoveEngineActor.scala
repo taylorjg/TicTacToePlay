@@ -18,7 +18,5 @@ object UnregisteredMoveEngineActor {
 
   case class UnregisteredGameMove(oldState: GameState)
 
-  def props: Props = {
-    Props(classOf[UnregisteredMoveEngineActor])
-  }
+  def props: Props = Props(new UnregisteredMoveEngineActor)
 }

@@ -38,7 +38,5 @@ class MainActor extends Actor {
 }
 
 object MainActor {
-  def props: Props = {
-    Props(classOf[MainActor])
-  }
+  def props: Props = Props(new MainActor)
 }

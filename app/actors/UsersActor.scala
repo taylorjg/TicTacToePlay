@@ -71,7 +71,5 @@ object UsersActor {
   case class LookupUsernameRequest(username: String)
   case class LookupUsernameResponse(user: Option[User])
 
-  def props: Props = {
-    Props(classOf[UsersActor])
-  }
+  def props: Props = Props(new UsersActor)
 }

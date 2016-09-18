@@ -23,7 +23,5 @@ object LeaderboardUpdatesActor {
 
   case object SubscribeForLeaderboardUpdates
 
-  def props(mainActor: ActorRef, out: ActorRef): Props = {
-    Props(classOf[LeaderboardUpdatesActor], mainActor, out)
-  }
+  def props(mainActor: ActorRef, out: ActorRef): Props = Props(new LeaderboardUpdatesActor(mainActor, out))
 }

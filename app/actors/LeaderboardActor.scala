@@ -87,7 +87,5 @@ object LeaderboardActor {
 
   case class GetLeadersResponse(leaders: Seq[LeaderboardEntry])
 
-  def props: Props = {
-    Props(classOf[LeaderboardActor])
-  }
+  def props: Props = Props(new LeaderboardActor)
 }
