@@ -7,9 +7,8 @@ class EngineSpec extends FlatSpec with Matchers {
   private val PLAYER1_PIECE = 'X'
   private val PLAYER2_PIECE = 'O'
 
-  private def gameStateWithBoard(board: String): GameState = {
+  private def gameStateWithBoard(board: String): GameState =
     GameState(board, PLAYER1_PIECE, PLAYER2_PIECE, None, None)
-  }
 
   "computerMove" should "make the winning move when possible" in {
     val oldState = gameStateWithBoard(

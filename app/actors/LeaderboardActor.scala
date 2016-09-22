@@ -42,10 +42,10 @@ class LeaderboardActor extends PersistentActor {
 
     case GetLeadersRequest =>
       val leaders = (entries take LEADERBOARD_SIZE).toSeq
-      sender() ! GetLeadersResponse(leaders)
+      sender ! GetLeadersResponse(leaders)
 
     case SubscribeForLeaderboardUpdates =>
-      val subscriber = sender()
+      val subscriber = sender
       context.watch(subscriber)
       subscriptions += subscriber
 

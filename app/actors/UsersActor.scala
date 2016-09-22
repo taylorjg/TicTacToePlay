@@ -15,17 +15,16 @@ class UsersActor extends PersistentActor {
   override def persistenceId: String = self.path.name
 
   override def receiveRecover: Receive = {
-    case event: User => {
+    case event: User =>
       Logger.info(s"[UsersActor.receiveRecover] event: $event")
       users = applyEvent(event)
-    }
     case RecoveryCompleted => Logger.info("[UsersActor.receiveRecover] RecoveryCompleted")
   }
 
   override def receiveCommand: Receive = {
 
     case command @ RegisterUserRequest(username, password) =>
-      val capturedSender = sender()
+      val capturedSender = sender
       findUserByUsername(username) match {
         case Some(_) =>
           capturedSender ! RegisterUserResponse(None)
@@ -38,16 +37,16 @@ class UsersActor extends PersistentActor {
           }
       }
 
-    case LoginRequest(username, password) => {
+    case LoginRequest(username, password) =>
       val userOption = findUserByUsername(username) filter {
         case User(_, hash) => password.isBcrypted(hash)
       }
       sender ! LoginResponse(userOption)
-    }
 
-    case LookupUsernameRequest(username) => {
-      sender() ! LookupUsernameResponse(findUserByUsername(username))
-    }
+    case LookupUsernameRequest(username) =>
+      sender ! LookupUsernameResponse(findUserByUsername(username))
+
+    case GetUsersRequest => sender ! GetUsersResponse(users.toSeq)
   }
 
   private def applyEvent: PartialFunction[User, Set[User]] = {
@@ -70,6 +69,9 @@ object UsersActor {
 
   case class LookupUsernameRequest(username: String)
   case class LookupUsernameResponse(user: Option[User])
+
+  case object GetUsersRequest
+  case class GetUsersResponse(users: Seq[User])
 
   def props: Props = Props(new UsersActor)
 }
