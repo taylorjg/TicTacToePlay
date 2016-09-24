@@ -1,3 +1,5 @@
+package app.actors
+
 import akka.actor.{ActorSystem, PoisonPill}
 import akka.testkit.{ImplicitSender, TestKit}
 import org.scalatest._

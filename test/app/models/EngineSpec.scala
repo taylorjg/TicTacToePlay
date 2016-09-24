@@ -1,5 +1,7 @@
-import models.{GameState, MoveEngine}
+package app.models
+
 import models.Outcome._
+import models.{GameState, MoveEngine}
 import org.scalatest._
 
 class EngineSpec extends FlatSpec with Matchers {
