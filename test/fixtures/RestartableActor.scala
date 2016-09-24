@@ -1,9 +1,10 @@
-package com.ted.playground.akka.persistence.fixtures
+package fixtures
 
 import akka.persistence.PersistentActor
-import com.ted.playground.akka.persistence.fixtures.RestartableActor._
 
 trait RestartableActor extends PersistentActor {
+
+  import fixtures.RestartableActor._
 
   abstract override def receiveCommand = super.receiveCommand orElse {
     case RestartActor => throw RestartActorException
@@ -11,7 +12,9 @@ trait RestartableActor extends PersistentActor {
 }
 
 object RestartableActor {
+
   case object RestartActor
 
   private object RestartActorException extends Exception
+
 }
