@@ -20,7 +20,6 @@ libraryDependencies += filters
 libraryDependencies ++= Seq(
   "com.github.dnvriend" %% "akka-persistence-inmemory" % "1.3.9" % "test",
   "com.typesafe.akka" %% "akka-testkit" % "2.4.10" % "test",
-  "org.scalatest" %% "scalatest" % "3.0.0" % "test",
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test"
 )
 
