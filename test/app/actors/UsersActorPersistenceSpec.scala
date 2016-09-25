@@ -22,14 +22,14 @@ class UsersActorPersistenceSpec extends TestKit(ActorSystem("UsersActorPersisten
 
   "registering a new user" should "preserve it after restarting the actor" in {
 
-    val usersActor1 = system.actorOf(Props(new UsersActor with RestartableActor))
+    val usersActor = system.actorOf(Props(new UsersActor with RestartableActor))
 
-    usersActor1 ! RegisterUserRequest("username1", "password1")
+    usersActor ! RegisterUserRequest("username1", "password1")
     expectMsgPF() { case RegisterUserResponse(Some(User("username1", _))) => true }
 
-    usersActor1 ! RestartActor
+    usersActor ! RestartActor
 
-    usersActor1 ! GetUsersRequest
+    usersActor ! GetUsersRequest
     expectMsgPF() { case GetUsersResponse(Seq(User("username1", _))) => true }
   }
 }
