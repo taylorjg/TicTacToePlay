@@ -23,15 +23,18 @@ class LeaderboardActorPersistenceSpec extends TestKit(ActorSystem("LeaderboardAc
 
   "finishing a game" should "preserve it after restarting the actor" in {
 
-    val leaderboardActor = system.actorOf(Props(new LeaderboardActor with RestartableActor))
+    akka.testkit.filterException[RestartActorException] {
 
-    leaderboardActor ! GameFinished("username1", Player1Win)
-    leaderboardActor ! GetLeadersRequest
-    expectMsg(GetLeadersResponse(Seq(LeaderboardEntry("username1", 1, 0, 0))))
+      val leaderboardActor = system.actorOf(Props(new LeaderboardActor with RestartableActor))
 
-    leaderboardActor ! RestartActor
+      leaderboardActor ! GameFinished("username1", Player1Win)
+      leaderboardActor ! GetLeadersRequest
+      expectMsg(GetLeadersResponse(Seq(LeaderboardEntry("username1", 1, 0, 0))))
 
-    leaderboardActor ! GetLeadersRequest
-    expectMsg(GetLeadersResponse(Seq(LeaderboardEntry("username1", 1, 0, 0))))
+      leaderboardActor ! RestartActor
+
+      leaderboardActor ! GetLeadersRequest
+      expectMsg(GetLeadersResponse(Seq(LeaderboardEntry("username1", 1, 0, 0))))
+    }
   }
 }
