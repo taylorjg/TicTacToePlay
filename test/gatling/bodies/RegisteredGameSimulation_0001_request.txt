@@ -1,1 +1,0 @@
-{"board":"------X--","player1Piece":"X","player2Piece":"O"}

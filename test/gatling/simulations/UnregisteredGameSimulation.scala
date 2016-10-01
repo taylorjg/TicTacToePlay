@@ -35,15 +35,15 @@ class UnregisteredGameSimulation extends Simulation {
 		.exec(http("request_1")
 			.post("/api/computerMove")
 			.headers(headers_1)
-			.body(RawFileBody("UnregisteredGameSimulation_0001_request.txt"))
+			.body(StringBody("""{"board":"X--------","player1Piece":"X","player2Piece":"O"}"""))
 			.resources(http("request_2")
 			.post("/api/computerMove")
 			.headers(headers_1)
-			.body(RawFileBody("UnregisteredGameSimulation_0002_request.txt")),
+			.body(StringBody("""{"board":"X---X--O-","player1Piece":"X","player2Piece":"O"}""")),
             http("request_3")
 			.post("/api/computerMove")
 			.headers(headers_1)
-			.body(RawFileBody("UnregisteredGameSimulation_0003_request.txt"))))
+			.body(StringBody("""{"board":"X-X-X--OO","player1Piece":"X","player2Piece":"O"}"""))))
 
 	setUp(scn.inject(atOnceUsers(1))).protocols(httpProtocol)
 }
