@@ -1,0 +1,1 @@
+{"board":"X---X--O-","player1Piece":"X","player2Piece":"O"}
