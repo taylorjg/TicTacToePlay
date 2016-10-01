@@ -25,7 +25,7 @@ class MoveEngineSpec extends FlatSpec with Matchers {
     actualNewState should be(expectedNewState)
   }
 
-  "computerMove" should "make the winning move when possible" in {
+  it should "make the winning move when possible" in {
     checkMove(
       makeGameState(
         """
@@ -43,7 +43,7 @@ class MoveEngineSpec extends FlatSpec with Matchers {
         Some(List(1, 4, 7))))
   }
 
-  "computerMove" should "make the blocking move when necessary" in {
+  it should "make the blocking move when necessary" in {
     checkMove(
       makeGameState(
         """
@@ -59,7 +59,7 @@ class MoveEngineSpec extends FlatSpec with Matchers {
         """))
   }
 
-  "computerMove" should "detect when the human player has already won" in {
+  it should "detect when the human player has already won" in {
     checkMove(
       makeGameState(
         """
@@ -77,7 +77,7 @@ class MoveEngineSpec extends FlatSpec with Matchers {
         Some(List(2, 4, 6))))
   }
 
-  "computerMove" should "detect a draw when the human player went first" in {
+  it should "detect a draw when the human player went first" in {
     checkMove(
       makeGameState(
         """
@@ -94,7 +94,7 @@ class MoveEngineSpec extends FlatSpec with Matchers {
         Some(Draw)))
   }
 
-  "computerMove" should "detect a draw when the computer went first" in {
+  it should "detect a draw when the computer went first" in {
     checkMove(
       makeGameState(
         """
@@ -111,7 +111,7 @@ class MoveEngineSpec extends FlatSpec with Matchers {
         Some(Draw)))
   }
 
-  "computerMove" should "return a draw when the only possible computer move happens to be a blocking move" in {
+  it should "return a draw when the only possible computer move happens to be a blocking move" in {
     checkMove(
       makeGameState(
         """
