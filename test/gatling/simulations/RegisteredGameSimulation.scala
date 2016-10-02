@@ -1,7 +1,19 @@
+package gatling.simulations
+
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import io.gatling.core.structure.ScenarioBuilder
 
 class RegisteredGameSimulation extends Simulation {
+
+  implicit class ScenarioBuilderExtensions(sb: ScenarioBuilder) {
+    def dumpSession(): ScenarioBuilder = {
+      sb.exec(session => {
+        println(s"session: $session")
+        session
+      })
+    }
+  }
 
   val httpProtocol = http
     .baseURL("http://localhost:9000")
@@ -23,30 +35,21 @@ class RegisteredGameSimulation extends Simulation {
       .headers(postHeaders)
       .body(StringBody("""{"board":"------X--","player1Piece":"X","player2Piece":"O"}"""))
       .check(jsonPath("$.board").saveAs("board")))
-    .exec(session => {
-      println(s"session: $session")
-      session
-    })
+    .dumpSession()
     .pause(1)
     .exec(http("humanMove1")
       .post("/api/computerMove")
       .headers(postHeaders)
       .body(StringBody("""{"board":"-OX---X--","player1Piece":"X","player2Piece":"O"}"""))
       .check(jsonPath("$.board").saveAs("board")))
-    .exec(session => {
-      println(s"session: $session")
-      session
-    })
+    .dumpSession()
     .pause(1)
     .exec(http("humanMove1")
       .post("/api/computerMove")
       .headers(postHeaders)
       .body(StringBody("""{"board":"-OX-O-X-X","player1Piece":"X","player2Piece":"O"}"""))
       .check(jsonPath("$.board").saveAs("board")))
-    .exec(session => {
-      println(s"session: $session")
-      session
-    })
+    .dumpSession()
 
-  setUp(scn.inject(atOnceUsers(1))).protocols(httpProtocol)
+  setUp(scn.inject(atOnceUsers(10))).protocols(httpProtocol)
 }
