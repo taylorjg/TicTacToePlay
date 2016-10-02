@@ -11,6 +11,7 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
+import play.api.mvc.Security
 import play.api.{Configuration, Logger}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,7 +42,7 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
         response map {
           case RegisterUserResponse(Some(user)) =>
             Logger.info(s"Created new user: $user")
-            Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_FIELD -> user.username)
+            Redirect(routes.TicTacToeController.registeredGame()).withSession(Security.username -> user.username)
           case RegisterUserResponse(None) =>
             val formError = FormError(USERNAME_FIELD, "registrationForm.usernameAlreadyExists", Seq(registrationData.username))
             val filledFormWithError = filledForm.withError(formError)
@@ -63,7 +64,7 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
         val response = (mainActor ? LoginRequest(loginData.username, loginData.password)).mapTo[LoginResponse]
         response map {
           case LoginResponse(Some(user)) =>
-            Redirect(routes.TicTacToeController.registeredGame()).withSession(USERNAME_FIELD -> user.username)
+            Redirect(routes.TicTacToeController.registeredGame()).withSession(Security.username -> user.username)
           case LoginResponse(None) =>
             val filledFormWithGlobalError = filledForm.withGlobalError("loginForm.badLogin")
             Logger.warn(filledFormWithGlobalError.translatedErrorMessages)
