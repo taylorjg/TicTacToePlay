@@ -34,3 +34,5 @@ resolvers += Resolver.url("Typesafe Ivy releases", url("https://repo.typesafe.co
 // fork in run := true
 
 herokuAppName in Compile := "tictactoeplay"
+
+libraryDependencies += "io.gatling" % "gatling-test-framework" % "2.2.2" % "test"

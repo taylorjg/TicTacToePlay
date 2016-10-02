@@ -1,8 +1,5 @@
-import scala.concurrent.duration._
-
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import io.gatling.jdbc.Predef._
 
 class RegisteredGameSimulation extends Simulation {
 
@@ -25,8 +22,6 @@ class RegisteredGameSimulation extends Simulation {
 		"Content-Type" -> "application/json",
 		"Origin" -> "http://localhost:9000",
 		"X-Requested-With" -> "XMLHttpRequest")
-
-
 
 	val scn = scenario("RegisteredGameSimulation")
 		.exec(http("request_0")
