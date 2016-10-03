@@ -7,6 +7,24 @@ import io.gatling.http.Predef._
 class DynamicGameSimulation extends Simulation {
 
   implicit class ScenarioBuilderExtensions(sb: ScenarioBuilder) {
+
+    def loadUnregisteredGamePage(): ScenarioBuilder = {
+      sb
+        .exec(http("loadUnregisteredGamePage")
+          .get("/unregisteredGame"))
+    }
+
+    def makeHumanMove(board: String): ScenarioBuilder = {
+      sb
+        .pause(1)
+        .exec(http(s"humanMove-$board")
+          .post("/api/computerMove")
+          .headers(postHeaders)
+          .body(StringBody(makeGameStateJson(board)))
+          .check(saveBoard(), saveOutcome()))
+        .dumpSession()
+    }
+
     def dumpSession(): ScenarioBuilder = {
       sb.exec(session => {
         println(s"[session] board: ${session("board").asOption[String]}; outcome: ${session("outcome").asOption[String]}")
@@ -28,31 +46,11 @@ class DynamicGameSimulation extends Simulation {
 
   val postHeaders = Map("Content-Type" -> "application/json")
 
-  val scn = scenario("UnregisteredGameSimulation")
-    .exec(http("loadPage")
-      .get("/unregisteredGame")
-    )
-    .pause(1)
-    .exec(http("humanMove1")
-      .post("/api/computerMove")
-      .headers(postHeaders)
-      .body(StringBody(makeGameStateJson("X--------")))
-      .check(saveBoard(), saveOutcome()))
-    .dumpSession()
-    .pause(1)
-    .exec(http("humanMove2")
-      .post("/api/computerMove")
-      .headers(postHeaders)
-      .body(StringBody(makeGameStateJson("X---X--O-")))
-      .check(saveBoard(), saveOutcome()))
-    .dumpSession()
-    .pause(1)
-    .exec(http("humanMove3")
-      .post("/api/computerMove")
-      .headers(postHeaders)
-      .body(StringBody(makeGameStateJson("X-X-X--OO")))
-      .check(saveBoard(), saveOutcome()))
-    .dumpSession()
+  val scn = scenario("DynamicGameSimulation")
+    .loadUnregisteredGamePage()
+    .makeHumanMove("X--------")
+    .makeHumanMove("X---X--O-")
+    .makeHumanMove("X-X-X--OO")
 
-  setUp(scn.inject(atOnceUsers(1))).protocols(httpProtocol)
+  setUp(scn.inject(atOnceUsers(10))).protocols(httpProtocol)
 }
