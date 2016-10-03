@@ -48,9 +48,16 @@ class DynamicGameSimulation extends Simulation {
 
   val scn = scenario("DynamicGameSimulation")
     .loadUnregisteredGamePage()
-    .makeHumanMove("X--------")
-    .makeHumanMove("X---X--O-")
-    .makeHumanMove("X-X-X--OO")
+    .exec(session => session.set("board", "---------").set("moveNumber", 1))
+    .asLongAs(session => session("outcome").asOption[Int].isEmpty) {
+      exec(http("humanMove-${moveNumber}")
+        .post("/api/computerMove")
+        .headers(postHeaders)
+        .body(StringBody(makeGameStateJson("${board}")))
+        .check(saveBoard(), saveOutcome()))
+        .exec(session => session.set("moveNumber", session("moveNumber").as[Int] + 1))
+        .pause(1)
+    }
 
-  setUp(scn.inject(atOnceUsers(10))).protocols(httpProtocol)
+  setUp(scn.inject(atOnceUsers(1))).protocols(httpProtocol)
 }
