@@ -4,7 +4,14 @@ import models.Outcome._
 
 object MoveEngine {
 
-  val LINES = List(
+  def computerMove(state: GameState): GameState = {
+    checkForWinOrDraw(state)
+      .orElse(tryToWin(state))
+      .orElse(tryToBlock(state))
+      .getOrElse(makeRandomMove(state))
+  }
+
+  private val LINES = List(
     List(0, 1, 2),
     List(3, 4, 5),
     List(6, 7, 8),
@@ -15,14 +22,7 @@ object MoveEngine {
     List(2, 4, 6)
   )
 
-  val random = scala.util.Random
-
-  def computerMove(state: GameState): GameState = {
-    checkForWinOrDraw(state)
-      .orElse(tryToWin(state))
-      .orElse(tryToBlock(state))
-      .getOrElse(makeRandomMove(state))
-  }
+  private val random = scala.util.Random
 
   private def makeRandomMove(state: GameState): GameState = {
     val board = state.board
