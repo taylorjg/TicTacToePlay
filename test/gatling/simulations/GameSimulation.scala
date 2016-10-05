@@ -4,22 +4,17 @@ import io.gatling.core.Predef._
 import io.gatling.core.session.Expression
 import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
+import scala.concurrent.duration._
 
-class DynamicGameSimulation extends Simulation {
+class GameSimulation(pageURL: String, playSession: Option[String] = None) extends Simulation {
 
   private implicit class ScenarioBuilderExtensions(sb: ScenarioBuilder) {
-
-    def loadUnregisteredGamePage(): ScenarioBuilder =
+    def loadPage(): ScenarioBuilder = {
       sb
-        .exec(http("loadUnregisteredGamePage")
-          .get("/unregisteredGame"))
-
-    def dumpSession(): ScenarioBuilder =
-      sb.exec(session => {
-        println(s"[session] board: ${session("board").asOption[String]}; outcome: ${session("outcome").asOption[Int]}")
-        session
-      })
-
+        .exec(http("loadPage")
+          .get(pageURL)
+          .headers(getHeaders))
+    }
   }
 
   private implicit class ChainBuilderExtensions(cb: ChainBuilder) {
@@ -41,13 +36,13 @@ class DynamicGameSimulation extends Simulation {
     random.nextInt(10) <= 4
   }
 
+  private final val INITIAL_BOARD = "---------"
+
   private def makeRandomMove(board: String): String = {
-    if (board == "---------" && coinTossIsHeads()) {
-      // computer to move first
+    if (board == INITIAL_BOARD && coinTossIsHeads()) {
       board
     }
     else {
-      // human to move first
       val emptyLocationIndices = board.zipWithIndex.collect { case (ch, index) if ch == '-' => index }
       val randomChoice = random.nextInt(emptyLocationIndices.indices.length)
       val emptyLocationIndex = emptyLocationIndices(randomChoice)
@@ -59,18 +54,26 @@ class DynamicGameSimulation extends Simulation {
     .baseURL("http://localhost:9000")
     .inferHtmlResources()
 
-  private val postHeaders = Map("Content-Type" -> "application/json")
+  private val cookieHeader: Map[String, String] = playSession match {
+    case Some(value) => Map("Cookie" -> value)
+    case None => Map()
+  }
+
+  private val getHeaders = cookieHeader
+
+  private val postHeaders = Map("Content-Type" -> "application/json") ++ cookieHeader
 
   private val initialiseSessionValues: Expression[Session] = session =>
     session
-      .set("board", "---------")
+      .set("board", INITIAL_BOARD)
       .set("moveNumber", 1)
 
+  // TODO: extract a HOF to update a session value
   private val updateSessionBoardValueWithHumanMove: Expression[Session] = session =>
     session.set("board", makeRandomMove(session("board").as[String]))
 
-  val scn = scenario("DynamicGameSimulation")
-    .loadUnregisteredGamePage()
+  private val scn = scenario("DynamicGameSimulation")
+    .loadPage()
     .exec(initialiseSessionValues)
     .asLongAs(session => session("outcome").asOption[Int].isEmpty) {
       exec(updateSessionBoardValueWithHumanMove)
@@ -84,5 +87,5 @@ class DynamicGameSimulation extends Simulation {
         .pause(1)
     }
 
-  setUp(scn.inject(atOnceUsers(10))).protocols(httpProtocol)
+  setUp(scn.inject(rampUsers(650) over (20 seconds))).protocols(httpProtocol)
 }
