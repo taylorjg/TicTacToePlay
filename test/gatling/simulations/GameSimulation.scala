@@ -4,7 +4,9 @@ import io.gatling.core.Predef._
 import io.gatling.core.session.Expression
 import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
+
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class GameSimulation(pageURL: String, playSession: Option[String] = None) extends Simulation {
 
