@@ -18,11 +18,12 @@ class GameSimulation(pageURL: String, playSession: Option[String] = None) extend
   }
 
   private implicit class ChainBuilderExtensions(cb: ChainBuilder) {
-    def incrementMoveNumber(): ChainBuilder = {
-      cb
-        .exec(session => session.set("moveNumber", session("moveNumber").as[Int] + 1))
-    }
+    def incrementMoveNumber(): ChainBuilder =
+      cb.exec(updateSessionValue[Int]("moveNumber")(_ + 1))
   }
+
+  private def updateSessionValue[A](key: String)(f: A => A): Expression[Session] =
+    session => session.set(key, f(session(key).as[A]))
 
   private val random = scala.util.Random
 
@@ -43,10 +44,9 @@ class GameSimulation(pageURL: String, playSession: Option[String] = None) extend
       board
     }
     else {
-      val emptyLocationIndices = board.zipWithIndex.collect { case (ch, index) if ch == '-' => index }
-      val randomChoice = random.nextInt(emptyLocationIndices.indices.length)
-      val emptyLocationIndex = emptyLocationIndices(randomChoice)
-      board.updated(emptyLocationIndex, 'X')
+      val choices = board.zipWithIndex.collect { case (ch, index) if ch == '-' => index }
+      val choice = choices(random.nextInt(choices.length))
+      board.updated(choice, 'X')
     }
   }
 
@@ -68,15 +68,11 @@ class GameSimulation(pageURL: String, playSession: Option[String] = None) extend
       .set("board", INITIAL_BOARD)
       .set("moveNumber", 1)
 
-  // TODO: extract a HOF to update a session value
-  private val updateSessionBoardValueWithHumanMove: Expression[Session] = session =>
-    session.set("board", makeRandomMove(session("board").as[String]))
-
   private val scn = scenario("DynamicGameSimulation")
     .loadPage()
     .exec(initialiseSessionValues)
     .asLongAs(session => session("outcome").asOption[Int].isEmpty) {
-      exec(updateSessionBoardValueWithHumanMove)
+      exec(updateSessionValue("board")(makeRandomMove))
         .exec(http("humanMove-${moveNumber}")
           .post("/api/computerMove")
           .headers(postHeaders)
