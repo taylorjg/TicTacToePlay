@@ -63,7 +63,7 @@ class GameSimulation(pageURL: String, playSession: Option[String] = None) extend
 
   private val getHeaders = cookieHeader
 
-  private val postHeaders = Map("Content-Type" -> "application/json") ++ cookieHeader
+  private val postHeaders = cookieHeader ++ Map("Content-Type" -> "application/json")
 
   private val initialiseSessionValues: Expression[Session] = session =>
     session
@@ -85,5 +85,5 @@ class GameSimulation(pageURL: String, playSession: Option[String] = None) extend
         .pause(1)
     }
 
-  setUp(scn.inject(rampUsers(650) over (20 seconds))).protocols(httpProtocol)
+  setUp(scn.inject(rampUsers(200) over (20 seconds))).protocols(httpProtocol)
 }
