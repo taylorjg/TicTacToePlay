@@ -10,13 +10,7 @@ import scala.language.postfixOps
 
 class GameSimulation(registeredGame: Boolean) extends Simulation {
 
-  val pageURL = if (registeredGame) "/registeredGame" else "/unregisteredGame"
-
   private implicit class ScenarioBuilderExtensions(sb: ScenarioBuilder) {
-
-    def loadGamePage(): ScenarioBuilder = {
-      sb.exec(http("loadPage").get(pageURL))
-    }
 
     def doRegistration(username: String): ScenarioBuilder = {
       if (registeredGame) {
@@ -31,9 +25,21 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
       }
       else sb
     }
+
+    private final val GAME_PAGE_URL = if (registeredGame) "/registeredGame" else "/unregisteredGame"
+
+    def loadGamePage(): ScenarioBuilder = {
+      sb.exec(http("loadPage").get(GAME_PAGE_URL))
+    }
   }
 
   private implicit class ChainBuilderExtensions(cb: ChainBuilder) {
+
+    private val postHeaders = Map("Content-Type" -> "application/json")
+
+    private def saveBoard() = jsonPath("$.board").saveAs("board")
+
+    private def saveOutcome() = jsonPath("$.outcome").ofType[Int].optional.saveAs("outcome")
 
     def makeComputerMove(): ChainBuilder = {
       cb
@@ -53,18 +59,13 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
     session => session.set(key, f(session(key).as[A]))
 
   private val random = scala.util.Random
-
-  private def saveBoard() = jsonPath("$.board").saveAs("board")
-
-  private def saveOutcome() = jsonPath("$.outcome").ofType[Int].optional.saveAs("outcome")
+  private final val INITIAL_BOARD = "---------"
 
   private def coinTossIsHeads(): Boolean = {
     // [0..4] = heads
     // [5..9] = tails
     random.nextInt(10) <= 4
   }
-
-  private final val INITIAL_BOARD = "---------"
 
   private def makeHumanMove(board: String): String = {
     if (board == INITIAL_BOARD && coinTossIsHeads()) {
@@ -76,12 +77,6 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
       board.updated(choice, 'X')
     }
   }
-
-  private val httpProtocol = http
-    .baseURL("http://localhost:9000")
-    .inferHtmlResources()
-
-  private val postHeaders = Map("Content-Type" -> "application/json")
 
   private val initialiseSessionValues: Expression[Session] = session =>
     session
@@ -104,6 +99,10 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
         .incrementMoveNumber()
         .pause(1)
     }
+
+  private val httpProtocol = http
+    .baseURL("http://localhost:9000")
+    .inferHtmlResources()
 
   setUp(scn.inject(rampUsers(10) over (20 seconds))).protocols(httpProtocol)
 }
