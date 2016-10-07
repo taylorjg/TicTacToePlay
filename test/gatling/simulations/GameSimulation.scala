@@ -8,18 +8,43 @@ import io.gatling.http.Predef._
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class GameSimulation(pageURL: String, playSession: Option[String] = None) extends Simulation {
+class GameSimulation(registeredGame: Boolean) extends Simulation {
+
+  val pageURL = if (registeredGame) "/registeredGame" else "/unregisteredGame"
 
   private implicit class ScenarioBuilderExtensions(sb: ScenarioBuilder) {
+
     def loadPage(): ScenarioBuilder = {
-      sb
-        .exec(http("loadPage")
-          .get(pageURL)
-          .headers(getHeaders))
+      sb.exec(http("loadPage").get(pageURL))
+    }
+
+    def doRegistration(username: String): ScenarioBuilder = {
+      if (registeredGame) {
+        sb
+          .exec(http("loadRegistrationPage")
+            .get("/registration"))
+          .exec(http("register")
+            .post("/registration")
+            .formParam("username", username)
+            .formParam("password", username)
+            .formParam("password2", username))
+      }
+      else sb
     }
   }
 
   private implicit class ChainBuilderExtensions(cb: ChainBuilder) {
+
+    def makeComputerMove(): ChainBuilder = {
+      cb
+        .exec(http("computerMove-${moveNumber}")
+          .post("/api/computerMove")
+          .headers(postHeaders)
+          .body(StringBody("""{"board":"${board}","player1Piece":"X","player2Piece":"O"}"""))
+          .check(saveBoard(), saveOutcome())
+        )
+    }
+
     def incrementMoveNumber(): ChainBuilder =
       cb.exec(updateSessionValue[Int]("moveNumber")(_ + 1))
   }
@@ -41,7 +66,7 @@ class GameSimulation(pageURL: String, playSession: Option[String] = None) extend
 
   private final val INITIAL_BOARD = "---------"
 
-  private def makeRandomMove(board: String): String = {
+  private def makeHumanMove(board: String): String = {
     if (board == INITIAL_BOARD && coinTossIsHeads()) {
       board
     }
@@ -56,34 +81,27 @@ class GameSimulation(pageURL: String, playSession: Option[String] = None) extend
     .baseURL("http://localhost:9000")
     .inferHtmlResources()
 
-  private val cookieHeader: Map[String, String] = playSession match {
-    case Some(value) => Map("Cookie" -> value)
-    case None => Map()
-  }
-
-  private val getHeaders = cookieHeader
-
-  private val postHeaders = cookieHeader ++ Map("Content-Type" -> "application/json")
+  private val postHeaders = Map("Content-Type" -> "application/json")
 
   private val initialiseSessionValues: Expression[Session] = session =>
     session
       .set("board", INITIAL_BOARD)
       .set("moveNumber", 1)
 
-  private val scn = scenario("DynamicGameSimulation")
+  private val gameIsNotOver: Expression[Boolean] = session =>
+    session("outcome").asOption[Int].isEmpty
+
+  private val scn = scenario("GameSimulation")
     .loadPage()
+    .doRegistration("testuser1")
     .exec(initialiseSessionValues)
-    .asLongAs(session => session("outcome").asOption[Int].isEmpty) {
-      exec(updateSessionValue("board")(makeRandomMove))
-        .exec(http("humanMove-${moveNumber}")
-          .post("/api/computerMove")
-          .headers(postHeaders)
-          .body(StringBody("""{"board":"${board}","player1Piece":"X","player2Piece":"O"}"""))
-          .check(saveBoard(), saveOutcome())
-        )
+    .asLongAs(gameIsNotOver) {
+      exec(updateSessionValue("board")(makeHumanMove))
+        .makeComputerMove()
         .incrementMoveNumber()
         .pause(1)
     }
 
-  setUp(scn.inject(rampUsers(200) over (20 seconds))).protocols(httpProtocol)
+  //setUp(scn.inject(rampUsers(200) over (20 seconds))).protocols(httpProtocol)
+  setUp(scn.inject(rampUsers(1) over (1 seconds))).protocols(httpProtocol)
 }
