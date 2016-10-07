@@ -14,7 +14,7 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
 
   private implicit class ScenarioBuilderExtensions(sb: ScenarioBuilder) {
 
-    def loadPage(): ScenarioBuilder = {
+    def loadGamePage(): ScenarioBuilder = {
       sb.exec(http("loadPage").get(pageURL))
     }
 
@@ -91,10 +91,13 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
   private val gameIsNotOver: Expression[Boolean] = session =>
     session("outcome").asOption[Int].isEmpty
 
+  private val feeder = Iterator.from(1).map(i => Map("userId" -> i))
+
   private val scn = scenario("GameSimulation")
-    .loadPage()
-    .doRegistration("testuser1")
     .exec(initialiseSessionValues)
+    .feed(feeder)
+    .doRegistration("testuser${userId}")
+    .loadGamePage()
     .asLongAs(gameIsNotOver) {
       exec(updateSessionValue("board")(makeHumanMove))
         .makeComputerMove()
@@ -102,6 +105,5 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
         .pause(1)
     }
 
-  //setUp(scn.inject(rampUsers(200) over (20 seconds))).protocols(httpProtocol)
-  setUp(scn.inject(rampUsers(1) over (1 seconds))).protocols(httpProtocol)
+  setUp(scn.inject(rampUsers(10) over (20 seconds))).protocols(httpProtocol)
 }
