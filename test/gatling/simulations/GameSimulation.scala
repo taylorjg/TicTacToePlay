@@ -5,9 +5,6 @@ import io.gatling.core.session.Expression
 import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
 
-import scala.concurrent.duration._
-import scala.language.postfixOps
-
 class GameSimulation(registeredGame: Boolean) extends Simulation {
 
   private implicit class ScenarioBuilderExtensions(sb: ScenarioBuilder) {
@@ -31,6 +28,9 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
     def loadGamePage(): ScenarioBuilder = {
       sb.exec(http("loadPage").get(GAME_PAGE_URL))
     }
+
+    def randomPause(): ScenarioBuilder =
+      sb.pause(random.nextInt(3))
   }
 
   private implicit class ChainBuilderExtensions(cb: ChainBuilder) {
@@ -53,6 +53,9 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
 
     def incrementMoveNumber(): ChainBuilder =
       cb.exec(updateSessionValue[Int]("moveNumber")(_ + 1))
+
+    def randomPause(): ChainBuilder =
+      cb.pause(random.nextInt(3))
   }
 
   private def updateSessionValue[A](key: String)(f: A => A): Expression[Session] =
@@ -82,28 +85,33 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
     session
       .set("board", INITIAL_BOARD)
       .set("moveNumber", 1)
+      .remove("outcome")
 
-  private val gameIsNotOver: Expression[Boolean] = session =>
-    session("outcome").asOption[Int].isEmpty
+  private val gameIsNotOver: Expression[Boolean] = "${outcome.isUndefined()}"
 
-  private val feeder = Iterator.from(1).map(i => Map("userId" -> i))
+  private val updateBoard: Expression[Session] = updateSessionValue("board")(makeHumanMove)
+
+  private val feeder = Iterator.from(1).map(i => Map("n" -> i))
 
   val numUsers = Integer.getInteger("numUsers", 1)
   val ramp = Integer.getInteger("ramp", 1)
-
   println(s"numUsers: $numUsers")
   println(s"ramp: $ramp")
 
   private val scn = scenario("GameSimulation")
-    .exec(initialiseSessionValues)
     .feed(feeder)
-    .doRegistration("testuser${userId}")
+    .doRegistration("testuser${n}")
+    .randomPause()
     .loadGamePage()
-    .asLongAs(gameIsNotOver) {
-      exec(updateSessionValue("board")(makeHumanMove))
-        .makeComputerMove()
-        .incrementMoveNumber()
-        .pause(1)
+    .randomPause()
+    .repeat(5) {
+      exec(initialiseSessionValues)
+        .asLongAs(gameIsNotOver) {
+          exec(updateBoard)
+            .makeComputerMove()
+            .incrementMoveNumber()
+            .randomPause()
+        }
     }
 
   private val httpProtocol = http

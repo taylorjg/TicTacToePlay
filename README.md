@@ -80,10 +80,10 @@ You can then enjoy playing serious games and try to conquer the leaderboard.
 
 ### Phase 4
 
-* Add tests
+* ~~Add tests~~
   * ~~Unit tests~~
+  * ~~Akka Persistence tests~~
   * ~~Gatling load tests~~
-  * Other ?
 
 ### Phase 5
 
