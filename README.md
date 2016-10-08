@@ -14,7 +14,7 @@ the following tools and technologies:
 * ~~Jenkins~~
 * Docker
 * ~~Heroku~~
-* Gatling
+* ~~Gatling~~
 
 ## Deployed application
 
@@ -65,7 +65,7 @@ You can then enjoy playing serious games and try to conquer the leaderboard.
 
 ### Phase 2
 
-* Deploy to Heroku
+* ~~Deploy to Heroku~~
   * ~~Basic deployment~~
   * Optimise assets e.g. JavaScript etc.
   * ~~Remove unneeded cruft included in the Activator template~~
@@ -81,7 +81,9 @@ You can then enjoy playing serious games and try to conquer the leaderboard.
 ### Phase 4
 
 * Add tests
-  * TODO: list the types of test to add
+  * ~~Unit tests~~
+  * ~~Gatling load tests~~
+  * Other ?
 
 ### Phase 5
 

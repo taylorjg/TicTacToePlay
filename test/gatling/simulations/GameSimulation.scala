@@ -88,6 +88,12 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
 
   private val feeder = Iterator.from(1).map(i => Map("userId" -> i))
 
+  val numUsers = Integer.getInteger("numUsers", 1)
+  val ramp = Integer.getInteger("ramp", 1)
+
+  println(s"numUsers: $numUsers")
+  println(s"ramp: $ramp")
+
   private val scn = scenario("GameSimulation")
     .exec(initialiseSessionValues)
     .feed(feeder)
@@ -104,5 +110,5 @@ class GameSimulation(registeredGame: Boolean) extends Simulation {
     .baseURL("http://localhost:9000")
     .inferHtmlResources()
 
-  setUp(scn.inject(rampUsers(10) over (20 seconds))).protocols(httpProtocol)
+  setUp(scn.inject(rampUsers(numUsers) over (ramp seconds))).protocols(httpProtocol)
 }
