@@ -81,7 +81,7 @@ class LeaderboardActor extends PersistentActor {
 
 object LeaderboardActor {
 
-  case class GameFinished(username: String, outcome: Outcome)
+  case class GameFinished(username: String, outcome: Outcome) extends stamina.Persistable
 
   case object GetLeadersRequest
 

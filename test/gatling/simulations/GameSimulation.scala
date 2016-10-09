@@ -4,6 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.core.session.Expression
 import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
+import scala.language.postfixOps
 
 class GameSimulation(registeredGame: Boolean) extends Simulation {
 

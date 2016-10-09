@@ -35,4 +35,7 @@ resolvers += Resolver.url("Typesafe Ivy releases", url("https://repo.typesafe.co
 
 herokuAppName in Compile := "tictactoeplay"
 
+libraryDependencies += "com.github.fommil" %% "spray-json-shapeless" % "1.3.0"
+libraryDependencies += "com.scalapenos" %% "stamina-json" % "0.1.1"
+
 libraryDependencies += "io.gatling" % "gatling-test-framework" % "2.2.2" % "test"
