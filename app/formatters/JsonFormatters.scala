@@ -1,7 +1,7 @@
 package formatters
 
 import models.Outcome.{Outcome, _}
-import models.{GameState, LeaderboardEntry}
+import models.{GameState, LeaderboardEntry, User}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -38,6 +38,12 @@ object JsonFormatters {
   implicit val gameStateReads: Reads[GameState] = Json.reads[GameState]
   implicit val gameStateWrites: Writes[GameState] = Json.writes[GameState]
 
+  implicit val leaderboardEntryReads: Reads[LeaderboardEntry] = (
+    (JsPath \ "username").read[String] and
+    (JsPath \ "numWon").read[Int] and
+    (JsPath \ "numDrawn").read[Int] and
+    (JsPath \ "numLost").read[Int]
+    )(LeaderboardEntry.apply _)
   implicit val leaderboardEntryWrites: Writes[LeaderboardEntry] = (
     (JsPath \ "username").write[String] and
     (JsPath \ "numWon").write[Int] and
@@ -46,4 +52,7 @@ object JsonFormatters {
     (JsPath \ "played").write[Int] and
     (JsPath \ "points").write[Int]
     )(le => (le.username, le.numWon, le.numDrawn, le.numLost, le.played, le.points))
+
+  implicit val userReads: Reads[User] = Json.reads[User]
+  implicit val userWrites: Writes[User] = Json.writes[User]
 }
