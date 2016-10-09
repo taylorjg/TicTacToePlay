@@ -27,7 +27,7 @@ class CustomApplicationLoader extends GuiceApplicationLoader() {
     val user = bits(0).getOrElse("")
     val password = bits(1).getOrElse("")
     val port = if (uri.getPort != -1) uri.getPort else DEFAULT_POSTGRES_PORT
-    val url = s"jdbc:postgresql://${uri.getHost}:${port}${uri.getPath}"
+    val url = s"jdbc:postgresql://${uri.getHost}:$port${uri.getPath}"
 
     Configuration(
       "akka-persistence-sql-async.user" -> user,
