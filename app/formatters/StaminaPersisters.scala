@@ -9,15 +9,17 @@ import stamina.json._
 
 object StaminaPersisters {
 
+  // https://groups.google.com/forum/#!topic/spray-user/RkIwRIXzDDc
   private def jsonEnum[T <: Enumeration](enu: T) = new JsonFormat[T#Value] {
     def write(obj: T#Value) = JsString(obj.toString)
+
     def read(json: JsValue) = json match {
       case JsString(txt) => enu.withName(txt)
       case something => throw DeserializationException(s"Expected a value from enum $enu instead of $something")
     }
   }
 
-  implicit val outcomeFormat = jsonEnum(Outcome)
+  private implicit val outcomeFormat = jsonEnum(Outcome)
 
   val v1GameFinishedPersister = persister[GameFinished]("game-finished")
   val v1UserPersister = persister[User]("user")
@@ -25,4 +27,6 @@ object StaminaPersisters {
 
 import formatters.StaminaPersisters._
 
-class StaminaSerialiser extends StaminaAkkaSerializer(v1GameFinishedPersister, v1UserPersister)
+class StaminaSerialiser extends StaminaAkkaSerializer(
+  v1GameFinishedPersister,
+  v1UserPersister)
