@@ -10,6 +10,7 @@ import akka.stream.Materializer
 import builders.MyActionBuilders
 import defaults.Defaults._
 import models._
+import modules.UserService
 import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.streams._
@@ -20,7 +21,8 @@ import utils.Utils
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class ApiController @Inject()(@Named("mainActor") val mainActor: ActorRef)
+class ApiController @Inject()(@Named("mainActor") val mainActor: ActorRef,
+                              val userService: UserService)
                              (implicit system: ActorSystem, materializer: Materializer)
   extends Controller
   with MyActionBuilders {

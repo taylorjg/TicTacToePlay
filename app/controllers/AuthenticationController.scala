@@ -7,6 +7,7 @@ import akka.pattern.ask
 import builders.MyActionBuilders
 import defaults.Defaults._
 import extensions.FormsExtensions._
+import modules.UserService
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -19,6 +20,7 @@ import scala.concurrent.Future
 
 @Singleton
 class AuthenticationController @Inject()(@Named("mainActor") val mainActor: ActorRef,
+                                         val userService: UserService,
                                          val messagesApi: MessagesApi,
                                          configuration: Configuration)
   extends Controller

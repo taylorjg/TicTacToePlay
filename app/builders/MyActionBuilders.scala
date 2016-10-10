@@ -1,36 +1,30 @@
 package builders
 
-import akka.actor.ActorRef
-import akka.pattern.ask
-import defaults.Defaults._
 import controllers.routes
 import models.User
+import modules.UserService
 import play.api.mvc.Security.AuthenticatedRequest
-import play.api.mvc.Security
-import play.api.mvc.{ActionBuilder, Request, Result, Results}
+import play.api.mvc._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait MyActionBuilders {
 
-  def mainActor: ActorRef
+  val userService: UserService
 
   def AuthenticatedBuilder = new ActionBuilder[({type R[A] = AuthenticatedRequest[A, User]})#R] with Results {
-
-    import actors.UsersActor.{LookupUsernameRequest, LookupUsernameResponse}
 
     private val indexCall = routes.TicTacToeController.index()
 
     override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A, User]) => Future[Result]): Future[Result] = {
       request.session.get(Security.username) match {
         case Some(username) =>
-          val response = (mainActor ? LookupUsernameRequest(username)).mapTo[LookupUsernameResponse]
-          response flatMap {
-            case LookupUsernameResponse(Some(user)) =>
+            userService.lookupUsername(username) flatMap {
+            case Some(user) =>
               val authenticatedRequest = new AuthenticatedRequest(user, request)
               block(authenticatedRequest)
-            case LookupUsernameResponse(None) =>
+            case None =>
               Future.successful(Redirect(indexCall).withNewSession)
           }
         case None => Future.successful(Redirect(indexCall).withNewSession)
@@ -40,14 +34,11 @@ trait MyActionBuilders {
 
   def OptionallyAuthenticatedBuilder = new ActionBuilder[({type R[A] = AuthenticatedRequest[A, Option[User]]})#R] with Results {
 
-    import actors.UsersActor.{LookupUsernameRequest, LookupUsernameResponse}
-
     override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A, Option[User]]) => Future[Result]): Future[Result] = {
       request.session.get(Security.username) match {
         case Some(username) =>
-          val response = (mainActor ? LookupUsernameRequest(username)).mapTo[LookupUsernameResponse]
-          response flatMap {
-            case LookupUsernameResponse(userOption) =>
+          userService.lookupUsername(username) flatMap {
+            userOption =>
               val authenticatedRequest = new AuthenticatedRequest(userOption, request)
               block(authenticatedRequest)
           }
