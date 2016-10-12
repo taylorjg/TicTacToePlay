@@ -13,15 +13,19 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.bind
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+object MockUserService {
+  private final val MOCK_USERS = Seq(
+    User("testuser1", "not-used-password-hash"),
+    User("testuser2", "not-used-password-hash"),
+    User("testuser3", "not-used-password-hash"))
+}
 
 class MockUserService extends UserService {
-  private final val VALID_USERS = Seq(
-    User("testuser1", "dont-care-password-hash"),
-    User("testuser2", "dont-care-password-hash"),
-    User("testuser3", "dont-care-password-hash"))
-
+  import MockUserService.MOCK_USERS
   override def lookupUsername(username: String): Future[Option[User]] =
-    Future.successful(VALID_USERS.find(_.username == username))
+    Future { MOCK_USERS.find(_.username == username) }
 }
 
 class AuthenticationSpec extends PlaySpec
