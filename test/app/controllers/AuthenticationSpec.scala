@@ -14,29 +14,32 @@ import play.api.inject.bind
 
 import scala.concurrent.Future
 
-class AuthenticationSpec
-  extends PlaySpec
-    with OneAppPerTest
-    with Results
-    with UserService {
+class MockUserService extends UserService {
+  private final val VALID_USERS = Seq(
+    User("testuser1", "dont-care-password-hash"),
+    User("testuser2", "dont-care-password-hash"),
+    User("testuser3", "dont-care-password-hash"))
 
-  var lookupUsernameResult: Future[Option[User]] = _
+  override def lookupUsername(username: String): Future[Option[User]] =
+    Future.successful(VALID_USERS.find(_.username == username))
+}
+
+class AuthenticationSpec extends PlaySpec
+  with OneAppPerTest
+  with Results {
 
   override def newAppForTest(testData: TestData): Application = {
     new GuiceApplicationBuilder()
-      .overrides(bind[UserService].toInstance(this))
+      .overrides(bind[UserService].to[MockUserService])
       .build
   }
-
-  override def lookupUsername(username: String): Future[Option[User]] = lookupUsernameResult
 
   private val landingPageUrl = routes.TicTacToeController.index().url
 
   "TicTacToeController#registeredGame" when {
 
-    "session does not contain a username" should {
+    "processing a request with no session" should {
       "redirect to the landing page" in {
-        lookupUsernameResult = Future.successful(None)
         val controller = app.injector.instanceOf[TicTacToeController]
         val resultFuture = controller.registeredGame().apply(FakeRequest())
         status(resultFuture) must be(SEE_OTHER)
@@ -44,12 +47,20 @@ class AuthenticationSpec
       }
     }
 
-    "session contains a valid username" should {
-      "not redirect to the landing page" in {
-        val username = "testuser1"
-        lookupUsernameResult = Future.successful(Some(User(username, "DontCarePasswordHash")))
+    "processing a request with a session containing an invalid username" should {
+      "redirect to the landing page" in {
         val controller = app.injector.instanceOf[TicTacToeController]
-        val fakeRequest = FakeRequest().withSession(Security.username -> username)
+        val fakeRequest = FakeRequest().withSession(Security.username -> "testuser4")
+        val resultFuture = controller.registeredGame().apply(fakeRequest)
+        status(resultFuture) must be(SEE_OTHER)
+        redirectLocation(resultFuture) must be(Some(landingPageUrl))
+      }
+    }
+
+    "processing a request with a session containing a valid username" should {
+      "not redirect to the landing page" in {
+        val controller = app.injector.instanceOf[TicTacToeController]
+        val fakeRequest = FakeRequest().withSession(Security.username -> "testuser1")
         val resultFuture = controller.registeredGame().apply(fakeRequest)
         status(resultFuture) must be(OK)
       }
