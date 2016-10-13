@@ -5,7 +5,7 @@ import javax.inject.Named
 import akka.actor.ActorRef
 import com.google.inject.Inject
 
-class UserServiceImpl @Inject()(@Named("mainActor") val mainActor: ActorRef) extends UserService {
+class UserServiceImpl @Inject()(@Named("mainActor") mainActor: ActorRef) extends UserService {
 
   import actors.UsersActor._
   import akka.pattern.ask
