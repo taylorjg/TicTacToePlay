@@ -2,9 +2,9 @@ package builders
 
 import controllers.routes
 import models.User
-import modules.UserService
 import play.api.mvc.Security.AuthenticatedRequest
 import play.api.mvc._
+import services.UserService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

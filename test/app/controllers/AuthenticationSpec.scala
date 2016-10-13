@@ -6,11 +6,11 @@ import play.api.mvc.{Results, Security}
 import play.api.test.Helpers._
 import play.api.test._
 import models.User
-import modules.UserService
 import org.scalatest.TestData
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.bind
+import services.UserService
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global

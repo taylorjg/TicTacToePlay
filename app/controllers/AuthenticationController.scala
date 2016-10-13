@@ -3,12 +3,12 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import builders.MyActionBuilders
-import modules.UserService
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.{Configuration, Logger}
+import services.UserService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

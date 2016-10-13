@@ -8,10 +8,10 @@ import akka.pattern.ask
 import builders.MyActionBuilders
 import controllers.AuthenticationController._
 import defaults.Defaults._
-import modules.UserService
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
+import services.UserService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

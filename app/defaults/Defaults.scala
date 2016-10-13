@@ -5,6 +5,6 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 object Defaults {
-  implicit val ASK_TIMEOUT = Timeout(5 seconds)
-  val LEADERBOARD_SIZE = 10
+  implicit final val ASK_TIMEOUT = Timeout(5 seconds)
+  final val LEADERBOARD_SIZE = 10
 }

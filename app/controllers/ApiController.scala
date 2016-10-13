@@ -10,12 +10,12 @@ import akka.stream.Materializer
 import builders.MyActionBuilders
 import defaults.Defaults._
 import models._
-import modules.UserService
 import play.api.Logger
 import play.api.libs.json._
 import play.api.libs.streams._
 import play.api.mvc._
 import play.api.routing._
+import services.UserService
 import utils.Utils
 
 import scala.concurrent.ExecutionContext.Implicits.global
