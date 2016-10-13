@@ -17,15 +17,19 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object MockUserService {
   private final val MOCK_USERS = Seq(
-    User("testuser1", "not-used-password-hash"),
-    User("testuser2", "not-used-password-hash"),
-    User("testuser3", "not-used-password-hash"))
+    User("testuser1", "testuser1-password"),
+    User("testuser2", "testuser2-password"),
+    User("testuser3", "testuser3-password"))
 }
 
 class MockUserService extends UserService {
   import MockUserService.MOCK_USERS
   override def lookupUsername(username: String): Future[Option[User]] =
     Future { MOCK_USERS.find(_.username == username) }
+  override def login(username: String, password: String): Future[Option[User]] =
+    Future.failed(new NotImplementedError())
+  override def registerUser(username: String, password: String): Future[Option[User]] =
+    Future.failed(new NotImplementedError())
 }
 
 class AuthenticationSpec extends PlaySpec

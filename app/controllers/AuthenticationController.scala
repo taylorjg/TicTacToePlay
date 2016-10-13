@@ -1,26 +1,20 @@
 package controllers
 
-import javax.inject.{Inject, Named, Singleton}
+import javax.inject.{Inject, Singleton}
 
-import akka.actor.ActorRef
-import akka.pattern.ask
 import builders.MyActionBuilders
-import defaults.Defaults._
-import extensions.FormsExtensions._
 import modules.UserService
 import play.api.data.Forms._
 import play.api.data._
-import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import play.api.mvc.Security
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.{Configuration, Logger}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class AuthenticationController @Inject()(@Named("mainActor") val mainActor: ActorRef,
-                                         val userService: UserService,
+class AuthenticationController @Inject()(val userService: UserService,
                                          val messagesApi: MessagesApi,
                                          configuration: Configuration)
   extends Controller
@@ -28,7 +22,7 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
     with MyActionBuilders {
 
   import AuthenticationController._
-  import actors.UsersActor._
+  import extensions.FormsExtensions._
 
   val version = configuration.getString("app.version") getOrElse "?"
 
@@ -39,13 +33,12 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
         Future.successful(BadRequest(views.html.registration(version, request.user)(formWithErrors)))
       },
       registrationData => {
-        val filledForm = registrationForm.fill(registrationData)
-        val response = (mainActor ? RegisterUserRequest(registrationData.username, registrationData.password)).mapTo[RegisterUserResponse]
-        response map {
-          case RegisterUserResponse(Some(user)) =>
+        userService.registerUser(registrationData.username, registrationData.password) map {
+          case Some(user) =>
             Logger.info(s"Created new user: $user")
             Redirect(routes.TicTacToeController.registeredGame()).withSession(Security.username -> user.username)
-          case RegisterUserResponse(None) =>
+          case None =>
+            val filledForm = registrationForm.fill(registrationData)
             val formError = FormError(USERNAME_FIELD, "registrationForm.usernameAlreadyExists", Seq(registrationData.username))
             val filledFormWithError = filledForm.withError(formError)
             Logger.warn(formError.translatedErrorMessages)
@@ -62,12 +55,11 @@ class AuthenticationController @Inject()(@Named("mainActor") val mainActor: Acto
         Future.successful(BadRequest(views.html.landingPage(version, request.user)(formWithErrors)))
       },
       loginData => {
-        val filledForm = loginForm.fill(loginData)
-        val response = (mainActor ? LoginRequest(loginData.username, loginData.password)).mapTo[LoginResponse]
-        response map {
-          case LoginResponse(Some(user)) =>
+        userService.login(loginData.username, loginData.password) map {
+          case Some(user) =>
             Redirect(routes.TicTacToeController.registeredGame()).withSession(Security.username -> user.username)
-          case LoginResponse(None) =>
+          case None =>
+            val filledForm = loginForm.fill(loginData)
             val filledFormWithGlobalError = filledForm.withGlobalError("loginForm.badLogin")
             Logger.warn(filledFormWithGlobalError.translatedErrorMessages)
             Ok(views.html.landingPage(version, request.user)(filledFormWithGlobalError))
