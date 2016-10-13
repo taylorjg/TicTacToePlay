@@ -14,12 +14,12 @@ class UserServiceImpl @Inject()(@Named("mainActor") mainActor: ActorRef) extends
   import defaults.Defaults.ASK_TIMEOUT
   import models.User
 
-  def lookupUsername(username: String): Future[Option[User]] =
+  override def lookupUsername(username: String): Future[Option[User]] =
     (mainActor ? LookupUsernameRequest(username)).mapTo[LookupUsernameResponse] map (_.user)
 
-  def login(username: String, password: String): Future[Option[User]] =
+  override def login(username: String, password: String): Future[Option[User]] =
     (mainActor ? LoginRequest(username, password)).mapTo[LoginResponse] map (_.user)
 
-  def registerUser(username: String, password: String): Future[Option[User]] =
+  override def registerUser(username: String, password: String): Future[Option[User]] =
     (mainActor ? RegisterUserRequest(username, password)).mapTo[RegisterUserResponse] map (_.user)
 }
