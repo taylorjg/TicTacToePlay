@@ -24,17 +24,17 @@ class UserServiceImpl @Inject()(@Named("mainActor") val mainActor: ActorRef) ext
 
   override def lookupUsername(username: String): Future[Option[User]] =
     (mainActor ? LookupUsernameRequest(username)).mapTo[LookupUsernameResponse] map {
-      case LookupUsernameResponse(userOption) => userOption
+      response => response.user
     }
 
   override def login(username: String, password: String): Future[Option[User]] =
     (mainActor ? LoginRequest(username, password)).mapTo[LoginResponse] map {
-      case LoginResponse(userOption) => userOption
+      response => response.user
     }
 
   override def registerUser(username: String, password: String): Future[Option[User]] =
     (mainActor ? RegisterUserRequest(username, password)).mapTo[RegisterUserResponse] map {
-      case RegisterUserResponse(userOption) => userOption
+      response => response.user
     }
 }
 
