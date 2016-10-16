@@ -5,10 +5,11 @@ case class LeaderboardEntry(username: String, numWon: Int, numDrawn: Int, numLos
 object LeaderboardEntry {
 
   implicit def ordering: Ordering[LeaderboardEntry] = new Ordering[LeaderboardEntry] {
+    private val comparePointsDescending = Ordering[Int].reverse.compare _
     override def compare(x: LeaderboardEntry, y: LeaderboardEntry): Int = {
-      val comparison1 = -(x.points compare y.points)
-      val comparison2 = x.username compare y.username
-      if (comparison1 != 0) comparison1 else comparison2
+      val pointsComparison = comparePointsDescending(x.points, y.points)
+      if (pointsComparison != 0) pointsComparison
+      else x.username compare y.username
     }
   }
 
